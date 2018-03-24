@@ -1,0 +1,57 @@
+{
+    "name": "carl/typo3-twig",
+    "description": "Use the Twig template engine within your TYPO3 project.",
+    "homepage": "https://cvc.digital",
+    "type": "typo3-cms-extension",
+    "license": "GPL-3.0+",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Markus Poerschke",
+            "email": "poerschke@cvc.digital",
+            "homepage": "http://cvc.digital",
+            "role": "Developer"
+        },
+        {
+            "name": "Carl von Chiari GmbH",
+            "email": "klartext@cvc.digital",
+            "homepage": "https://cvc.digital",
+            "role": "Maintainer"
+        }
+    ],
+    "replace": {
+        "twig": "self.version",
+        "typo3-ter/twig": "self.version"
+    },
+    "require": {
+        "twig/twig": "^2.0",
+        "typo3/cms-core": "^8.7||^9.0",
+        "typo3/cms-frontend": "^8.7||^9.0"
+    },
+    "require-dev": {
+        "nimut/testing-framework": "^3.0.2",
+        "phpunit/phpunit": "^6.0",
+        "friendsofphp/php-cs-fixer": "^2.3"
+    },
+    "conflict": {
+        "comwrap/typo3-twig_for_typo3": "*",
+        "dmk/t3twig": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Carl\\Typo3\\Twig\\": "Classes/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "mkdir -p .Build/Web/typo3conf/ext/",
+            "[ -L .Build/Web/typo3conf/ext/twig ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/twig"
+        ]
+    },
+    "extra": {
+        "typo3/cms": {
+            "cms-package-dir": "{$vendor-dir}/typo3/cms",
+            "web-dir": ".Build/Web"
+        }
+    }
+}

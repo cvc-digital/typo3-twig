@@ -1,0 +1,46 @@
+image: php:7.2
+
+before_script:
+    # Install git (needed by composer)
+    - apt-get update -yqq && apt-get install git -yqq
+
+    # Install composer
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+    # Setup project
+    - composer install --prefer-dist --dev --no-interaction --no-progress --no-suggest
+
+stages:
+    - test
+
+Code Style:
+    stage: test
+    script:
+        - vendor/bin/php-cs-fixer fix --config=.php_cs.dist -v --dry-run --stop-on-violation --using-cache=no
+
+Lint PHP:
+    stage: test
+    before_script: []
+    script:
+        - find . -name \*.php ! -path "./.Build/*" ! -path "./vendor/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
+
+Unit Tests:
+    stage: test
+    script:
+        - vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/UnitTests.xml .Build/Web/typo3conf/ext/twig/Tests/Unit/;
+
+Functional Tests:
+    stage: test
+    services:
+        - mysql
+    variables:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: typo3
+        typo3DatabaseName: typo3
+        typo3DatabaseHost: mysql
+        typo3DatabaseUsername: root
+        typo3DatabasePassword: typo3
+        TYPO3_VERSION: 8.7
+    script:
+        - composer require typo3/minimal="$TYPO3_VERSION"
+        - find '.Build/Web/typo3conf/ext/twig/Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml {}';
