@@ -14,6 +14,9 @@ before_script:
     # Install composer
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+    # Install parallel needed for linting PHP and functional tests
+    - apt-get update -yqq && apt-get install parallel -yqq
+
 stages:
     - test
 
@@ -26,7 +29,6 @@ Lint PHP:
     stage: test
     before_script: []
     script:
-        - apt-get update -yqq && apt-get install parallel -yqq
         - find . -name \*.php ! -path "./.Build/*" ! -path "./vendor/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
 
 Unit Tests:

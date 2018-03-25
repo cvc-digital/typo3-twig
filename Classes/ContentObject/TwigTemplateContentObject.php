@@ -89,7 +89,10 @@ class TwigTemplateContentObject extends AbstractContentObject
         $templateName = isset($conf['templateName.'])
             ? $this->cObj->stdWrap($conf['templateName'] ?? '', $conf['templateName.'])
             : $conf['templateName'];
-        $templateRootPaths = $this->applyStandardWrapToTwigPaths($conf['templateRootPaths.']);
+
+        $templateRootPaths = isset($conf['templateRootPaths.'])
+            ? $this->applyStandardWrapToTwigPaths($conf['templateRootPaths.'])
+            : [];
 
         $variables = $this->getContentObjectVariables($conf);
         $variables = $this->contentDataProcessor->process($this->cObj, $conf, $variables);
