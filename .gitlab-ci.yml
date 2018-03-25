@@ -8,6 +8,7 @@ before_script:
     - apt-get update -yqq && apt-get install git -yqq
 
     # Install zip (needed by composer)
+    - apt-get update -yqq && apt-get install zlib1g-dev -yqq
     - docker-php-ext-install zip
 
     # Install composer
