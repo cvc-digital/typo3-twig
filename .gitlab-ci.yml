@@ -23,19 +23,19 @@ stages:
 Code Style:
     stage: test
     script:
+        - composer install --prefer-dist --no-progress
         - vendor/bin/php-cs-fixer fix --config=.php_cs.dist -v --dry-run --stop-on-violation --using-cache=no
 
 Lint PHP:
     stage: test
-    before_script: []
     script:
         - find . -name \*.php ! -path "./.Build/*" ! -path "./vendor/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
 
-Unit Tests:
-    stage: test
-    script:
-        - composer require typo3/minimal="$TYPO3_VERSION"
-        - vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/UnitTests.xml .Build/Web/typo3conf/ext/twig/Tests/Unit/;
+#Unit Tests:
+#    stage: test
+#    script:
+#        - composer require typo3/minimal="$TYPO3_VERSION"
+#        - vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/UnitTests.xml .Build/Web/typo3conf/ext/twig/Tests/Unit/;
 
 Functional Tests:
     stage: test
