@@ -29,7 +29,7 @@ class TwigViewTest extends FunctionalTestCase
     {
         $twigView = new StandaloneView();
         $twigView->assign('foo', 'bar');
-        $twigView->setTemplateRootPaths(['EXT:typo3_twig/Resources/Private/TwigTemplates/']);
+        $twigView->setTemplateRootPaths(['EXT:twig/Resources/Private/TwigTemplates/']);
         $twigView->setTemplateName('example.html.twig');
 
         $renderedView = $twigView->render();
