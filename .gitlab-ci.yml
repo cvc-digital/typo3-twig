@@ -17,6 +17,9 @@ before_script:
     # Install parallel needed for linting PHP and functional tests
     - apt-get update -yqq && apt-get install parallel -yqq
 
+    # Install MySQL (needed for TYPO3)
+    - docker-php-ext-install mysqli
+
 stages:
     - test
 
