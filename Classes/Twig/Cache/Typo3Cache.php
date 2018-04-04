@@ -50,6 +50,11 @@ class Typo3Cache implements CacheInterface
 
     public function write($key, $content)
     {
+        if (strpos($content, '<?php') === 0)
+        {
+            $content = substr($content, 5);
+        }
+
         $this->phpFrontend->set($key, $content);
         $this->timestampCache->set($key, $GLOBALS['EXEC_TIME']);
     }

@@ -29,7 +29,7 @@ To render a Twig template you can use the `TWIGTEMPLATE` content object.
 ```typo3_typoscript
 page.10 = TWIGTEMPLATE
 page.10 {
-    template = example.html.twig
+    templateName = example.html.twig
     variables {
         foo = TEXT
         foo.value = Bar!
