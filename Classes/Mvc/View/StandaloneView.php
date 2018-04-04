@@ -51,12 +51,20 @@ class StandaloneView
     /**
      * Renders the view.
      *
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     *
      * @return string The rendered view
      */
     public function render()
     {
+        $templatePaths = array_map(function (string $path) {
+            return GeneralUtility::getFileAbsFileName($path);
+        }, $this->templateRootPaths);
+
         return (new Environment(
-            new FilesystemLoader($this->templateRootPaths),
+            new FilesystemLoader($templatePaths),
             [
                 'debug' => $GLOBALS['TYPO3_CONF_VARS']['FE']['debug'],
                 'cache' => GeneralUtility::makeInstance(Typo3Cache::class),

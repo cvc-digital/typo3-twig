@@ -50,9 +50,8 @@ class Typo3Cache implements CacheInterface
 
     public function write($key, $content)
     {
-        if (strpos($content, '<?php') === 0)
-        {
-            $content = substr($content, 5);
+        if (mb_strpos($content, '<?php') === 0) {
+            $content = mb_substr($content, 5);
         }
 
         $this->phpFrontend->set($key, $content);

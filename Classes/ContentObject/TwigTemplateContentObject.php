@@ -124,7 +124,7 @@ class TwigTemplateContentObject extends AbstractContentObject
             } elseif (isset($paths[$key.'.'])) {
                 $path = $this->cObj->stdWrap($path, $paths[$key.'.']);
             }
-            $finalPaths[$key] = GeneralUtility::getFileAbsFileName($path);
+            $finalPaths[$key] = $path;
         }
 
         return $finalPaths;
