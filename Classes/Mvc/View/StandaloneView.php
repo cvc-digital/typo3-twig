@@ -19,7 +19,9 @@
 namespace Carl\Typo3\Twig\Mvc\View;
 
 use Carl\Typo3\Twig\Twig\Cache\Typo3Cache;
+use Carl\Typo3\Twig\Twig\Extension\ExtbaseDebugExtension;
 use Twig\Environment;
+use Twig\Extension;
 use Twig\Loader\FilesystemLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -63,13 +65,17 @@ class StandaloneView
             return GeneralUtility::getFileAbsFileName($path);
         }, $this->templateRootPaths);
 
-        return (new Environment(
+        $twigEnvironment = new Environment(
             new FilesystemLoader($templatePaths),
             [
                 'debug' => $GLOBALS['TYPO3_CONF_VARS']['FE']['debug'],
                 'cache' => GeneralUtility::makeInstance(Typo3Cache::class),
             ]
-        ))->render($this->templateName, $this->variables);
+        );
+
+        $twigEnvironment->addExtension(new ExtbaseDebugExtension());
+
+        return $twigEnvironment->render($this->templateName, $this->variables);
     }
 
     /**

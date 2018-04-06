@@ -69,6 +69,24 @@ class MyFantasticalController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCo
 }
 ```
 
+## Twig functions
+
+### dump()
+
+The `dump()` functions prints the contents of a variable. This is useful for debugging. Please ensure that your frontend
+is in debug mode because otherwise the function does not print anything. Internally `DebuggerUtility::var_dump()` is used.
+
+```twig
+{# print a single variable #}
+{{ dump(foo) }}
+
+{# print multiple variables #}
+{{ dump(foo, bar, baz) }}
+
+{# print all variables #}
+{{ dump() }}
+```
+
 ## Alternatives
 
 This extension is not the first extension that supports rendering Twig templates. We decided to create our own 
