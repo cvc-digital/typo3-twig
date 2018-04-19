@@ -46,6 +46,7 @@ Lint PHP:
         typo3DatabaseUsername: root
         typo3DatabasePassword: root
     script:
+        - env
         - composer require typo3/minimal="$TYPO3_VERSION"
         - find '.Build/Web/typo3conf/ext/twig/Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml {}';
 
@@ -60,7 +61,12 @@ Functional Tests (8.7):
     variables:
         TYPO3_VERSION: "8.7"
 
-Functional Tests (9.2):
+Functional Tests (9.1):
     <<: *functional_tests
     variables:
-        TYPO3_VERSION: "9.2"
+        TYPO3_VERSION: "9.1"
+
+#Functional Tests (9.2):
+#    <<: *functional_tests
+#    variables:
+#        TYPO3_VERSION: "9.2"
