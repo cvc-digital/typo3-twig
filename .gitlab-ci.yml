@@ -37,7 +37,7 @@ Lint PHP:
 .Functional Tests Template: &functional_tests
     stage: test
     services:
-        - mysql
+        - mysql:5.7
     variables:
         MYSQL_ROOT_PASSWORD: root
         MYSQL_DATABASE: typo3
