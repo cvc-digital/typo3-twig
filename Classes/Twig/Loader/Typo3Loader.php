@@ -101,7 +101,7 @@ class Typo3Loader implements LoaderInterface
             throw new \Twig_Error_Loader($this->errorCache[$name]);
         }
         $path = GeneralUtility::getFileAbsFileName($name);
-        if (!empty($path) || \is_file($path)) {
+        if (!empty($path) && \is_file($path)) {
             return $this->cache[$name] = $path;
         }
         $this->errorCache[$name] = \sprintf('Unable to find template "%s".', $name);
