@@ -45,11 +45,16 @@ page.10 {
 If you want to use twig from within your controller, you just have to switch the `$defaultViewObjectName` to 
 `\Carl\Typo3\Twig\Extbase\Mvc\View\TwigView`. See the example below.
 
-**⚠️ The support for Extbase is still in development. Therefore the path and filename of the templates have to be set 
-manually. It is planned to have the same functionality as Fluid in future versions.** 
+The template file will be automatically set to `@controller/@action.@format.twig`.
+The `templateRootPaths` that are defined for extbase will be respected.
+You should not forget to configure those using TypoScript.
+
+Given you have the following controller; you just have to set the `$defaultViewObjectName` to the TwigView class.
 
 ```php
 <?php
+
+// my_extension/Classes/Controller/MyFantasticalController.php
 
 class MyFantasticalController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
@@ -58,15 +63,29 @@ class MyFantasticalController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCo
 
     public function someAwesomeAction()
     {
-        // since there is no full support for Extbase yet,
-        // you have to configure the template root paths manually.
-        $this->view->setTemplateName('template.html.twig');
-        $this->view->setTemplateRootPaths(['EXT:twig/Resources/Private/TwigTemplates/']);
-        
         // assign the variables as usual
         $this->view->assign('foo', 'BAZ!');
     }
 }
+```
+
+The `templateRootPaths` are configured using TypoScript:
+
+```typo3_typoscript
+plugin.tx_my_extension {
+    view {
+        templateRootPaths.0 = EXT:my_extension/Resources/Private/Templates/
+    }
+}
+```
+
+The Twig template has to be paced in `my_extension/Resources/Private/Templates/`
+and has to be named `MyFantastical/someAwesome.html.twig`.
+
+```twig
+{# my_extension/Resources/Private/Templates/MyFantastical/someAwesome.html.twig #}
+
+Foo: {{ foo }}
 ```
 
 ## Twig functions

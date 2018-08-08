@@ -24,9 +24,14 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 class TwigView extends StandaloneView implements ViewInterface
 {
+    /**
+     * @var ControllerContext
+     */
+    private $controllerContext;
+
     public function setControllerContext(ControllerContext $controllerContext)
     {
-        // left empty, because the controller context is not used yet
+        $this->controllerContext = $controllerContext;
     }
 
     public function canRender(ControllerContext $controllerContext)
@@ -36,6 +41,14 @@ class TwigView extends StandaloneView implements ViewInterface
 
     public function initializeView()
     {
-        // left empty, because there is nothing to initialize
+        if ($this->controllerContext !== null) {
+            $request = $this->controllerContext->getRequest();
+
+            $action = $request->getControllerActionName();
+            $controller = $request->getControllerName();
+            $format = $request->getFormat();
+
+            $this->setTemplateName("$controller/$action.$format.twig");
+        }
     }
 }

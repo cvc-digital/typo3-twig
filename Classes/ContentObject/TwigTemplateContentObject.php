@@ -82,6 +82,8 @@ class TwigTemplateContentObject extends AbstractContentObject
      *
      * @param array $conf Array of TypoScript properties
      *
+     * @throws \Twig_Error
+     *
      * @return string The HTML output
      */
     public function render($conf = [])
