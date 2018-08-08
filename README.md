@@ -42,7 +42,7 @@ page.10 {
 
 ### Render templates in an Extbase controller
 
-If you want to use twig from within your controller, you just have to switch the `$defaultViewObjectName` to 
+If you want to use twig from within your controller, you just have to switch the `$defaultViewObjectName` to
 `\Carl\Typo3\Twig\Extbase\Mvc\View\TwigView`. See the example below.
 
 The template file will be automatically set to `@controller/@action.@format.twig`.
@@ -134,7 +134,7 @@ Parses HTML that was created with an rich text editor.
 
 ## Alternatives
 
-This extension is not the first extension that supports rendering Twig templates. We decided to create our own 
+This extension is not the first extension that supports rendering Twig templates. We decided to create our own
 extension, because other extensions were either not maintained anymore, they carried to much overhead or they were not
 developed close to the Fluid implementation.
 

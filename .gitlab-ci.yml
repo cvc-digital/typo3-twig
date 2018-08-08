@@ -29,6 +29,14 @@ Code Style:
         - composer install --prefer-dist --no-progress
         - vendor/bin/php-cs-fixer fix --config=.php_cs.dist -v --dry-run --stop-on-violation --using-cache=no
 
+Lint Editorconfig:
+    stage: test
+    image: node:10
+    before_script:
+        - npm install -g editorconfig-checker
+    script:
+        - editorconfig-checker ./*/*
+
 Lint PHP:
     stage: test
     script:
