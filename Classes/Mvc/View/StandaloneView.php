@@ -20,6 +20,7 @@ namespace Carl\Typo3\Twig\Mvc\View;
 
 use Carl\Typo3\Twig\Twig\Cache\Typo3Cache;
 use Carl\Typo3\Twig\Twig\Extension\ExtbaseDebugExtension;
+use Carl\Typo3\Twig\Twig\Extension\HtmlFormatExtension;
 use Carl\Typo3\Twig\Twig\Loader\Typo3Loader;
 use Twig\Environment;
 use Twig\Loader\ChainLoader;
@@ -52,6 +53,16 @@ class StandaloneView
     protected $variables;
 
     /**
+     * Class names of extensions to be added to the environment.
+     *
+     * @var string[]
+     */
+    protected $extensions = [
+        ExtbaseDebugExtension::class,
+        HtmlFormatExtension::class,
+    ];
+
+    /**
      * Renders the view.
      *
      * @throws \Twig_Error_Loader
@@ -77,7 +88,9 @@ class StandaloneView
             ]
         );
 
-        $twigEnvironment->addExtension(new ExtbaseDebugExtension());
+        foreach ($this->extensions as $extensionClass) {
+            $twigEnvironment->addExtension(GeneralUtility::makeInstance($extensionClass));
+        }
 
         return $twigEnvironment->render($this->templateName, $this->variables);
     }

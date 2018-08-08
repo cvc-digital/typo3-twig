@@ -88,9 +88,19 @@ and has to be named `MyFantastical/someAwesome.html.twig`.
 Foo: {{ foo }}
 ```
 
-## Twig functions
+## Documentation
 
-### dump()
+Filters and functions that are provided by this extension are explained here.
+Of course you can also use the build in filters, functions, tags, tests and operators.
+You can find them in the [official reference documentation](https://twig.symfony.com/doc/2.x/#reference).
+
+### Functions
+
+#### dump
+
+```twig
+{{ dump(var1, var2, ...) }}
+```
 
 The `dump()` functions prints the contents of a variable. This is useful for debugging. Please ensure that your frontend
 is in debug mode because otherwise the function does not print anything. Internally `DebuggerUtility::var_dump()` is used.
@@ -105,6 +115,22 @@ is in debug mode because otherwise the function does not print anything. Interna
 {# print all variables #}
 {{ dump() }}
 ```
+
+### Filters
+
+#### t3_html
+
+```twig
+{{ html | t3_html(parseFuncTSPath = 'lib.parseFunc_RTE') }}
+```
+
+`html`
+: **type**: `string`
+
+`parseFuncTSPath`
+: **type**: `string`, **default**: `lib.parseFunc_RTE`
+
+Parses HTML that was created with an rich text editor.
 
 ## Alternatives
 

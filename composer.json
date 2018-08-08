@@ -9,7 +9,7 @@
         {
             "name": "Markus Poerschke",
             "email": "poerschke@cvc.digital",
-            "homepage": "http://cvc.digital",
+            "homepage": "https://cvc.digital",
             "role": "Developer"
         },
         {
@@ -24,6 +24,7 @@
         "typo3-ter/twig": "self.version"
     },
     "require": {
+        "php": ">=7.2",
         "twig/twig": "^2.0",
         "typo3/cms-core": "^8.7||^9.0",
         "typo3/cms-frontend": "^8.7||^9.0"
