@@ -112,9 +112,12 @@ This extension is not the first extension that supports rendering Twig templates
 extension, because other extensions were either not maintained anymore, they carried to much overhead or they were not
 developed close to the Fluid implementation.
 
-* [T3twig](https://extensions.typo3.org/extension/t3twig/) (installs alternative MVC framework)
-* [Twypo](https://extensions.typo3.org/extension/twypo/) (unmaintained)
-* [Twig for TYPO3](https://extensions.typo3.org/extension/twig_for_typo3/) (unmaintained, only supports one template folder)
+| Extension Name                                                           | 8.7 LTS | 9 | Extbase Support | Install via Extension Manager | Installation via Composer | Comment                                     |
+|:-------------------------------------------------------------------------|:-------:|:-:|:---------------:|:-----------------------------:|:-------------------------:|:--------------------------------------------|
+| This extension                                                           |    ✓    | ✓ |        ✓        |               -               |             ✓             | -                                           |
+| [Twig for TYPO3](https://extensions.typo3.org/extension/twig_for_typo3/) |    ✓    | - |        -        |               -               |             ✓             | supports only single template folder        |
+| [T3twig](https://extensions.typo3.org/extension/t3twig/)                 |    ✓    | - |        -        |               -               |             ✓             | requires alternative non-core MVC framework |
+| [Twypo](https://extensions.typo3.org/extension/twypo/)                   |    -    | - |        -        |               ✓               |             -             | unmaintained                                |
 
 ## Development Team
 
