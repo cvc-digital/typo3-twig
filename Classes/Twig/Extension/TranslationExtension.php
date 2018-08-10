@@ -21,7 +21,6 @@ namespace Carl\Typo3\Twig\Twig\Extension;
 use Carl\Typo3\Twig\Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
