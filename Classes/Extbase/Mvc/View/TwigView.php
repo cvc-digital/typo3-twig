@@ -24,11 +24,6 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 class TwigView extends StandaloneView implements ViewInterface
 {
-    /**
-     * @var ControllerContext
-     */
-    private $controllerContext;
-
     public function setControllerContext(ControllerContext $controllerContext)
     {
         $this->controllerContext = $controllerContext;

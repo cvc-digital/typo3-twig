@@ -19,13 +19,18 @@
 namespace Carl\Typo3\Twig\Mvc\View;
 
 use Carl\Typo3\Twig\Twig\Cache\Typo3Cache;
+use Carl\Typo3\Twig\Twig\Environment;
 use Carl\Typo3\Twig\Twig\Extension\ExtbaseDebugExtension;
 use Carl\Typo3\Twig\Twig\Extension\HtmlFormatExtension;
+use Carl\Typo3\Twig\Twig\Extension\LinkExtension;
 use Carl\Typo3\Twig\Twig\Loader\Typo3Loader;
-use Twig\Environment;
 use Twig\Loader\ChainLoader;
 use Twig\Loader\FilesystemLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
+use TYPO3\CMS\Extbase\Mvc\Web\Request;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * A standalone view.
@@ -60,7 +65,13 @@ class StandaloneView
     protected $extensions = [
         ExtbaseDebugExtension::class,
         HtmlFormatExtension::class,
+        LinkExtension::class,
     ];
+
+    /**
+     * @var ControllerContext
+     */
+    protected $controllerContext;
 
     /**
      * Renders the view.
@@ -77,6 +88,11 @@ class StandaloneView
             return GeneralUtility::getFileAbsFileName($path);
         }, $this->templateRootPaths);
 
+        // ensure that a controller context exists
+        if ($this->controllerContext === null) {
+            $this->createControllerContext();
+        }
+
         $twigEnvironment = new Environment(
             new ChainLoader([
                 new FilesystemLoader($templatePaths),
@@ -85,7 +101,8 @@ class StandaloneView
             [
                 'debug' => $GLOBALS['TYPO3_CONF_VARS']['FE']['debug'],
                 'cache' => GeneralUtility::makeInstance(Typo3Cache::class),
-            ]
+            ],
+            $this->controllerContext
         );
 
         foreach ($this->extensions as $extensionClass) {
@@ -145,5 +162,26 @@ class StandaloneView
     public function setTemplateRootPaths(array $templateRootPaths)
     {
         $this->templateRootPaths = $templateRootPaths;
+    }
+
+    /**
+     * Creates a new controller context if no context was set from external.
+     */
+    private function createControllerContext(): void
+    {
+        if ($this->controllerContext !== null) {
+            throw new \LogicException('The controllerContext was already created.');
+        }
+
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
+        $request = $objectManager->get(Request::class);
+        $request->setRequestUri(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
+        $request->setBaseUri(GeneralUtility::getIndpEnv('TYPO3_SITE_URL'));
+        $uriBuilder = $objectManager->get(UriBuilder::class);
+        $uriBuilder->setRequest($request);
+        $this->controllerContext = $objectManager->get(ControllerContext::class);
+        $this->controllerContext->setRequest($request);
+        $this->controllerContext->setUriBuilder($uriBuilder);
     }
 }
