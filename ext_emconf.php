@@ -28,6 +28,7 @@ $EM_CONF[$_EXTKEY] = [
     'constraints' => [
         'depends' => [
             'typo3' => '8.7.0-9.99.99',
+            'extbase' => '8.7.0-9.99.99',
         ],
         'conflicts' => [
             't3twig' => '',
