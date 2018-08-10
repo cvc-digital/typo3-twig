@@ -32,7 +32,7 @@ use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
  *
  * @internal
  */
-class LinkExtension extends AbstractExtension
+class UriExtension extends AbstractExtension
 {
     public function getFunctions()
     {

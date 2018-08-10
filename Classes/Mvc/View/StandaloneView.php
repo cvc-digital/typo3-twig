@@ -22,7 +22,8 @@ use Carl\Typo3\Twig\Twig\Cache\Typo3Cache;
 use Carl\Typo3\Twig\Twig\Environment;
 use Carl\Typo3\Twig\Twig\Extension\ExtbaseDebugExtension;
 use Carl\Typo3\Twig\Twig\Extension\HtmlFormatExtension;
-use Carl\Typo3\Twig\Twig\Extension\LinkExtension;
+use Carl\Typo3\Twig\Twig\Extension\ImageExtension;
+use Carl\Typo3\Twig\Twig\Extension\UriExtension;
 use Carl\Typo3\Twig\Twig\Loader\Typo3Loader;
 use Twig\Loader\ChainLoader;
 use Twig\Loader\FilesystemLoader;
@@ -65,7 +66,8 @@ class StandaloneView
     protected $extensions = [
         ExtbaseDebugExtension::class,
         HtmlFormatExtension::class,
-        LinkExtension::class,
+        UriExtension::class,
+        ImageExtension::class,
     ];
 
     /**
