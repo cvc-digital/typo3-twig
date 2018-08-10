@@ -1,5 +1,5 @@
 {
-    "name": "carl/typo3-twig",
+    "name": "cvc/typo3-twig",
     "description": "Use the Twig template engine within your TYPO3 project.",
     "homepage": "https://cvc.digital",
     "type": "typo3-cms-extension",
@@ -13,15 +13,15 @@
             "role": "Developer"
         },
         {
-            "name": "Carl von Chiari GmbH",
-            "email": "klartext@cvc.digital",
+            "name": "CARL von CHIARI GmbH",
+            "email": "opensource@cvc.digital",
             "homepage": "https://cvc.digital",
             "role": "Maintainer"
         }
     ],
     "replace": {
-        "twig": "self.version",
-        "typo3-ter/twig": "self.version"
+        "cvc_twig": "self.version",
+        "typo3-ter/cvc_twig": "self.version"
     },
     "require": {
         "php": ">=7.2",
@@ -41,7 +41,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Carl\\Typo3\\Twig\\": "Classes/"
+            "Cvc\\Typo3\\Twig\\": "Classes/"
         }
     },
     "scripts": {

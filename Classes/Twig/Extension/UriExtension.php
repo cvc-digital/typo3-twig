@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Twig Extension for TYPO3 CMS
- * Copyright (C) 2018 Carl von Chiari GmbH
+ * Twig extension for TYPO3 CMS
+ * Copyright (C) 2018 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,9 +16,9 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Carl\Typo3\Twig\Twig\Extension;
+namespace Cvc\Typo3\Twig\Twig\Extension;
 
-use Carl\Typo3\Twig\Twig\Environment;
+use Cvc\Typo3\Twig\Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

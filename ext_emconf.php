@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Twig Extension for TYPO3 CMS
- * Copyright (C) 2018 Carl von Chiari GmbH
+ * Twig extension for TYPO3 CMS
+ * Copyright (C) 2018 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,9 +20,9 @@ $EM_CONF[$_EXTKEY] = [
     'title' => 'Twig Template Engine',
     'description' => 'Use the Twig template engine within your TYPO3 project. You can use Twig templates in TypoScript or together with Extbase.',
     'category' => 'fe',
-    'author' => 'Markus Poerschke',
-    'author_email' => 'poerschke@cvc.digital',
-    'author_company' => 'Carl von Chiari GmbH',
+    'author' => 'CARL von CHIARI',
+    'author_email' => 'opensource@cvc.digital',
+    'author_company' => 'CARL von CHIARI GmbH',
     'state' => 'stable',
     'version' => '1.0.0',
     'constraints' => [

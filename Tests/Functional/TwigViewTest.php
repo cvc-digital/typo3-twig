@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Twig Extension for TYPO3 CMS
- * Copyright (C) 2018 Carl von Chiari GmbH
+ * Twig extension for TYPO3 CMS
+ * Copyright (C) 2018 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *

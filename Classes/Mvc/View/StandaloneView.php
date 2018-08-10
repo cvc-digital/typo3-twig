@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Twig Extension for TYPO3 CMS
- * Copyright (C) 2018 Carl von Chiari GmbH
+ * Twig extension for TYPO3 CMS
+ * Copyright (C) 2018 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,16 +16,16 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Carl\Typo3\Twig\Mvc\View;
+namespace Cvc\Typo3\Twig\Mvc\View;
 
-use Carl\Typo3\Twig\Twig\Cache\Typo3Cache;
-use Carl\Typo3\Twig\Twig\Environment;
-use Carl\Typo3\Twig\Twig\Extension\ExtbaseDebugExtension;
-use Carl\Typo3\Twig\Twig\Extension\HtmlFormatExtension;
-use Carl\Typo3\Twig\Twig\Extension\ImageExtension;
-use Carl\Typo3\Twig\Twig\Extension\TranslationExtension;
-use Carl\Typo3\Twig\Twig\Extension\UriExtension;
-use Carl\Typo3\Twig\Twig\Loader\Typo3Loader;
+use Cvc\Typo3\Twig\Twig\Cache\Typo3Cache;
+use Cvc\Typo3\Twig\Twig\Environment;
+use Cvc\Typo3\Twig\Twig\Extension\ExtbaseDebugExtension;
+use Cvc\Typo3\Twig\Twig\Extension\HtmlFormatExtension;
+use Cvc\Typo3\Twig\Twig\Extension\ImageExtension;
+use Cvc\Typo3\Twig\Twig\Extension\TranslationExtension;
+use Cvc\Typo3\Twig\Twig\Extension\UriExtension;
+use Cvc\Typo3\Twig\Twig\Loader\Typo3Loader;
 use Twig\Loader\ChainLoader;
 use Twig\Loader\FilesystemLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

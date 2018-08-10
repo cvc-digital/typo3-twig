@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Twig Extension for TYPO3 CMS
- * Copyright (C) 2018 Carl von Chiari GmbH
+ * Twig extension for TYPO3 CMS
+ * Copyright (C) 2018 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,9 +16,9 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Carl\Typo3\Twig\ContentObject;
+namespace Cvc\Typo3\Twig\ContentObject;
 
-use Carl\Typo3\Twig\Mvc\View\StandaloneView;
+use Cvc\Typo3\Twig\Mvc\View\StandaloneView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
