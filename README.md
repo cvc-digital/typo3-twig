@@ -12,7 +12,7 @@ yetyou can find a [how to on the TYPO3 website](https://composer.typo3.org/).
 Install the extension with the following command:
 
 ```bash
-composer require carl/typo3-twig
+composer require cvc/typo3-twig
 ```
 
 ## Getting started
