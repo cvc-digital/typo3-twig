@@ -16,16 +16,16 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Cvc\Typo3\Twig\Mvc\View;
+namespace Cvc\Typo3\CvcTwig\Mvc\View;
 
-use Cvc\Typo3\Twig\Twig\Cache\Typo3Cache;
-use Cvc\Typo3\Twig\Twig\Environment;
-use Cvc\Typo3\Twig\Twig\Extension\ExtbaseDebugExtension;
-use Cvc\Typo3\Twig\Twig\Extension\HtmlFormatExtension;
-use Cvc\Typo3\Twig\Twig\Extension\ImageExtension;
-use Cvc\Typo3\Twig\Twig\Extension\TranslationExtension;
-use Cvc\Typo3\Twig\Twig\Extension\UriExtension;
-use Cvc\Typo3\Twig\Twig\Loader\Typo3Loader;
+use Cvc\Typo3\CvcTwig\Twig\Cache\Typo3Cache;
+use Cvc\Typo3\CvcTwig\Twig\Environment;
+use Cvc\Typo3\CvcTwig\Twig\Extension\ExtbaseDebugExtension;
+use Cvc\Typo3\CvcTwig\Twig\Extension\HtmlFormatExtension;
+use Cvc\Typo3\CvcTwig\Twig\Extension\ImageExtension;
+use Cvc\Typo3\CvcTwig\Twig\Extension\TranslationExtension;
+use Cvc\Typo3\CvcTwig\Twig\Extension\UriExtension;
+use Cvc\Typo3\CvcTwig\Twig\Loader\Typo3Loader;
 use Twig\Loader\ChainLoader;
 use Twig\Loader\FilesystemLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

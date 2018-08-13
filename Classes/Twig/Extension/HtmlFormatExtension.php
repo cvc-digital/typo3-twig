@@ -16,9 +16,9 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Cvc\Typo3\Twig\Twig\Extension;
+namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
-use Cvc\Typo3\Twig\Utility\Html;
+use Cvc\Typo3\CvcTwig\Utility\Html;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 

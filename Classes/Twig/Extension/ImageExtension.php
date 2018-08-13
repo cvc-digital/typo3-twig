@@ -16,7 +16,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Cvc\Typo3\Twig\Twig\Extension;
+namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;

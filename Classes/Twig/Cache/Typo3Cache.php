@@ -16,7 +16,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Cvc\Typo3\Twig\Twig\Cache;
+namespace Cvc\Typo3\CvcTwig\Twig\Cache;
 
 use Twig\Cache\CacheInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;

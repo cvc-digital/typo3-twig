@@ -16,7 +16,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Cvc\Typo3\Twig\Twig;
+namespace Cvc\Typo3\CvcTwig\Twig;
 
 use Twig\Environment as TwigEnvironment;
 use Twig\Loader\LoaderInterface;

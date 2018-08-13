@@ -16,7 +16,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-use Cvc\Typo3\Twig\Mvc\View\StandaloneView;
+use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneView;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
 class TwigViewTest extends FunctionalTestCase

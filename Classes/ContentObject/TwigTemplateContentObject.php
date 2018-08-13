@@ -16,9 +16,9 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Cvc\Typo3\Twig\ContentObject;
+namespace Cvc\Typo3\CvcTwig\ContentObject;
 
-use Cvc\Typo3\Twig\Mvc\View\StandaloneView;
+use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;

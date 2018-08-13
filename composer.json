@@ -42,7 +42,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Cvc\\Typo3\\Twig\\": "Classes/"
+            "Cvc\\Typo3\\CvcTwig\\": "Classes/"
         }
     },
     "scripts": {

@@ -18,7 +18,7 @@
 
 // register template content object for TWIGTEMPLATE
 $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'] = \array_merge($GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'], [
-    'TWIGTEMPLATE' => \Cvc\Typo3\Twig\ContentObject\TwigTemplateContentObject::class,
+    'TWIGTEMPLATE' => \Cvc\Typo3\CvcTwig\ContentObject\TwigTemplateContentObject::class,
 ]);
 
 // register caches for twig

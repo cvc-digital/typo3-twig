@@ -16,7 +16,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Cvc\Typo3\Twig\Twig\Loader;
+namespace Cvc\Typo3\CvcTwig\Twig\Loader;
 
 use Twig\Loader\LoaderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

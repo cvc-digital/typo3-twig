@@ -16,9 +16,9 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Cvc\Typo3\Twig\Extbase\Mvc\View;
+namespace Cvc\Typo3\CvcTwig\Extbase\Mvc\View;
 
-use Cvc\Typo3\Twig\Mvc\View\StandaloneView;
+use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneView;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
