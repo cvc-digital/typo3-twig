@@ -46,6 +46,7 @@ Lint PHP:
 PHPStan:
     stage: static_analysis
     script:
+        - composer install --prefer-dist --no-progress
         - php vendor/bin/phpstan analyse Classes ./*.php
 
 .Functional Tests Template: &functional_tests
