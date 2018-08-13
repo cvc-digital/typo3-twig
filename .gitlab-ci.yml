@@ -46,7 +46,7 @@ Lint PHP:
 PHPStan:
     stage: static_analysis
     script:
-        php vendor/bin/phpstan analyse Classes ./*.php
+        - php vendor/bin/phpstan analyse Classes ./*.php
 
 .Functional Tests Template: &functional_tests
     stage: test
