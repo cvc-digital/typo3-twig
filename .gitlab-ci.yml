@@ -42,6 +42,11 @@ Lint PHP:
     script:
         - find . -name \*.php ! -path "./.Build/*" ! -path "./vendor/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
 
+Static Analysis:
+    stage: test
+    script:
+        php vendor/bin/phpstan analyse Classes ./*.php
+
 .Functional Tests Template: &functional_tests
     stage: test
     services:

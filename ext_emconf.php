@@ -16,6 +16,10 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+if (!isset($_EXTKEY)) {
+    $_EXTKEY = '';
+}
+
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Twig Template Engine',
     'description' => 'Use the Twig template engine within your TYPO3 project. You can use Twig templates in TypoScript or together with Extbase.',
