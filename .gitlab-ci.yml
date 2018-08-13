@@ -21,16 +21,17 @@ before_script:
     - docker-php-ext-install mysqli
 
 stages:
+    - static_analysis
     - test
 
 Code Style:
-    stage: test
+    stage: static_analysis
     script:
         - composer install --prefer-dist --no-progress
         - vendor/bin/php-cs-fixer fix --config=.php_cs.dist -v --dry-run --stop-on-violation --using-cache=no
 
 Lint Editorconfig:
-    stage: test
+    stage: static_analysis
     image: node:10
     before_script:
         - npm install -g editorconfig-checker
@@ -38,12 +39,12 @@ Lint Editorconfig:
         - editorconfig-checker ./*/*
 
 Lint PHP:
-    stage: test
+    stage: static_analysis
     script:
         - find . -name \*.php ! -path "./.Build/*" ! -path "./vendor/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
 
-Static Analysis:
-    stage: test
+PHPStan:
+    stage: static_analysis
     script:
         php vendor/bin/phpstan analyse Classes ./*.php
 
