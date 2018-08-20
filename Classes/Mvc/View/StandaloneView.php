@@ -92,6 +92,10 @@ class StandaloneView
             return GeneralUtility::getFileAbsFileName($path);
         }, $this->templateRootPaths);
 
+        // reverse order of template paths since twig will match first path first
+        // to match the fluid behavior and to make it easier to extend, we want to match last path first
+        $templatePaths = array_reverse($templatePaths, true);
+
         // ensure that a controller context exists
         if ($this->controllerContext === null) {
             $this->createControllerContext();
