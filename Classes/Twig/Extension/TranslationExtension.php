@@ -24,7 +24,7 @@ use Twig\TwigFilter;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
- * @final
+ * @internal
  */
 class TranslationExtension extends AbstractExtension
 {
