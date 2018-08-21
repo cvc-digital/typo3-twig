@@ -43,7 +43,7 @@ page.10 {
 ### Render templates in an Extbase controller
 
 If you want to use twig from within your controller, you just have to switch the `$defaultViewObjectName` to
-`\Carl\Typo3\Twig\Extbase\Mvc\View\TwigView`. See the example below.
+`\Cvc\Typo3\CvcTwig\Extbase\Mvc\View\TwigView`. See the example below.
 
 The template file will be automatically set to `@controller/@action.@format.twig`.
 The `templateRootPaths` that are defined for extbase will be respected.
@@ -59,7 +59,7 @@ Given you have the following controller; you just have to set the `$defaultViewO
 class MyFantasticalController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
     // setting the default view object class to TwigView will enable the Twig templates
-    protected $defaultViewObjectName = \Carl\Typo3\Twig\Extbase\Mvc\View\TwigView::class;
+    protected $defaultViewObjectName = \Cvc\Typo3\CvcTwig\Extbase\Mvc\View\TwigView::class;
 
     public function someAwesomeAction()
     {
