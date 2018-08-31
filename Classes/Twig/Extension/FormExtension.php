@@ -25,6 +25,7 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory;
 use TYPO3\CMS\Form\Domain\Factory\FormFactoryInterface;
 use TYPO3\CMS\Form\Mvc\Persistence\FormPersistenceManagerInterface;
 
@@ -36,7 +37,7 @@ class FormExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('t3_form_render', [static::class, 'formRender'], ['needs_environment' => true]),
+            new TwigFunction('t3_form_render', [static::class, 'formRender'], ['needs_environment' => true, 'is_safe' => ['html']]),
         ];
     }
 
@@ -51,7 +52,7 @@ class FormExtension extends AbstractExtension
     public static function formRender(
         Environment $environment,
         string $persistenceIdentifier = null,
-        string $factoryClass = null,
+        string $factoryClass = ArrayFormFactory::class,
         string $prototypeName = null,
         array $overrideConfiguration = []
     ): string {
