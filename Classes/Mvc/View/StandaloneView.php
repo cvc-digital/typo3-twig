@@ -21,6 +21,7 @@ namespace Cvc\Typo3\CvcTwig\Mvc\View;
 use Cvc\Typo3\CvcTwig\Twig\Cache\Typo3Cache;
 use Cvc\Typo3\CvcTwig\Twig\Environment;
 use Cvc\Typo3\CvcTwig\Twig\Extension\ExtbaseDebugExtension;
+use Cvc\Typo3\CvcTwig\Twig\Extension\FormExtension;
 use Cvc\Typo3\CvcTwig\Twig\Extension\HtmlFormatExtension;
 use Cvc\Typo3\CvcTwig\Twig\Extension\ImageExtension;
 use Cvc\Typo3\CvcTwig\Twig\Extension\TranslationExtension;
@@ -66,10 +67,11 @@ class StandaloneView
      */
     protected $extensions = [
         ExtbaseDebugExtension::class,
+        FormExtension::class,
         HtmlFormatExtension::class,
-        UriExtension::class,
         ImageExtension::class,
         TranslationExtension::class,
+        UriExtension::class,
     ];
 
     /**
