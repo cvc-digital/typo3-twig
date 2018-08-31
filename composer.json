@@ -34,7 +34,8 @@
         "nimut/testing-framework": "^3.0.2||^4.0",
         "phpunit/phpunit": "^6.0",
         "friendsofphp/php-cs-fixer": "^2.3",
-        "phpstan/phpstan": "^0.10.3"
+        "phpstan/phpstan": "^0.10.3",
+        "typo3/cms-form": "^8.7||^9.0"
     },
     "conflict": {
         "comwrap/typo3-twig_for_typo3": "*",
