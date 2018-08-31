@@ -82,7 +82,7 @@ class TypoScriptExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('t3_cobject', [$this, 'renderCObject'], ['needs_environment' => true, 'is_safe' => ['html']]),
+            new TwigFunction('t3_cobject', [$this, 'renderCObject'], ['is_safe' => ['html']]),
         ];
     }
 
