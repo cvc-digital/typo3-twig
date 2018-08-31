@@ -25,6 +25,7 @@ use Cvc\Typo3\CvcTwig\Twig\Extension\FormExtension;
 use Cvc\Typo3\CvcTwig\Twig\Extension\HtmlFormatExtension;
 use Cvc\Typo3\CvcTwig\Twig\Extension\ImageExtension;
 use Cvc\Typo3\CvcTwig\Twig\Extension\TranslationExtension;
+use Cvc\Typo3\CvcTwig\Twig\Extension\TypoScriptExtension;
 use Cvc\Typo3\CvcTwig\Twig\Extension\UriExtension;
 use Cvc\Typo3\CvcTwig\Twig\Loader\Typo3Loader;
 use Twig\Loader\ChainLoader;
@@ -71,6 +72,7 @@ class StandaloneView
         HtmlFormatExtension::class,
         ImageExtension::class,
         TranslationExtension::class,
+        TypoScriptExtension::class,
         UriExtension::class,
     ];
 
@@ -115,8 +117,9 @@ class StandaloneView
             $this->controllerContext
         );
 
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         foreach ($this->extensions as $extensionClass) {
-            $twigEnvironment->addExtension(GeneralUtility::makeInstance($extensionClass));
+            $twigEnvironment->addExtension($objectManager->get($extensionClass));
         }
 
         return $twigEnvironment->render($this->templateName, $this->variables);
