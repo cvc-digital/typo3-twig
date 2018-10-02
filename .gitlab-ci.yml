@@ -77,9 +77,9 @@ Functional Tests (8.7):
         MYSQL_DATABASE: typo3
         TYPO3_VERSION: "8.7"
 
-Functional Tests (9.3):
+Functional Tests (9.5):
     <<: *functional_tests
     variables:
         MYSQL_ROOT_PASSWORD: root
         MYSQL_DATABASE: typo3
-        TYPO3_VERSION: "9.3"
+        TYPO3_VERSION: "9.5"
