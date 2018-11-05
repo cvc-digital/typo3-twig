@@ -1,7 +1,4 @@
-<center>
-<img src="ext_icon.svg" alt="cvc_twig extension logo"/>
-<h1>Twig Extension for TYPO3</h1>
-</center>
+# Twig Extension for TYPO3</h1>
 
 This TYPO3 extensions allows you to use the fabulous Twig template engine within your TYPO3 project.
 
