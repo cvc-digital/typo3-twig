@@ -1,0 +1,10 @@
+includes:
+    - vendor/saschaegerer/phpstan-typo3/extension.neon
+
+parameters:
+    level: 3
+    bootstrap: phpstan-bootstrap.php
+    fileExtensions:
+        - php
+    paths:
+        - Classes

@@ -89,7 +89,7 @@ class Typo3Loader implements LoaderInterface
      *
      * @return false|string The template name or false
      */
-    private function findTemplate(string $name, bool $throw = true): string
+    private function findTemplate(string $name, bool $throw = true)
     {
         if (isset($this->cache[$name])) {
             return $this->cache[$name];

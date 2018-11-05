@@ -47,7 +47,7 @@ PHPStan:
     stage: static_analysis
     script:
         - composer install --prefer-dist --no-progress
-        - php vendor/bin/phpstan analyse Classes ./*.php
+        - php vendor/bin/phpstan analyse
 
 .Functional Tests Template: &functional_tests
     stage: test

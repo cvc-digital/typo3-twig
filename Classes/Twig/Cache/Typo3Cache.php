@@ -39,7 +39,13 @@ class Typo3Cache implements CacheInterface
     public function __construct()
     {
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-        $this->phpFrontend = $cacheManager->getCache('twig_templates');
+
+        $phpFrontend = $cacheManager->getCache('twig_templates');
+        if (!$phpFrontend instanceof PhpFrontend) {
+            throw new \RuntimeException('Cannot use '.get_class($phpFrontend).' to cache twig templates.');
+        }
+
+        $this->phpFrontend = $phpFrontend;
         $this->timestampCache = $cacheManager->getCache('twig_timestamps');
     }
 
