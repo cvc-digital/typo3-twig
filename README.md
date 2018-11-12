@@ -40,97 +40,9 @@ page.10 {
 }
 ```
 
-### Render templates in an Extbase controller
-
-If you want to use twig from within your controller, you just have to switch the `$defaultViewObjectName` to
-`\Cvc\Typo3\CvcTwig\Extbase\Mvc\View\TwigView`. See the example below.
-
-The template file will be automatically set to `@controller/@action.@format.twig`.
-The `templateRootPaths` that are defined for extbase will be respected.
-You should not forget to configure those using TypoScript.
-
-Given you have the following controller; you just have to set the `$defaultViewObjectName` to the TwigView class.
-
-```php
-<?php
-
-// my_extension/Classes/Controller/MyFantasticalController.php
-
-class MyFantasticalController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
-{
-    // setting the default view object class to TwigView will enable the Twig templates
-    protected $defaultViewObjectName = \Cvc\Typo3\CvcTwig\Extbase\Mvc\View\TwigView::class;
-
-    public function someAwesomeAction()
-    {
-        // assign the variables as usual
-        $this->view->assign('foo', 'BAZ!');
-    }
-}
-```
-
-The `templateRootPaths` are configured using TypoScript:
-
-```typo3_typoscript
-plugin.tx_my_extension {
-    view {
-        templateRootPaths.0 = EXT:my_extension/Resources/Private/Templates/
-    }
-}
-```
-
-The Twig template has to be paced in `my_extension/Resources/Private/Templates/`
-and has to be named `MyFantastical/someAwesome.html.twig`.
-
-```twig
-{# my_extension/Resources/Private/Templates/MyFantastical/someAwesome.html.twig #}
-
-Foo: {{ foo }}
-```
-
 ## Documentation
 
-Filters and functions that are provided by this extension are explained here.
-Of course you can also use the build in filters, functions, tags, tests and operators.
-You can find them in the [official reference documentation](https://twig.symfony.com/doc/2.x/#reference).
-
-### Functions
-
-#### dump
-
-```twig
-{{ dump(var1, var2, ...) }}
-```
-
-The `dump()` functions prints the contents of a variable. This is useful for debugging. Please ensure that your frontend
-is in debug mode because otherwise the function does not print anything. Internally `DebuggerUtility::var_dump()` is used.
-
-```twig
-{# print a single variable #}
-{{ dump(foo) }}
-
-{# print multiple variables #}
-{{ dump(foo, bar, baz) }}
-
-{# print all variables #}
-{{ dump() }}
-```
-
-### Filters
-
-#### t3_html
-
-```twig
-{{ html | t3_html(parseFuncTSPath = 'lib.parseFunc_RTE') }}
-```
-
-`html`
-: **type**: `string`
-
-`parseFuncTSPath`
-: **type**: `string`, **default**: `lib.parseFunc_RTE`
-
-Parses HTML that was created with an rich text editor.
+The full documentation is available here: [cvc_twig Documentation](https://docs.typo3.org/typo3cms/extensions/cvc_twig/).
 
 ## Alternatives
 
