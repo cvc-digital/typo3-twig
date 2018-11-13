@@ -42,7 +42,7 @@ class ImageExtension extends AbstractExtension
         string $src = null,
         bool $treatIdAsReference = false,
         $image = null,
-        $crop = false,
+        string $crop = null,
         string $cropVariant = 'default',
         string $width = '',
         string $height = '',

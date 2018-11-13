@@ -1,6 +1,11 @@
+.. include:: ../../Includes.txt
+
 =======
 Filters
 =======
+
+.. contents:: :local:
+   :depth: 1
 
 t3_html
 =======
@@ -11,10 +16,49 @@ t3_html
 
 Parses HTML that was created with an rich text editor.
 
-arguments
+Arguments
+---------
+
+.. rst-class:: dl-parameters
 
 html
-    type: :code:`string`
+    :aspect:`Type:` :code:`string`
+
+    The HTML that should be processed.
+    Normally this is the content that is stored in the database.
 
 parseFuncTSPath
-    type: :code:`string`, default: :code:`lib.parseFunc_RTE`
+    :aspect:`Type:` :code:`string`
+    :sep:`|` :aspect:`Default:` :code:`lib.parseFunc_RTE`
+
+    Here you can define which setup should be used to transform the HTML content.
+
+t3_trans
+========
+
+.. code-block:: twig
+
+    {{ 'key' | t3_trans(arguments = [], extensionName = null) }}
+
+Translates the given translation key into the active language.
+
+Arguments
+---------
+
+.. rst-class:: dl-parameters
+
+key
+    :aspect:`Type:` :code:`string`
+
+    The key for the translation.
+
+arguments
+    :aspect:`Type:` :code:`array`
+    :sep:`|` :aspect:`Default:` :code:`[]`
+
+    The arguments that are replaced while translating.
+
+extensionName
+    :aspect:`Type:` :code:`?string`
+
+    The name of the extension where the translations are located.

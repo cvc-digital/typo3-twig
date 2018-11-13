@@ -29,20 +29,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 class TypoScriptExtension extends AbstractExtension
 {
     /**
-     * Disable escaping of child nodes' output.
-     *
-     * @var bool
-     */
-    protected $escapeChildren = false;
-
-    /**
-     * Disable escaping of this node's output.
-     *
-     * @var bool
-     */
-    protected $escapeOutput = false;
-
-    /**
      * @var array
      */
     protected $typoScriptSetup;
@@ -86,7 +72,7 @@ class TypoScriptExtension extends AbstractExtension
         ];
     }
 
-    public function renderCObject(string $typoscriptObjectPath, $data = null, string $currentValueKey = null, string $table = null)
+    public function renderCObject(string $typoScriptObjectPath, $data = null, string $currentValueKey = null, string $table = null)
     {
         if (TYPO3_MODE === 'BE') {
             $this->simulateFrontendEnvironment();
@@ -104,12 +90,12 @@ class TypoScriptExtension extends AbstractExtension
         } elseif ($currentValueKey !== null && isset($data[$currentValueKey])) {
             $this->contentObjectRenderer->setCurrentVal($data[$currentValueKey]);
         }
-        $pathSegments = GeneralUtility::trimExplode('.', $typoscriptObjectPath);
+        $pathSegments = GeneralUtility::trimExplode('.', $typoScriptObjectPath);
         $lastSegment = array_pop($pathSegments);
         $setup = $this->typoScriptSetup;
         foreach ($pathSegments as $segment) {
             if (!array_key_exists(($segment.'.'), $setup)) {
-                throw new \RuntimeException('TypoScript object path "'.htmlspecialchars($typoscriptObjectPath).'" does not exist', 1253191023);
+                throw new \RuntimeException('TypoScript object path "'.htmlspecialchars($typoScriptObjectPath).'" does not exist', 1253191023);
             }
             $setup = $setup[$segment.'.'];
         }
