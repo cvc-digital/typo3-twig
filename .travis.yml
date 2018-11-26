@@ -27,7 +27,7 @@ install:
     - export typo3DatabasePassword=
 
 script:
-    - find '.Build/Web/typo3conf/ext/twig/Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml {}';
+    - find '.Build/Web/typo3conf/ext/cvc_twig/Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml {}';
 
 jobs:
     include:
