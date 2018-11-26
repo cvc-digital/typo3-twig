@@ -66,6 +66,6 @@ developed close to the Fluid implementation.
             <br>
             <a href="https://github.com/markuspoerschke">Markus Poerschke</a>
             <p>Developer</p>
-      </td>
+        </td>
     </tr>
 </table>
