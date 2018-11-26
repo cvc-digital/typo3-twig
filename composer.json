@@ -49,14 +49,14 @@
     },
     "scripts": {
         "post-autoload-dump": [
-            "mkdir -p .Build/Web/typo3conf/ext/",
-            "[ -L .Build/Web/typo3conf/ext/twig ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/twig"
+            "mkdir -p .Build/public/typo3conf/ext/",
+            "[ -L .Build/public/typo3conf/ext/twig ] || ln -snvf ../../../../. .Build/public/typo3conf/ext/twig"
         ]
     },
     "extra": {
         "typo3/cms": {
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
-            "web-dir": ".Build/Web"
+            "web-dir": ".Build/public"
         }
     }
 }
