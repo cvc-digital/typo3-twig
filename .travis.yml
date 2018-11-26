@@ -10,6 +10,7 @@ cache:
         - $HOME/.composer/cache
 
 stages:
+    - static_analysis
     - test
 
 php:
@@ -18,24 +19,36 @@ php:
 before_install:
     - phpenv config-rm xdebug.ini
 
-install:
-    - composer require typo3/minimal="$TYPO3_VERSION"
-    - export TYPO3_PATH_ROOT=$PWD/.Build/public
-    - export typo3DatabaseName=typo3
-    - export typo3DatabaseHost=localhost
-    - export typo3DatabaseUsername=root
-    - export typo3DatabasePassword=
+.Functional Tests Template: &functional_tests
+    stage: test
+    install:
+        - composer require typo3/minimal="$TYPO3_VERSION"
+        - export TYPO3_PATH_ROOT=$PWD/.Build/public
+        - export typo3DatabaseName=typo3
+        - export typo3DatabaseHost=localhost
+        - export typo3DatabaseUsername=root
+        - export typo3DatabasePassword=
+    script:
+        - find '.Build/public/typo3conf/ext/cvc_twig/Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml {}';
 
-script:
-    - find '.Build/public/typo3conf/ext/cvc_twig/Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml {}';
+.Lint PHP: &lint_php
+    stage: static_analysis
+    script:
+        - find . -name \*.php ! -path "./.Build/*" ! -path "./vendor/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
 
 jobs:
     include:
         -
-            stage: test
+            <<: *lint_php
+            name: Lint PHP
+            php: 7.2
+        -
+            <<: *functional_tests
+            name: Functional Tests (TYPO3 9.5)
             php: 7.2
             env: TYPO3_VERSION=^9.5
         -
-            stage: test
+            <<: *functional_tests
+            name: Functional Tests (TYPO3 9.5)
             php: 7.2
             env: TYPO3_VERSION=^8.7
