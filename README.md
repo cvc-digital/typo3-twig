@@ -1,4 +1,9 @@
-# Twig Extension for TYPO3</h1>
+# Twig Extension for TYPO3
+
+[![pipeline status](https://gitlab.com/cvc-digital/typo3-twig/badges/master/pipeline.svg)](https://gitlab.com/cvc-digital/typo3-twig/commits/master)
+[![Latest Stable Version](https://poser.pugx.org/cvc/typo3-twig/v/stable)](https://packagist.org/packages/cvc/typo3-twig)
+[![License](https://poser.pugx.org/cvc/typo3-twig/license)](https://packagist.org/packages/cvc/typo3-twig)
+
 
 This TYPO3 extensions allows you to use the fabulous Twig template engine within your TYPO3 project.
 
