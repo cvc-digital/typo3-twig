@@ -22,7 +22,7 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 class TwigViewTest extends FunctionalTestCase
 {
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/twig',
+        'typo3conf/ext/cvc_twig',
     ];
 
     public function test_twig_view_renders_template()
