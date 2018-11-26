@@ -23,6 +23,7 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
@@ -113,7 +114,8 @@ class UriExtension extends AbstractExtension
 
     public static function modelUri(DomainObjectInterface $model): ?string
     {
-        $dataMapper = GeneralUtility::makeInstance(DataMapper::class);
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $dataMapper = $objectManager->get(DataMapper::class);
 
         $table = $dataMapper->convertClassNameToTableName(get_class($model));
         $recordUid = $model->getUid();
