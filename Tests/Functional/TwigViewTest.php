@@ -22,14 +22,14 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 class TwigViewTest extends FunctionalTestCase
 {
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/twig',
+        'typo3conf/ext/cvc_twig',
     ];
 
     public function test_twig_view_renders_template()
     {
         $twigView = new StandaloneView();
         $twigView->assign('foo', 'bar');
-        $twigView->setTemplateRootPaths(['EXT:twig/Resources/Private/TwigTemplates/']);
+        $twigView->setTemplateRootPaths(['EXT:cvc_twig/Resources/Private/TwigTemplates/']);
         $twigView->setTemplateName('example.html.twig');
 
         $renderedView = $twigView->render();
