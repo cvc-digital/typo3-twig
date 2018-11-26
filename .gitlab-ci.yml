@@ -68,7 +68,7 @@ PHPStan:
 #    stage: test
 #    script:
 #        - composer require typo3/minimal="$TYPO3_VERSION"
-#        - vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/UnitTests.xml .Build/Web/typo3conf/ext/twig/Tests/Unit/;
+#        - vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/UnitTests.xml .Build/public/typo3conf/ext/cvc_twig/Tests/Unit/;
 
 Functional Tests (8.7):
     <<: *functional_tests

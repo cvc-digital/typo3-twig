@@ -50,7 +50,7 @@
     "scripts": {
         "post-autoload-dump": [
             "mkdir -p .Build/public/typo3conf/ext/",
-            "[ -L .Build/public/typo3conf/ext/twig ] || ln -snvf ../../../../. .Build/public/typo3conf/ext/twig"
+            "[ -L .Build/public/typo3conf/ext/cvc_twig ] || ln -snvf ../../../../. .Build/public/typo3conf/ext/cvc_twig"
         ]
     },
     "extra": {
