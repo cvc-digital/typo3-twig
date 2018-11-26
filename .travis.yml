@@ -1,6 +1,6 @@
 language: php
 
-addon:
+addons:
     apt:
         packages:
             - parallel
