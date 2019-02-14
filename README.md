@@ -30,6 +30,8 @@ are some features missing that you are probably used by Fluid.
 ### Render templates in TypoScript
 
 To render a Twig template you can use the `TWIGTEMPLATE` content object.
+You can use it similar to the way, Fluid was used before.
+The `variables` are rendered as content objects and data processing is also possible.
 
 ```typo3_typoscript
 page.10 = TWIGTEMPLATE
@@ -41,6 +43,12 @@ page.10 {
     }
     templateRootPaths {
         10 = EXT:twig/Resources/Private/TwigTemplates
+    }
+    dataProcessing {
+        10 = TYPO3\CMS\Frontend\DataProcessing\FilesProcessor
+        10 {
+            references.fieldName = image
+        }
     }
 }
 ```
@@ -55,12 +63,12 @@ This extension is not the first extension that supports rendering Twig templates
 extension, because other extensions were either not maintained anymore, they carried to much overhead or they were not
 developed close to the Fluid implementation.
 
-| Extension Name                                                           | 8.7 LTS | 9.5 LTS | Extbase Support | Install via Extension Manager | Installation via Composer | Comment                                     |
-|:-------------------------------------------------------------------------|:-------:|:-------:|:---------------:|:-----------------------------:|:-------------------------:|:--------------------------------------------|
-| This extension                                                           |    ✓    |    ✓    |        ✓        |               -               |             ✓             | -                                           |
-| [Twig for TYPO3](https://extensions.typo3.org/extension/twig_for_typo3/) |    ✓    |    -    |        -        |               -               |             ✓             | supports only single template folder        |
-| [T3twig](https://extensions.typo3.org/extension/t3twig/)                 |    ✓    |    -    |        -        |               -               |             ✓             | requires alternative non-core MVC framework |
-| [Twypo](https://extensions.typo3.org/extension/twypo/)                   |    -    |    -    |        -        |               ✓               |             -             | unmaintained                                |
+| Extension Name                                                           | 8.7 LTS | 9.5 LTS | Extbase Support | Build-in functions and filters | Data Processing | Install via Extension Manager | Installation via Composer | Comment                                     |
+|:-------------------------------------------------------------------------|:-------:|:-------:|:---------------:|:------------------------------:|:---------------:|:-----------------------------:|:-------------------------:|:--------------------------------------------|
+| This extension                                                           |    ✓    |    ✓    |        ✓        |               ✓                |        ✓        |               -               |             ✓             | -                                           |
+| [Twig for TYPO3](https://extensions.typo3.org/extension/twig_for_typo3/) |    ✓    |    -    |        -        |               -                |        -        |               -               |             ✓             | supports only single template folder        |
+| [T3twig](https://extensions.typo3.org/extension/t3twig/)                 |    ✓    |    -    |        -        |               ✓                |        -        |               -               |             ✓             | requires alternative non-core MVC framework |
+| [Twypo](https://extensions.typo3.org/extension/twypo/)                   |    -    |    -    |        -        |               -                |        -        |               ✓               |             -             | unmaintained                                |
 
 ## Development Team
 
