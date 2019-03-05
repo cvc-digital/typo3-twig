@@ -41,7 +41,7 @@ before_install:
     install:
         - npm install -g editorconfig-checker
     script:
-        - editorconfig-checker --exclude-pattern './LICENSE' --exclude-pattern './Documentation/**'
+        - editorconfig-checker -e '(LICENSE|^Documentation/)'
 
 .PHPStan: &php_stan
     stage: static_analysis

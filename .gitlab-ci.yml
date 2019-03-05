@@ -36,7 +36,7 @@ Lint Editorconfig:
     before_script:
         - npm install -g editorconfig-checker
     script:
-        - editorconfig-checker --exclude-pattern './LICENSE' --exclude-pattern './Documentation/**'
+        - editorconfig-checker -e '(LICENSE|^Documentation/)'
 
 Lint PHP:
     stage: static_analysis
