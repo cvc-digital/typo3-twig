@@ -13,10 +13,6 @@ stages:
     - static_analysis
     - test
 
-php:
-    - 7.2
-    - 7.3
-
 before_install:
     - phpenv config-rm xdebug.ini
 
@@ -31,7 +27,6 @@ before_install:
         - export typo3DatabasePassword=
     script:
         - find '.Build/public/typo3conf/ext/cvc_twig/Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml {}';
-
 .Lint PHP: &lint_php
     stage: static_analysis
     script:
