@@ -15,6 +15,7 @@ stages:
 
 php:
     - 7.2
+    - 7.3
 
 before_install:
     - phpenv config-rm xdebug.ini
@@ -54,23 +55,36 @@ jobs:
     include:
         -
             <<: *lint_php
-            name: Lint PHP
+            name: Lint PHP 7.3
+            php: 7.3
+        -
+            <<: *lint_php
+            name: Lint PHP 7.2
             php: 7.2
         -
             <<: *editor_config
             name: Lint Editorconfig
-            php: 7.2
+            php: 7.3
         -
             <<: *php_stan
-            name: PHPStan
+            name: PHPStan (PHP 7.3)
+            php: 7.3
+        -
+            <<: *php_stan
+            name: PHPStan (PHP 7.2)
             php: 7.2
         -
             <<: *functional_tests
-            name: Functional Tests (TYPO3 9.5)
+            name: Functional Tests (TYPO3 9.5, PHP 7.3)
+            php: 7.3
+            env: TYPO3_VERSION=^9.5
+        -
+            <<: *functional_tests
+            name: Functional Tests (TYPO3 9.5, PHP 7.2)
             php: 7.2
             env: TYPO3_VERSION=^9.5
         -
             <<: *functional_tests
-            name: Functional Tests (TYPO3 9.5)
+            name: Functional Tests (TYPO3 8.7, PHP 7.2)
             php: 7.2
             env: TYPO3_VERSION=^8.7
