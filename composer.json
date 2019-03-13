@@ -4,7 +4,7 @@
     "homepage": "https://cvc.digital",
     "type": "typo3-cms-extension",
     "license": "GPL-3.0+",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "authors": [
         {
             "name": "Markus Poerschke",
