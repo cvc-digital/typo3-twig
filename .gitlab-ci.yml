@@ -1,4 +1,4 @@
-image: php:7.2
+image: php:7.3
 
 variables:
     TYPO3_VERSION: "8.7"
@@ -8,7 +8,7 @@ before_script:
     - apt-get update -yqq && apt-get install git -yqq
 
     # Install zip (needed by composer)
-    - apt-get update -yqq && apt-get install zlib1g-dev -yqq
+    - apt-get update -yqq && apt-get install zlib1g-dev libzip-dev -yqq
     - docker-php-ext-install zip
 
     # Install composer
@@ -70,16 +70,25 @@ PHPStan:
 #        - composer require typo3/minimal="$TYPO3_VERSION"
 #        - vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/UnitTests.xml .Build/public/typo3conf/ext/cvc_twig/Tests/Unit/;
 
-Functional Tests (8.7):
-    <<: *functional_tests
-    variables:
-        MYSQL_ROOT_PASSWORD: root
-        MYSQL_DATABASE: typo3
-        TYPO3_VERSION: "8.7"
-
-Functional Tests (9.5):
+Functional Tests (TYPO3 9.5, PHP 7.3):
     <<: *functional_tests
     variables:
         MYSQL_ROOT_PASSWORD: root
         MYSQL_DATABASE: typo3
         TYPO3_VERSION: "9.5"
+
+Functional Tests (9.5, PHP 7.2):
+    <<: *functional_tests
+    image: php:7.2
+    variables:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: typo3
+        TYPO3_VERSION: "9.5"
+
+Functional Tests (TYPO3 8.7, PHP 7.2):
+    <<: *functional_tests
+    image: php:7.2
+    variables:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: typo3
+        TYPO3_VERSION: "8.7"
