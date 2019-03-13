@@ -61,14 +61,19 @@ The full documentation is available here: [cvc_twig Documentation](https://docs.
 
 This extension is not the first extension that supports rendering Twig templates. We decided to create our own
 extension, because other extensions were either not maintained anymore, they carried to much overhead or they were not
-developed close to the Fluid implementation.
+developed close to the Fluid reference implementation.
 
-| Extension Name                                                           | 8.7 LTS | 9.5 LTS | Extbase Support | Build-in functions and filters | Data Processing | Install via Extension Manager | Installation via Composer | Comment                                     |
-|:-------------------------------------------------------------------------|:-------:|:-------:|:---------------:|:------------------------------:|:---------------:|:-----------------------------:|:-------------------------:|:--------------------------------------------|
-| This extension                                                           |    ✓    |    ✓    |        ✓        |               ✓                |        ✓        |               -               |             ✓             | -                                           |
-| [Twig for TYPO3](https://extensions.typo3.org/extension/twig_for_typo3/) |    ✓    |    -    |        -        |               -                |        -        |               -               |             ✓             | supports only single template folder        |
-| [T3twig](https://extensions.typo3.org/extension/t3twig/)                 |    ✓    |    -    |        -        |               ✓                |        -        |               -               |             ✓             | requires alternative non-core MVC framework |
-| [Twypo](https://extensions.typo3.org/extension/twypo/)                   |    -    |    -    |        -        |               -                |        -        |               ✓               |             -             | unmaintained                                |
+In the table below you can find competitive extensions that advertise to provide Twig integration:
+
+|      | This extension | [Twig for TYPO3](https://extensions.typo3.org/extension/twig_for_typo3/) | [T3twig](https://extensions.typo3.org/extension/t3twig/) | [Twypo](https://extensions.typo3.org/extension/twypo/) |
+|:----|:--------------:|:------------------------------------------------------------------------:|:--------------------------------------------------------:|:------------------------------------------------------:|
+| Supports TYPO3 v8.7 LTS | ✅ | ✅ | ✅ | ❌ |
+| Supports TYPO3 v9.5 LTS | ✅ | ❌ | ❌ | ❌ |
+| Extbase support         | ✅ | ❌ | ❌ | ❌ |
+| Build-in functions and filters | ✅ | ❌ | ✅ | ❌ |
+| [Data processing](https://typo3worx.eu/2018/05/dataprocessing-fluid-templates/) | ✅ | ❌ | ❌ | ❌ |
+| Installable via Composer | ✅ | ✅ | ✅ | ❌ |
+| Build status | [![Build Status](https://travis-ci.org/cvc-digital/typo3-twig.svg?branch=master)](https://travis-ci.org/cvc-digital/typo3-twig) | [![Build Status](https://travis-ci.org/comwrap/typo3-twig_for_typo3.svg?branch=master)](https://travis-ci.org/comwrap/typo3-twig_for_typo3) | n/a | n/a |
 
 ## Development Team
 
