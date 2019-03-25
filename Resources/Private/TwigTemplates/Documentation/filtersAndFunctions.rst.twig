@@ -15,41 +15,42 @@
 
 
 .. code-block:: twig
-{% for line in description.defaultExample|split("\n") %}
-   {{ line | raw }}
-{% endfor %}
+
+   {{ description.defaultExample | replace({"\n": "\n   "}) | raw }}
+
 
 {% if description.summary %}
 
-{{ description.summary }}
+{{ description.summary | raw }}
 {% endif %}
 {% if description.hasDescriptionText %}
 
-{{ description.descriptionText }}
-{% endif %}
+{{ description.descriptionText | raw }}
 
+{% endif %}
 {% for example in description.examples %}
 .. code-block:: twig
-{% for line in example.sourceCode|split("\n") %}
-   {{ line | raw }}
-{% endfor %}
-{% endfor %}
-{% if description.parameters %}
 
+   {{ example.sourceCode | replace({"\n": "\n   "}) | raw }}
+
+
+{% endfor %}
+
+{% if description.parameters %}
 Arguments
 ---------
 
 .. rst-class:: dl-parameters
 {% for parameter in description.parameters %}
 
-{{ parameter.name }}
+{{ parameter.name | raw }}
    :aspect:`Type:` :code:`{{ parameter.type | default('mixed') }}`
 {% if parameter.hasDefaultValue %}
    :sep:`|` :aspect:`Default:` :code:`{{ parameter.defaultValue | raw }}`
 {% endif %}
 {% if parameter.summary %}
 
-   {{ parameter.summary }}
+   {{ parameter.summary | replace({"\n": "\n   "}) | raw }}
 {% endif %}
 {% endfor %}
 {% endif %}
