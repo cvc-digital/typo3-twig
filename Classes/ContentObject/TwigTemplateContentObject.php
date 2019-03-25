@@ -121,6 +121,10 @@ class TwigTemplateContentObject extends AbstractContentObject
         $variables = $this->contentDataProcessor->process($this->cObj, $conf, $variables);
 
         $view = $this->standaloneViewFactory->create();
+        $settings = $this->getSettings($conf);
+        if ($settings) {
+            $view->assign('settings', $settings);
+        }
         $view->setTemplateName($templateName);
         $view->setTemplateRootPaths($templateRootPaths);
         $view->setNamespaces($namespaces);
@@ -181,5 +185,25 @@ class TwigTemplateContentObject extends AbstractContentObject
         $variables['current'] = $this->cObj->data[$this->cObj->currentValKey];
 
         return $variables;
+    }
+
+    /**
+     * Returns any TypoScript settings.
+     *
+     * @param array $conf Configuration
+     *
+     * @return array|null
+     */
+    private function getSettings(array $conf): ?array
+    {
+        if (isset($conf['settings.'])) {
+            /** @var TypoScriptService $typoScriptService */
+            $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
+            $settings = $typoScriptService->convertTypoScriptArrayToPlainArray($conf['settings.']);
+
+            return $settings;
+        }
+
+        return null;
     }
 }
