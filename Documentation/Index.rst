@@ -47,5 +47,6 @@ Table Of Content
        Chapters/Installation/Index
        Chapters/Getting-Started/Index
        Chapters/Twig/Index
+       Chapters/ContentObject/Index
        Chapters/Twig-Functions/Index
        Chapters/Twig-Filters/Index
