@@ -55,6 +55,11 @@ class StandaloneView
     protected $templateRootPaths = [];
 
     /**
+     * @var array[]
+     */
+    protected $namespaces = [];
+
+    /**
      * @var array
      *
      * @see assign()
@@ -92,9 +97,7 @@ class StandaloneView
      */
     public function render()
     {
-        $templatePaths = array_map(function (string $path) {
-            return GeneralUtility::getFileAbsFileName($path);
-        }, $this->templateRootPaths);
+        $templatePaths = array_map([GeneralUtility::class, 'getFileAbsFileName'], $this->templateRootPaths);
 
         // reverse order of template paths since twig will match first path first
         // to match the fluid behavior and to make it easier to extend, we want to match last path first
@@ -105,9 +108,16 @@ class StandaloneView
             $this->createControllerContext();
         }
 
+        $fileSystemLoader = new FilesystemLoader($templatePaths);
+        foreach ($this->namespaces as $namespace => $namespacedPaths) {
+            $namespacedPaths = array_reverse($namespacedPaths);
+            $namespacedPaths = array_map([GeneralUtility::class, 'getFileAbsFileName'], $namespacedPaths);
+            $fileSystemLoader->setPaths($namespacedPaths, $namespace);
+        }
+
         $twigEnvironment = new Environment(
             new ChainLoader([
-                new FilesystemLoader($templatePaths),
+                $fileSystemLoader,
                 new Typo3Loader(),
             ]),
             [
@@ -175,6 +185,16 @@ class StandaloneView
     public function setTemplateRootPaths(array $templateRootPaths)
     {
         $this->templateRootPaths = $templateRootPaths;
+    }
+
+    /**
+     * Sets the Twig namespaces.
+     *
+     * @param array $namespaces
+     */
+    public function setNamespaces(array $namespaces): void
+    {
+        $this->namespaces = $namespaces;
     }
 
     /**
