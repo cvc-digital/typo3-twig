@@ -57,3 +57,27 @@ dataProcessing
         }
 
     The build-in data processors are documented `here <https://docs.typo3.org/typo3cms/TyposcriptReference/ContentObjects/Fluidtemplate/Index.html#dataprocessing>`__.
+
+namespaces
+    :aspect:`Type` :code:`array`
+
+    The file loader shipped with Twig allows to register namespaced folders.
+    A namespace can be referenced with :code:`@namespace` followed by the path to the template.
+
+    **Example:**
+
+    .. code-block:: typoscript
+
+        page.10 = TWIGTEMPLATE
+        page.10 {
+            templateName = @myComponents/text_and_media.html.twig
+            namespaces {
+                myComponents {
+                    10 = EXT:example_site/Private/frontend/src/components
+                }
+            }
+        }
+
+    The given code example defines a namespace called :code:`myComponents`.
+    A template that is located in :code:`EXT:example_site/Private/frontend/src/components` can be referenced using the namespace.
+    The template name will looks like :code:`@myComponents/text_and_media.html.twig`.
