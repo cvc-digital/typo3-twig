@@ -78,6 +78,11 @@ class TwigTemplateContentObject extends AbstractContentObject
      *     templateRootPaths {
      *         10 = EXT:twig/Resources/Private/TwigTemplates
      *     }
+     *     namespaces {
+     *         components {
+     *             10 = EXT:example_site/Private/frontend/src/components
+     *         }
+     *     }
      * }
      *
      * @param array $conf Array of TypoScript properties
@@ -96,12 +101,20 @@ class TwigTemplateContentObject extends AbstractContentObject
             ? $this->applyStandardWrapToTwigPaths($conf['templateRootPaths.'])
             : [];
 
+        $namespaces = [];
+        if (isset($conf['namespaces.'])) {
+            foreach ($conf['namespaces.'] as $namespace => $paths) {
+                $namespaces[rtrim($namespace, '.')] = $paths;
+            }
+        }
+
         $variables = $this->getContentObjectVariables($conf);
         $variables = $this->contentDataProcessor->process($this->cObj, $conf, $variables);
 
         $view = GeneralUtility::makeInstance(StandaloneView::class);
         $view->setTemplateName($templateName);
         $view->setTemplateRootPaths($templateRootPaths);
+        $view->setNamespaces($namespaces);
         $view->assignMultiple($variables);
 
         return $view->render();
