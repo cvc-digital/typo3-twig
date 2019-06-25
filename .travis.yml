@@ -18,6 +18,8 @@ before_install:
 
 .Functional Tests Template: &functional_tests
     stage: test
+    services:
+        - mysql
     install:
         - composer require typo3/minimal="$TYPO3_VERSION"
         - export TYPO3_PATH_ROOT=$PWD/.Build/public
