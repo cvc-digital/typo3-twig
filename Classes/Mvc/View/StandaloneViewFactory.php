@@ -16,23 +16,25 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Cvc\Typo3\CvcTwig\Twig\Extension;
+namespace Cvc\Typo3\CvcTwig\Mvc\View;
 
-use Cvc\Typo3\CvcTwig\Utility\Html;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
+use Twig\Environment;
+use TYPO3\CMS\Core\SingletonInterface;
 
-/**
- * @internal
- */
-class HtmlFormatExtension extends AbstractExtension
+final class StandaloneViewFactory implements SingletonInterface
 {
-    public function getFilters()
+    /**
+     * @var Environment
+     */
+    private $twigEnvironment;
+
+    public function __construct(Environment $twigEnvironment)
     {
-        return [
-            new TwigFilter('t3_html', [Html::class, 'format'], [
-                'is_safe' => ['html'],
-            ]),
-        ];
+        $this->twigEnvironment = $twigEnvironment;
+    }
+
+    public function create(): StandaloneView
+    {
+        return new StandaloneView($this->twigEnvironment);
     }
 }

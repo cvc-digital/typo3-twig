@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2018 CARL von CHIARI GmbH
+ * Copyright (C) 2019 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,12 +19,13 @@
 namespace Cvc\Typo3\CvcTwig\Twig\Cache;
 
 use Twig\Cache\CacheInterface;
-use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class Typo3Cache implements CacheInterface
+/**
+ * @internal
+ */
+final class Typo3Cache implements CacheInterface
 {
     /**
      * @var PhpFrontend
@@ -36,17 +37,10 @@ class Typo3Cache implements CacheInterface
      */
     private $timestampCache;
 
-    public function __construct()
+    public function __construct(PhpFrontend $phpFrontend, FrontendInterface $timestampCache)
     {
-        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-
-        $phpFrontend = $cacheManager->getCache('twig_templates');
-        if (!$phpFrontend instanceof PhpFrontend) {
-            throw new \RuntimeException('Cannot use '.get_class($phpFrontend).' to cache twig templates.');
-        }
-
         $this->phpFrontend = $phpFrontend;
-        $this->timestampCache = $cacheManager->getCache('twig_timestamps');
+        $this->timestampCache = $timestampCache;
     }
 
     public function generateKey($name, $className)

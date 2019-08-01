@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2018 CARL von CHIARI GmbH
+ * Copyright (C) 2019 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,12 +16,13 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Cvc\Typo3\CvcTwig\Tests\Functional;
+namespace Cvc\Typo3\CvcTwig\Tests\Functional\Mvc\View;
 
-use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneView;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneViewFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-class TwigViewTest extends FunctionalTestCase
+class StandaloneViewTest extends FunctionalTestCase
 {
     protected $testExtensionsToLoad = [
         'typo3conf/ext/cvc_twig',
@@ -29,7 +30,9 @@ class TwigViewTest extends FunctionalTestCase
 
     public function test_twig_view_renders_template()
     {
-        $twigView = new StandaloneView();
+        $standaloneViewFactory = GeneralUtility::getContainer()->get(StandaloneViewFactory::class);
+        $twigView = $standaloneViewFactory->create();
+
         $twigView->assign('foo', 'bar');
         $twigView->setTemplateRootPaths(['EXT:cvc_twig/Resources/Private/TwigTemplates/']);
         $twigView->setTemplateName('example.html.twig');

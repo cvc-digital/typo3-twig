@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2018 CARL von CHIARI GmbH
+ * Copyright (C) 2019 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,4 +16,6 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-define('TYPO3_MODE', 'FE');
+$_EXTKEY = '';
+$EM_CONF = [];
+define('TYPO3_MODE', 'BE');

@@ -113,7 +113,6 @@ t3_uri_action
         pageUid = null,
         pageType = 0,
         noCache = false,
-        noCacheHash = false,
         section = '',
         format = '',
         linkAccessRestrictedPages = false,
@@ -160,10 +159,6 @@ pageType
     :sep:`|` :aspect:`Default:` :code:`0`
 
 noCache
-    :aspect:`Type:` :code:`bool`
-    :sep:`|` :aspect:`Default:` :code:`false`
-
-noCacheHash
     :aspect:`Type:` :code:`bool`
     :sep:`|` :aspect:`Default:` :code:`false`
 
@@ -273,24 +268,6 @@ maxHeight
     :aspect:`Type:` :code:`int`
     :sep:`|` :aspect:`Default:` :code:`0`
 
-t3_uri_model
-============
-
-.. code-block:: twig
-
-    {{ t3_uri_model(model) }}
-
-Generates a link for the given Extbase model.
-A `link handler <https://docs.typo3.org/typo3cms/extensions/core/latest/Changelog/8.6/Feature-79626-IntegrateRecordLinkHandler.html>`__ must be configured for the mapped table.
-
-Arguments
----------
-
-.. rst-class:: dl-parameters
-
-model
-    :aspect:`Type:` :code:`\TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface`
-
 t3_uri_page
 ===========
 
@@ -301,7 +278,6 @@ t3_uri_page
         additionalParams = [],
         pageType = 0,
         noCache = false,
-        noCacheHash = false,
         section = '',
         linkAccessRestrictedPages = false,
         absolute = false,
@@ -325,10 +301,6 @@ pageType
     :sep:`|` :aspect:`Default:` :code:`0`
 
 noCache
-    :aspect:`Type:` :code:`bool`
-    :sep:`|` :aspect:`Default:` :code:`false`
-
-noCacheHash
     :aspect:`Type:` :code:`bool`
     :sep:`|` :aspect:`Default:` :code:`false`
 
@@ -385,7 +357,7 @@ t3_uri_typolink
 
 .. code-block:: twig
 
-    {{ t3_uri_typolink(parameter, additionalParams = {}, useCacheHash = false)
+    {{ t3_uri_typolink(parameter, additionalParams = {})
 
 Arguments
 ---------
@@ -396,7 +368,3 @@ parameter
 additionalParams
     :aspect:`Type:` :code:`array`
     :sep:`|` :aspect:`Default:` :code:`[]`
-
-useCacheHash
-    :aspect:`Type:` :code:`bool`
-    :sep:`|` :aspect:`Default:` :code:`false`

@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2018 CARL von CHIARI GmbH
+ * Copyright (C) 2019 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,23 +18,13 @@
 
 namespace Cvc\Typo3\CvcTwig\Mvc\View;
 
-use Cvc\Typo3\CvcTwig\Twig\Cache\Typo3Cache;
-use Cvc\Typo3\CvcTwig\Twig\Environment;
-use Cvc\Typo3\CvcTwig\Twig\Extension\ExtbaseDebugExtension;
-use Cvc\Typo3\CvcTwig\Twig\Extension\FormExtension;
-use Cvc\Typo3\CvcTwig\Twig\Extension\HtmlFormatExtension;
-use Cvc\Typo3\CvcTwig\Twig\Extension\ImageExtension;
-use Cvc\Typo3\CvcTwig\Twig\Extension\TranslationExtension;
-use Cvc\Typo3\CvcTwig\Twig\Extension\TypoScriptExtension;
-use Cvc\Typo3\CvcTwig\Twig\Extension\UriExtension;
-use Cvc\Typo3\CvcTwig\Twig\Loader\Typo3Loader;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use Twig\Loader\ChainLoader;
 use Twig\Loader\FilesystemLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
-use TYPO3\CMS\Extbase\Mvc\Web\Request;
-use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * A standalone view.
@@ -42,56 +32,46 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  *
  * In contrast to the Fluid standalone view this class has no dependency to Extbase.
  */
-class StandaloneView
+final class StandaloneView
 {
     /**
      * @var string
      */
-    protected $templateName;
+    private $templateName;
 
     /**
      * @var string[]
      */
-    protected $templateRootPaths = [];
+    private $templateRootPaths = [];
 
     /**
      * @var array[]
      */
-    protected $namespaces = [];
+    private $namespaces = [];
 
     /**
      * @var array
      *
      * @see assign()
      */
-    protected $variables;
+    private $variables;
 
     /**
-     * Class names of extensions to be added to the environment.
-     *
-     * @var string[]
+     * @var Environment
      */
-    protected $extensions = [
-        ExtbaseDebugExtension::class,
-        FormExtension::class,
-        HtmlFormatExtension::class,
-        ImageExtension::class,
-        TranslationExtension::class,
-        TypoScriptExtension::class,
-        UriExtension::class,
-    ];
+    private $environment;
 
-    /**
-     * @var ControllerContext
-     */
-    protected $controllerContext;
+    public function __construct(Environment $environment)
+    {
+        $this->environment = $environment;
+    }
 
     /**
      * Renders the view.
      *
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws LoaderError
      *
      * @return string The rendered view
      */
@@ -103,11 +83,6 @@ class StandaloneView
         // to match the fluid behavior and to make it easier to extend, we want to match last path first
         $templatePaths = array_reverse($templatePaths, true);
 
-        // ensure that a controller context exists
-        if ($this->controllerContext === null) {
-            $this->createControllerContext();
-        }
-
         $fileSystemLoader = new FilesystemLoader($templatePaths);
         foreach ($this->namespaces as $namespace => $namespacedPaths) {
             $namespacedPaths = array_reverse($namespacedPaths);
@@ -115,24 +90,14 @@ class StandaloneView
             $fileSystemLoader->setPaths($namespacedPaths, $namespace);
         }
 
-        $twigEnvironment = new Environment(
-            new ChainLoader([
-                $fileSystemLoader,
-                new Typo3Loader(),
-            ]),
-            [
-                'debug' => $GLOBALS['TYPO3_CONF_VARS']['FE']['debug'],
-                'cache' => GeneralUtility::makeInstance(Typo3Cache::class),
-            ],
-            $this->controllerContext
-        );
+        $originalLoader = $this->environment->getLoader();
+        $this->environment->setLoader(new ChainLoader([$fileSystemLoader, $originalLoader]));
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        foreach ($this->extensions as $extensionClass) {
-            $twigEnvironment->addExtension($objectManager->get($extensionClass));
-        }
+        $content = $this->environment->render($this->templateName, $this->variables);
 
-        return $twigEnvironment->render($this->templateName, $this->variables);
+        $this->environment->setLoader($originalLoader);
+
+        return $content;
     }
 
     /**
@@ -195,26 +160,5 @@ class StandaloneView
     public function setNamespaces(array $namespaces): void
     {
         $this->namespaces = $namespaces;
-    }
-
-    /**
-     * Creates a new controller context if no context was set from external.
-     */
-    private function createControllerContext(): void
-    {
-        if ($this->controllerContext !== null) {
-            throw new \LogicException('The controllerContext was already created.');
-        }
-
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-        $request = $objectManager->get(Request::class);
-        $request->setRequestUri(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
-        $request->setBaseUri(GeneralUtility::getIndpEnv('TYPO3_SITE_URL'));
-        $uriBuilder = $objectManager->get(UriBuilder::class);
-        $uriBuilder->setRequest($request);
-        $this->controllerContext = $objectManager->get(ControllerContext::class);
-        $this->controllerContext->setRequest($request);
-        $this->controllerContext->setUriBuilder($uriBuilder);
     }
 }

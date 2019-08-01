@@ -1,10 +1,9 @@
-includes:
-    - vendor/saschaegerer/phpstan-typo3/extension.neon
-
 parameters:
-    level: 3
+    level: 5
     bootstrap: phpstan-bootstrap.php
     fileExtensions:
         - php
     paths:
         - Classes
+    excludes_analyse:
+        - Classes/Twig/Test/FunctionalTestCase.php

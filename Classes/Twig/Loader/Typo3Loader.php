@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2018 CARL von CHIARI GmbH
+ * Copyright (C) 2019 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,7 +18,9 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Loader;
 
+use Twig\Error\LoaderError;
 use Twig\Loader\LoaderInterface;
+use Twig\Source;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -41,13 +43,13 @@ class Typo3Loader implements LoaderInterface
     /**
      * {@inheritdoc}
      *
-     * @throws \Twig_Error_Loader
+     * @throws LoaderError
      */
     public function getSourceContext($name)
     {
         $path = $this->findTemplate($name);
 
-        return new \Twig_Source(\file_get_contents($path), $name, $path);
+        return new Source(\file_get_contents($path), $name, $path);
     }
 
     public function getCacheKey($name)
@@ -58,7 +60,7 @@ class Typo3Loader implements LoaderInterface
     /**
      * {@inheritdoc}
      *
-     * @throws \Twig_Error_Loader
+     * @throws LoaderError
      */
     public function isFresh($name, $time)
     {
@@ -68,7 +70,7 @@ class Typo3Loader implements LoaderInterface
     /**
      * {@inheritdoc}
      *
-     * @throws \Twig_Error_Loader
+     * @throws LoaderError
      */
     public function exists($name)
     {
@@ -85,7 +87,7 @@ class Typo3Loader implements LoaderInterface
      * @param string $name  The template name
      * @param bool   $throw Whether to throw an exception when an error occurs
      *
-     * @throws \Twig_Error_Loader
+     * @throws LoaderError
      *
      * @return false|string The template name or false
      */
@@ -98,7 +100,7 @@ class Typo3Loader implements LoaderInterface
             if (!$throw) {
                 return false;
             }
-            throw new \Twig_Error_Loader($this->errorCache[$name]);
+            throw new LoaderError($this->errorCache[$name]);
         }
         $path = GeneralUtility::getFileAbsFileName($name);
         if (!empty($path) && \is_file($path)) {
@@ -108,6 +110,6 @@ class Typo3Loader implements LoaderInterface
         if (!$throw) {
             return false;
         }
-        throw new \Twig_Error_Loader($this->errorCache[$name]);
+        throw new LoaderError($this->errorCache[$name]);
     }
 }
