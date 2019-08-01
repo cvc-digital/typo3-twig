@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2018 CARL von CHIARI GmbH
+ * Copyright (C) 2019 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,7 +18,7 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
-use Cvc\Typo3\CvcTwig\Twig\Environment;
+use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -41,10 +41,12 @@ class TranslationExtension extends AbstractExtension
         array $arguments = [],
         string $extensionName = null
     ): ?string {
-        if ($extensionName === null) {
-            $extensionName = $environment->getControllerContext()->getRequest()->getControllerExtensionName();
+        $label = LocalizationUtility::translate($key, $extensionName, $arguments);
+
+        if ($label === null && $environment->isDebug()) {
+            return $key;
         }
 
-        return LocalizationUtility::translate($key, $extensionName, $arguments);
+        return (string) $label;
     }
 }

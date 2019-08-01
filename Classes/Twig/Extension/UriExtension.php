@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2018 CARL von CHIARI GmbH
+ * Copyright (C) 2019 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,13 +18,10 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
-use Cvc\Typo3\CvcTwig\Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
 
@@ -35,24 +32,30 @@ use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
  */
 class UriExtension extends AbstractExtension
 {
+    /**
+     * @var UriBuilder
+     */
+    private $uriBuilder;
+
+    public function __construct(UriBuilder $uriBuilder)
+    {
+        $this->uriBuilder = $uriBuilder;
+    }
+
     public function getFunctions()
     {
         return [
-            new TwigFunction('t3_uri_page', [static::class, 'uriPage'], ['needs_environment' => true]),
-            new TwigFunction('t3_uri_action', [static::class, 'uriAction'], ['needs_environment' => true]),
-            new TwigFunction('t3_uri_model', [static::class, 'modelUri']),
-            new TwigFunction('t3_uri_record', [static::class, 'recordUri']),
-            new TwigFunction('t3_uri_typolink', [static::class, 'typoLinkUri']),
+            new TwigFunction('t3_uri_page', [$this, 'uriPage'], ['needs_environment' => true]),
+            new TwigFunction('t3_uri_record', [$this, 'recordUri']),
+            new TwigFunction('t3_uri_typolink', [$this, 'typoLinkUri']),
         ];
     }
 
-    public static function uriPage(
-        Environment $environment,
+    public function uriPage(
         int $pageUid = null,
         array $additionalParams = [],
         int $pageType = 0,
         bool $noCache = false,
-        bool $noCacheHash = false,
         string $section = '',
         bool $linkAccessRestrictedPages = false,
         bool $absolute = false,
@@ -60,11 +63,11 @@ class UriExtension extends AbstractExtension
         array $argumentsToBeExcludedFromQueryString = [],
         string $addQueryStringMethod = ''): ?string
     {
-        return $environment->getControllerContext()->getUriBuilder()
+        return $this->uriBuilder
+            ->reset()
             ->setTargetPageUid($pageUid)
             ->setTargetPageType($pageType)
             ->setNoCache($noCache)
-            ->setUseCacheHash(!$noCacheHash)
             ->setSection($section)
             ->setLinkAccessRestrictedPages($linkAccessRestrictedPages)
             ->setArguments($additionalParams)
@@ -75,8 +78,7 @@ class UriExtension extends AbstractExtension
             ->build();
     }
 
-    public static function uriAction(
-        Environment $environment,
+    public function uriAction(
         string $action,
         array $arguments = [],
         string $controller = null,
@@ -85,7 +87,6 @@ class UriExtension extends AbstractExtension
         int $pageUid = null,
         int $pageType = 0,
         bool $noCache = false,
-        bool $noCacheHash = false,
         string $section = '',
         string $format = '',
         bool $linkAccessRestrictedPages = false,
@@ -95,12 +96,11 @@ class UriExtension extends AbstractExtension
         array $argumentsToBeExcludedFromQueryString = [],
         string $addQueryStringMethod = ''): ?string
     {
-        return $environment->getControllerContext()->getUriBuilder()
+        return $this->uriBuilder
             ->reset()
             ->setTargetPageUid($pageUid)
             ->setTargetPageType($pageType)
             ->setNoCache($noCache)
-            ->setUseCacheHash(!$noCacheHash)
             ->setSection($section)
             ->setFormat($format)
             ->setLinkAccessRestrictedPages($linkAccessRestrictedPages)
@@ -112,29 +112,17 @@ class UriExtension extends AbstractExtension
             ->uriFor($action, $arguments, $controller, $extensionName, $pluginName);
     }
 
-    public static function modelUri(DomainObjectInterface $model): ?string
-    {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $dataMapper = $objectManager->get(DataMapper::class);
-
-        $table = $dataMapper->convertClassNameToTableName(get_class($model));
-        $recordUid = $model->getUid();
-
-        return static::recordUri($table, $recordUid);
-    }
-
-    public static function recordUri(string $table, int $recordUid): ?string
+    public function recordUri(string $table, int $recordUid): ?string
     {
         $parameter = 't3://record?identifier='.$table.'&uid='.$recordUid;
 
         return static::typolinkUri($parameter);
     }
 
-    public static function typolinkUri(
+    public function typolinkUri(
         string $parameter,
-        array $additionalParams = [],
-        bool $useCacheHash = false): ?string
-    {
+        array $additionalParams = []
+    ): ?string {
         $content = '';
 
         if ($parameter) {
@@ -142,7 +130,6 @@ class UriExtension extends AbstractExtension
             $content = $contentObject->typoLink_URL(
                 [
                     'parameter' => self::createTypolinkParameterFromArguments($parameter, $additionalParams),
-                    'useCacheHash' => $useCacheHash,
                 ]
             );
         }
@@ -150,7 +137,7 @@ class UriExtension extends AbstractExtension
         return $content;
     }
 
-    private static function createTypolinkParameterFromArguments($parameter, $additionalParameters = '')
+    private function createTypolinkParameterFromArguments($parameter, $additionalParameters = '')
     {
         $typoLinkCodec = GeneralUtility::makeInstance(TypoLinkCodecService::class);
         $typolinkConfiguration = $typoLinkCodec->decode($parameter);

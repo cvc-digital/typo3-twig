@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" product-name="cvc_twig">
+        <header/>
+        <body>
+            <trans-unit id="example_translation">
+                <source>Example Translation</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

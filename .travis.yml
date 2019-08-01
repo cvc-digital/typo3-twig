@@ -1,87 +1,76 @@
 language: php
 
 addons:
-    apt:
-        packages:
-            - parallel
+  apt:
+    packages:
+      - parallel
 
 cache:
-    directories:
-        - $HOME/.composer/cache
+  directories:
+    - $HOME/.composer/cache
 
 stages:
-    - static_analysis
-    - test
+  - static_analysis
+  - test
 
 before_install:
-    - phpenv config-rm xdebug.ini
+  - phpenv config-rm xdebug.ini
 
 .Functional Tests Template: &functional_tests
-    stage: test
-    services:
-        - mysql
-    install:
-        - composer require typo3/minimal="$TYPO3_VERSION"
-        - export TYPO3_PATH_ROOT=$PWD/.Build/public
-        - export typo3DatabaseName=typo3
-        - export typo3DatabaseHost=localhost
-        - export typo3DatabaseUsername=root
-        - export typo3DatabasePassword=
-    script:
-        - find '.Build/public/typo3conf/ext/cvc_twig/Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml {}';
+  stage: test
+  services:
+    - mysql
+  install:
+    - composer require typo3/minimal="$TYPO3_VERSION"
+    - export TYPO3_PATH_ROOT=$PWD/.Build/public
+    - export typo3DatabaseName=typo3
+    - export typo3DatabaseHost=localhost
+    - export typo3DatabaseUsername=root
+    - export typo3DatabasePassword=
+  script:
+    - php .Build/bin/phpunit -c .Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTests.xml Tests/Functional
+
 .Lint PHP: &lint_php
-    stage: static_analysis
-    script:
-        - find . -name \*.php ! -path "./.Build/*" ! -path "./vendor/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
+  stage: static_analysis
+  script:
+    - find . -name \*.php ! -path "./.Build/*" ! -path "./vendor/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
 
 .Lint Editorconfig: &editor_config
-    stage: static_analysis
-    install:
-        - npm install -g editorconfig-checker
-    script:
-        - editorconfig-checker -e '(LICENSE|^Documentation/)'
+  stage: static_analysis
+  install:
+    - npm install -g editorconfig-checker@^2.0
+  script:
+    - editorconfig-checker -exclude '(LICENSE|^Documentation/)'
 
 .PHPStan: &php_stan
-    stage: static_analysis
-    install:
-        - composer install --prefer-dist --no-progress
-    script:
-        - php vendor/bin/phpstan analyse
+  stage: static_analysis
+  install:
+    - composer install --prefer-dist --no-progress
+  script:
+    - php .Build/bin/phpstan analyse
 
 jobs:
-    include:
-        -
-            <<: *lint_php
-            name: Lint PHP 7.3
-            php: 7.3
-        -
-            <<: *lint_php
-            name: Lint PHP 7.2
-            php: 7.2
-        -
-            <<: *editor_config
-            name: Lint Editorconfig
-            php: 7.3
-        -
-            <<: *php_stan
-            name: PHPStan (PHP 7.3)
-            php: 7.3
-        -
-            <<: *php_stan
-            name: PHPStan (PHP 7.2)
-            php: 7.2
-        -
-            <<: *functional_tests
-            name: Functional Tests (TYPO3 9.5, PHP 7.3)
-            php: 7.3
-            env: TYPO3_VERSION=^9.5
-        -
-            <<: *functional_tests
-            name: Functional Tests (TYPO3 9.5, PHP 7.2)
-            php: 7.2
-            env: TYPO3_VERSION=^9.5
-        -
-            <<: *functional_tests
-            name: Functional Tests (TYPO3 8.7, PHP 7.2)
-            php: 7.2
-            env: TYPO3_VERSION=^8.7
+  include:
+    - <<: *lint_php
+      name: Lint PHP 7.3
+      php: 7.3
+    - <<: *lint_php
+      name: Lint PHP 7.2
+      php: 7.2
+    - <<: *editor_config
+      name: Lint Editorconfig
+      php: 7.3
+    - <<: *php_stan
+      name: PHPStan (PHP 7.3)
+      php: 7.3
+    - <<: *php_stan
+      name: PHPStan (PHP 7.2)
+      php: 7.2
+    - <<: *functional_tests
+      name: Functional Tests (TYPO3 10.0, PHP 7.3)
+      php: 7.3
+      env: TYPO3_VERSION=^10.0
+    - <<: *functional_tests
+      name: Functional Tests (TYPO3 10.0, PHP 7.2)
+      php: 7.2
+      env: TYPO3_VERSION=^10.0

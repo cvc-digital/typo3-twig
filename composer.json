@@ -4,7 +4,7 @@
     "homepage": "https://cvc.digital",
     "type": "typo3-cms-extension",
     "license": "GPL-3.0+",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "authors": [
         {
             "name": "Markus Poerschke",
@@ -20,41 +20,42 @@
         }
     ],
     "replace": {
-        "cvc_twig": "self.version",
         "typo3-ter/cvc_twig": "self.version"
     },
     "require": {
         "php": ">=7.2,<7.4",
         "twig/twig": "^2.0",
-        "typo3/cms-core": "^8.7||^9.5",
-        "typo3/cms-extbase": "^8.7||^9.5",
-        "typo3/cms-frontend": "^8.7||^9.5"
+        "typo3/cms-core": "^10.0",
+        "typo3/cms-frontend": "^10.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7",
+        "phpunit/phpunit": "^8",
         "friendsofphp/php-cs-fixer": "^2.3",
-        "nimut/testing-framework": "^4.1.5",
-        "phpstan/phpstan": "^0.10.3",
-        "typo3/cms-form": "^8.7||^9.5",
-        "saschaegerer/phpstan-typo3": "^0.10"
-    },
-    "conflict": {
-        "comwrap/typo3-twig_for_typo3": "*",
-        "dmk/t3twig": "*"
+        "typo3/testing-framework": "^5.0.11",
+        "phpstan/phpstan": "^0.11.15"
     },
     "autoload": {
         "psr-4": {
-            "Cvc\\Typo3\\CvcTwig\\": "Classes/"
+            "Cvc\\Typo3\\CvcTwig\\": "Classes"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cvc\\Typo3\\CvcTwig\\Tests\\": "Tests"
         }
     },
     "scripts": {
         "post-autoload-dump": [
-            "mkdir -p .Build/public/typo3conf/ext/",
-            "[ -L .Build/public/typo3conf/ext/cvc_twig ] || ln -snvf ../../../../. .Build/public/typo3conf/ext/cvc_twig"
+            "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
         ]
+    },
+    "config": {
+        "vendor-dir": ".Build/vendor",
+        "bin-dir": ".Build/bin"
     },
     "extra": {
         "typo3/cms": {
+            "extension-key": "cvc_twig",
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
             "web-dir": ".Build/public"
         }

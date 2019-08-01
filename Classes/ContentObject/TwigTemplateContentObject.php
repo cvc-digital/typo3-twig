@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2018 CARL von CHIARI GmbH
+ * Copyright (C) 2019 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,7 +18,10 @@
 
 namespace Cvc\Typo3\CvcTwig\ContentObject;
 
-use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneView;
+use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneViewFactory;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
@@ -41,6 +44,8 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  *         10 = EXT:twig/Resources/Private/TwigTemplates
  *     }
  * }
+ *
+ * @internal
  */
 class TwigTemplateContentObject extends AbstractContentObject
 {
@@ -50,12 +55,21 @@ class TwigTemplateContentObject extends AbstractContentObject
     private $contentDataProcessor;
 
     /**
-     * @param ContentObjectRenderer $cObj
+     * @var StandaloneViewFactory
      */
+    private $standaloneViewFactory;
+
     public function __construct(ContentObjectRenderer $cObj)
     {
         parent::__construct($cObj);
-        $this->contentDataProcessor = GeneralUtility::makeInstance(ContentDataProcessor::class);
+        // fixme: checkout how to use dependency injection
+        $contentDataProcessor = GeneralUtility::makeInstance(ContentDataProcessor::class);
+        assert($contentDataProcessor instanceof ContentDataProcessor);
+        $standaloneViewFactory = GeneralUtility::getContainer()->get(StandaloneViewFactory::class);
+        assert($standaloneViewFactory instanceof StandaloneViewFactory);
+
+        $this->contentDataProcessor = $contentDataProcessor;
+        $this->standaloneViewFactory = $standaloneViewFactory;
     }
 
     /**
@@ -85,9 +99,12 @@ class TwigTemplateContentObject extends AbstractContentObject
      *     }
      * }
      *
+     *
      * @param array $conf Array of TypoScript properties
      *
-     * @throws \Twig_Error
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      *
      * @return string The HTML output
      */
@@ -111,7 +128,7 @@ class TwigTemplateContentObject extends AbstractContentObject
         $variables = $this->getContentObjectVariables($conf);
         $variables = $this->contentDataProcessor->process($this->cObj, $conf, $variables);
 
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
+        $view = $this->standaloneViewFactory->create();
         $view->setTemplateName($templateName);
         $view->setTemplateRootPaths($templateRootPaths);
         $view->setNamespaces($namespaces);
