@@ -55,7 +55,7 @@ page.10 {
 
 ## Documentation
 
-The full documentation is available here: [cvc_twig Documentation](https://docs.typo3.org/typo3cms/extensions/cvc_twig/).
+The full documentation is available here: [cvc_twig Documentation](https://docs.typo3.org/p/cvc/typo3-twig/master/en-us/).
 
 ## Alternatives
 
