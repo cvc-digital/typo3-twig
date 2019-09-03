@@ -37,9 +37,9 @@ before_install:
 .Lint Editorconfig: &editor_config
     stage: static_analysis
     install:
-        - npm install -g editorconfig-checker
+        - npm install -g editorconfig-checker@^3.0.2
     script:
-        - editorconfig-checker -e '(LICENSE|^Documentation/)'
+        - editorconfig-checker -exclude '(LICENSE|^Documentation/)'
 
 .PHPStan: &php_stan
     stage: static_analysis
