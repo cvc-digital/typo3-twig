@@ -9,6 +9,21 @@ This TYPO3 extensions allows you to use the fabulous Twig template engine within
 
 You can use Twig templates in your Extbase controllers or in your TypoScript.
 
+## Version compatibility
+
+The following table shows which versions of this package are compatible with which TYPO3 version.
+Version 1 is compatible to TYPO3 v8.7 and v9.5.
+Version 2 that is developed on the `master` branch is compatible to TYPO3 v10.
+Since Version 2, PHP `7.2` or above is required.
+
+|           | 1.x  |    2.x   |
+|-----------|:----:|:--------:|
+| TYPO3 v10 |  ❌  |    ✅    |
+| TYPO3 v9  |  ✅  |    ❌    |
+| TYPO3 v8  |  ✅  |    ❌    |
+| PHP 7.3   |  ✅  |    ✅    |
+| PHP 7.2   |  ✅  |    ✅    |
+
 ## Installation
 
 This extension only works when installed in composer mode. If you are not familiar using composer together with TYPO3

@@ -3,8 +3,7 @@
     "description": "Use the Twig template engine within your TYPO3 project.",
     "homepage": "https://cvc.digital",
     "type": "typo3-cms-extension",
-    "license": "GPL-3.0+",
-    "version": "2.0.0",
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "Markus Poerschke",
@@ -54,6 +53,9 @@
         "bin-dir": ".Build/bin"
     },
     "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        },
         "typo3/cms": {
             "extension-key": "cvc_twig",
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
