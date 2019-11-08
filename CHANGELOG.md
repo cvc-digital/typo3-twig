@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
         * `t3_uri_action`
     * Class `Cvc\Typo3\CvcTwig\Extbase\Mvc\View\TwigView`
 * Class `Cvc\Typo3\CvcTwig\Twig\Environment`
+* Cache configuration `twig_timestamps` ([#31](https://github.com/cvc-digital/typo3-twig/pull/31))
 
 ## 1.1.0
 

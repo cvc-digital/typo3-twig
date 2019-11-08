@@ -17,14 +17,8 @@ services:
     class: Cvc\Typo3\CvcTwig\Twig\Cache\Typo3Cache
     arguments:
       - '@cache.twig_templates'
-      - '@cache.twig_timestamps'
 
   cache.twig_templates:
     class: TYPO3\CMS\Core\Cache\Frontend\PhpFrontend
     factory: ['@TYPO3\CMS\Core\Cache\CacheManager', getCache]
     arguments: ['twig_templates']
-
-  cache.twig_timestamps:
-    class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
-    factory: ['@TYPO3\CMS\Core\Cache\CacheManager', getCache]
-    arguments: ['twig_timestamps']

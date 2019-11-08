@@ -28,6 +28,3 @@ if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations
         'frontend' => \TYPO3\CMS\Core\Cache\Frontend\PhpFrontend::class,
     ];
 }
-if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['twig_timestamps'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['twig_timestamps'] = [];
-}
