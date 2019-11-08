@@ -4,6 +4,7 @@
 [![GitHub license](https://img.shields.io/github/license/cvc-digital/typo3-twig.svg)](https://github.com/cvc-digital/typo3-twig/blob/master/LICENSE)
 [![Packagist](https://img.shields.io/packagist/v/cvc/typo3-twig.svg)](https://packagist.org/packages/cvc/typo3-twig)
 [![TYPO3 Version](https://img.shields.io/badge/TYPO3-%5E10.0-orange.svg)](https://extensions.typo3.org/extension/cvc_twig/)
+[![codecov](https://codecov.io/gh/cvc-digital/typo3-twig/branch/master/graph/badge.svg)](https://codecov.io/gh/cvc-digital/typo3-twig)
 
 This TYPO3 extensions allows you to use the fabulous Twig template engine within your TYPO3 project.
 
