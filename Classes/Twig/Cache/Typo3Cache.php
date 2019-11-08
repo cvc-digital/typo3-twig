@@ -19,7 +19,7 @@
 namespace Cvc\Typo3\CvcTwig\Twig\Cache;
 
 use Twig\Cache\CacheInterface;
-use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Cache\Backend\FileBackend;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 
 /**
@@ -33,19 +33,28 @@ final class Typo3Cache implements CacheInterface
     private $phpFrontend;
 
     /**
-     * @var FrontendInterface
+     * @var FileBackend
      */
-    private $timestampCache;
+    private $fileBackend;
 
-    public function __construct(PhpFrontend $phpFrontend, FrontendInterface $timestampCache)
+    public function __construct(PhpFrontend $phpFrontend)
     {
+        if (!$phpFrontend instanceof PhpFrontend) {
+            throw new \RuntimeException('Cache frontend '.PhpFrontend::class.' must be used but '.get_class($phpFrontend).' was given.');
+        }
+
+        $fileBackend = $phpFrontend->getBackend();
+        if (!$fileBackend instanceof FileBackend) {
+            throw new \RuntimeException('Cache frontend '.PhpFrontend::class.' must be used but '.get_class($phpFrontend).' was given.');
+        }
+
         $this->phpFrontend = $phpFrontend;
-        $this->timestampCache = $timestampCache;
+        $this->fileBackend = $fileBackend;
     }
 
     public function generateKey($name, $className)
     {
-        return \hash('sha256', $className);
+        return hash('sha256', $name.':'.$className);
     }
 
     public function write($key, $content)
@@ -55,7 +64,6 @@ final class Typo3Cache implements CacheInterface
         }
 
         $this->phpFrontend->set($key, $content);
-        $this->timestampCache->set($key, $GLOBALS['EXEC_TIME']);
     }
 
     public function load($key)
@@ -65,6 +73,6 @@ final class Typo3Cache implements CacheInterface
 
     public function getTimestamp($key)
     {
-        return (int) $this->timestampCache->get($key);
+        return (int) @filemtime($this->fileBackend->getCacheDirectory().$key.'.php');
     }
 }
