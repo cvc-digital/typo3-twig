@@ -1,5 +1,6 @@
 /.Build
 /.php_cs.cache
+/.phpunit.result.cache
 /composer.lock
 /Documentation-GENERATED-temp
 /vendor
