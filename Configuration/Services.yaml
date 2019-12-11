@@ -6,8 +6,10 @@ services:
 
   Cvc\Typo3\CvcTwig\:
     resource: '../Classes/*'
+    exclude: '../Classes/{Documentation,DependencyInjection}'
 
   Twig\Environment:
+    public: true
     arguments:
       - '@Cvc\Typo3\CvcTwig\Twig\Loader\Typo3Loader'
       - debug: '%twig.debug%'

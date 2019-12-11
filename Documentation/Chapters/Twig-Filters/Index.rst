@@ -11,10 +11,11 @@ t3_html
 =======
 
 .. code-block:: twig
+   {{ html | t3_html(parseFuncTSPath = 'lib.parseFunc_RTE') }}
 
-    {{ html | t3_html(parseFuncTSPath = 'lib.parseFunc_RTE') }}
 
 Parses HTML that was created with an rich text editor.
+
 
 Arguments
 ---------
@@ -22,25 +23,25 @@ Arguments
 .. rst-class:: dl-parameters
 
 html
-    :aspect:`Type:` :code:`string`
+   :aspect:`Type:` :code:`string`
 
-    The HTML that should be processed.
-    Normally this is the content that is stored in the database.
+   The HTML that should be processed. Normally this is the content that is stored in the database.
 
 parseFuncTSPath
-    :aspect:`Type:` :code:`string`
-    :sep:`|` :aspect:`Default:` :code:`lib.parseFunc_RTE`
+   :aspect:`Type:` :code:`string`
+   :sep:`|` :aspect:`Default:` :code:`'lib.parseFunc_RTE'`
 
-    Here you can define which setup should be used to transform the HTML content.
+   Here you can define which setup should be used to transform the HTML content.
 
 t3_trans
 ========
 
 .. code-block:: twig
+   {{ key | t3_trans(arguments = [], extensionName = null) }}
 
-    {{ 'key' | t3_trans(arguments = [], extensionName = null) }}
 
 Translates the given translation key into the active language.
+
 
 Arguments
 ---------
@@ -48,17 +49,18 @@ Arguments
 .. rst-class:: dl-parameters
 
 key
-    :aspect:`Type:` :code:`string`
+   :aspect:`Type:` :code:`string`
 
-    The key for the translation.
+   The key for the translation.
 
 arguments
-    :aspect:`Type:` :code:`array`
-    :sep:`|` :aspect:`Default:` :code:`[]`
+   :aspect:`Type:` :code:`array`
+   :sep:`|` :aspect:`Default:` :code:`[]`
 
-    The arguments that are replaced while translating.
+   The arguments that are replaced while translating.
 
 extensionName
-    :aspect:`Type:` :code:`?string`
+   :aspect:`Type:` :code:`string`
+   :sep:`|` :aspect:`Default:` :code:`null`
 
-    The name of the extension where the translations are located.
+   The name of the TYPO3 extension where the translation file is located.

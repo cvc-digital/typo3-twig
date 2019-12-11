@@ -33,7 +33,9 @@
         "friendsofphp/php-cs-fixer": "^2.16",
         "phpstan/phpstan": "^0.12.18",
         "phpunit/phpunit": "^9",
-        "typo3/testing-framework": "^6"
+        "typo3/testing-framework": "^6",
+        "symfony/var-dumper": "^4.3",
+        "cvc/twig-documentor": "^0.0.0"
     },
     "config": {
         "bin-dir": ".Build/bin",
