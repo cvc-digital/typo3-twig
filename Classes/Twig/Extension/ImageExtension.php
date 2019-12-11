@@ -41,19 +41,8 @@ class ImageExtension extends AbstractExtension
     /**
      * Returns the URL to the given image. If an error occurs, then :code:`null` is returned and no error is raised.
      *
-     * @param string|null $src
-     * @param bool $treatIdAsReference
-     * @param string|null $image The image can be a reference or an instance of :code:`FileInterface` or :code:`FileReference`.
-     * @param string|null $crop The JSON-formatted crop settings.
-     * @param string $cropVariant
-     * @param string $width
-     * @param string $height
-     * @param int $minWidth
-     * @param int $minHeight
-     * @param int $maxWidth
-     * @param int $maxHeight
-     * @param bool $absolute
-     * @return string|null
+     * @param string|null $image the image can be a reference or an instance of :code:`FileInterface` or :code:`FileReference`
+     * @param string|null $crop  the JSON-formatted crop settings
      */
     public static function imageUri(
         string $src = null,

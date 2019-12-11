@@ -31,7 +31,7 @@ parseFuncTSPath
    :aspect:`Type:` :code:`string`
    :sep:`|` :aspect:`Default:` :code:`'lib.parseFunc_RTE'`
 
-   Here you can define which setup should be used to transform the HTML content.
+   here you can define which setup should be used to transform the HTML content
 
 t3_trans
 ========
@@ -51,16 +51,16 @@ Arguments
 key
    :aspect:`Type:` :code:`string`
 
-   The key for the translation.
+   the key for the translation
 
 arguments
    :aspect:`Type:` :code:`array`
    :sep:`|` :aspect:`Default:` :code:`[]`
 
-   The arguments that are replaced while translating.
+   the arguments that are replaced while translating
 
 extensionName
    :aspect:`Type:` :code:`string`
    :sep:`|` :aspect:`Default:` :code:`null`
 
-   The name of the TYPO3 extension where the translation file is located.
+   the name of the TYPO3 extension where the translation file is located

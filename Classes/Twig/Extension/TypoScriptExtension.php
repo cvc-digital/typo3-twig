@@ -68,6 +68,8 @@ class TypoScriptExtension extends AbstractExtension
 
     /**
      * Renders a TypoScript object. The content object renderer can be populated using the data argument.
+     *
+     * @param mixed|null $data
      */
     public function renderCObject(string $typoScriptObjectPath, $data = null, string $currentValueKey = null, string $table = null)
     {

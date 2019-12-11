@@ -1,5 +1,21 @@
 <?php
 
+/*
+ * Twig extension for TYPO3 CMS
+ * Copyright (C) 2019 CARL von CHIARI GmbH
+ *
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 3
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 require_once __DIR__.'/../.Build/vendor/autoload.php';
 
 putenv('typo3DatabaseDriver=pdo_sqlite');
@@ -10,8 +26,7 @@ $_SERVER['TYPO3_PATH_ROOT'] = $_ENV['TYPO3_PATH_ROOT'] = $typo3PathRoot;
 putenv('TYPO3_PATH_ROOT='.$typo3PathRoot);
 require_once __DIR__.'/../.Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTestsBootstrap.php';
 
-$helper = new class extends \TYPO3\TestingFramework\Core\Functional\FunctionalTestCase
-{
+$helper = new class() extends \TYPO3\TestingFramework\Core\Functional\FunctionalTestCase {
     protected $testExtensionsToLoad = [
         'typo3conf/ext/cvc_twig',
     ];
@@ -55,4 +70,4 @@ $functionRst = $environment->render(
 
 file_put_contents(__DIR__.'/../Documentation/Chapters/Twig-Functions/Index.rst', $functionRst);
 
-echo "Documentation was generated.".PHP_EOL;
+echo 'Documentation was generated.'.PHP_EOL;

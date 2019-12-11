@@ -116,13 +116,13 @@ image
    :aspect:`Type:` :code:`mixed`
    :sep:`|` :aspect:`Default:` :code:`null`
 
-   The image can be a reference or an instance of :code:`FileInterface` or :code:`FileReference`.
+   the image can be a reference or an instance of :code:`FileInterface` or :code:`FileReference`
 
 crop
    :aspect:`Type:` :code:`string`
    :sep:`|` :aspect:`Default:` :code:`null`
 
-   The JSON-formatted crop settings.
+   the JSON-formatted crop settings
 
 cropVariant
    :aspect:`Type:` :code:`string`
@@ -235,12 +235,12 @@ Arguments
 table
    :aspect:`Type:` :code:`string`
 
-   The table of the record.
+   the table of the record
 
 recordUid
    :aspect:`Type:` :code:`int`
 
-   The UID of the record.
+   the UID of the record
 
 t3_uri_typolink
 ===============

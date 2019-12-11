@@ -116,8 +116,10 @@ class UriExtension extends AbstractExtension
      * Generates a link for the given record.
      *
      * A `link handler <https://docs.typo3.org/typo3cms/extensions/core/latest/Changelog/8.6/Feature-79626-IntegrateRecordLinkHandler.html>`__ must be configured for the mapped table.
-     * @param string $table The table of the record.
-     * @param int $recordUid The UID of the record.
+     *
+     * @param string $table     the table of the record
+     * @param int    $recordUid the UID of the record
+     *
      * @return string
      */
     public function recordUri(string $table, int $recordUid): ?string

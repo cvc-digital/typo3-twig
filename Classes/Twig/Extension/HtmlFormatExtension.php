@@ -42,8 +42,8 @@ class HtmlFormatExtension extends AbstractExtension
     /**
      * Parses HTML that was created with an rich text editor.
      *
-     * @param string $html The HTML that should be processed. Normally this is the content that is stored in the database.
-     * @param string $parseFuncTSPath Here you can define which setup should be used to transform the HTML content.
+     * @param string $html            The HTML that should be processed. Normally this is the content that is stored in the database.
+     * @param string $parseFuncTSPath here you can define which setup should be used to transform the HTML content
      */
     public static function format(string $html, string $parseFuncTSPath = 'lib.parseFunc_RTE'): string
     {

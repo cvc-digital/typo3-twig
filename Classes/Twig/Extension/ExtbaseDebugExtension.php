@@ -53,7 +53,10 @@ class ExtbaseDebugExtension extends AbstractExtension
      * Internally :code:`DebuggerUtility::var_dump()` is used.
      *
      * @param mixed ...$vars Any number of variables.
+     * @param mixed $context
+     *
      * @return false|string|void
+     *
      * @example {# print a single variable #}
      *          {{ dump(foo) }}
      *
