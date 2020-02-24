@@ -34,9 +34,9 @@ Lint Editorconfig:
     stage: static_analysis
     image: node:10
     before_script:
-        - npm install -g editorconfig-checker
+        - npm install -g editorconfig-checker@^3.0
     script:
-        - editorconfig-checker -e '(LICENSE|^Documentation/)'
+        - editorconfig-checker -exclude '(LICENSE|^Documentation/)'
 
 Lint PHP:
     stage: static_analysis
@@ -62,6 +62,7 @@ PHPStan:
         - export typo3DatabaseUsername="root"
         - export typo3DatabasePassword="root"
         - composer require typo3/minimal="$TYPO3_VERSION"
+        - ./bin/wait-for-it.sh $typo3DatabaseHost:3306 --timeout=60
         - find '.Build/public/typo3conf/ext/cvc_twig/Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml {}';
 
 #Unit Tests:
