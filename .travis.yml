@@ -18,6 +18,8 @@ before_install:
 
 .Functional Tests Template: &functional_tests
     stage: test
+    services:
+        - mysql
     install:
         - composer require typo3/minimal="$TYPO3_VERSION"
         - export TYPO3_PATH_ROOT=$PWD/.Build/public
@@ -26,7 +28,9 @@ before_install:
         - export typo3DatabaseUsername=root
         - export typo3DatabasePassword=
     script:
+        - ./bin/wait-for-it.sh $typo3DatabaseHost:3306 --timeout=60
         - find '.Build/public/typo3conf/ext/cvc_twig/Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml {}';
+
 .Lint PHP: &lint_php
     stage: static_analysis
     script:
