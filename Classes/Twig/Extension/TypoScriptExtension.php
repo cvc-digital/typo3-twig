@@ -48,18 +48,12 @@ class TypoScriptExtension extends AbstractExtension
      */
     protected $contentObjectRenderer;
 
-    /**
-     * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
-     */
     public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager)
     {
         $this->configurationManager = $configurationManager;
         $this->typoScriptSetup = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
     }
 
-    /**
-     * @param ContentObjectRenderer $contentObjectRenderer
-     */
     public function injectContentObjectRenderer(ContentObjectRenderer $contentObjectRenderer)
     {
         $this->contentObjectRenderer = $contentObjectRenderer;

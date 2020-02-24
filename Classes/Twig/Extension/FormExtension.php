@@ -42,15 +42,12 @@ class FormExtension extends AbstractExtension
     }
 
     /**
-     * @param Environment $environment
      * @param string|null $persistenceIdentifier the persistence identifier for the form
      * @param string      $factoryClass          the fully qualified class name of the factory
      * @param string|null $prototypeName         name of the prototype to use
      * @param array       $overrideConfiguration factory specific configuration
      *
      * @throws \TYPO3\CMS\Form\Domain\Exception\RenderingException
-     *
-     * @return string
      */
     public static function formRender(
         Environment $environment,

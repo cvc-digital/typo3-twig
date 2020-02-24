@@ -40,10 +40,7 @@ final class Html
     /**
      * Formats HTML that was generated with a rich text editor.
      *
-     * @param string $html
      * @param string $parseFuncTSPath
-     *
-     * @return string
      */
     public static function format(string $html, $parseFuncTSPath = 'lib.parseFunc_RTE'): string
     {
