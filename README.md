@@ -17,7 +17,7 @@ Version 1 is compatible to TYPO3 v8.7 and v9.5.
 Version 2 that is developed on the `master` branch is compatible to TYPO3 v10.
 Since Version 2, PHP `7.2` or above is required.
 
-|           | 1.x  |    2.x   |
+|           | [1.x](https://github.com/cvc-digital/typo3-twig/tree/1.x) |    2.x   |
 |-----------|:----:|:--------:|
 | TYPO3 v10 |  ❌  |    ✅    |
 | TYPO3 v9  |  ✅  |    ❌    |
