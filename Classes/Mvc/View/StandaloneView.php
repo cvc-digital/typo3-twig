@@ -134,8 +134,6 @@ final class StandaloneView
 
     /**
      * Set the template name.
-     *
-     * @param string $templateName
      */
     public function setTemplateName(string $templateName)
     {
@@ -154,8 +152,6 @@ final class StandaloneView
 
     /**
      * Sets the Twig namespaces.
-     *
-     * @param array $namespaces
      */
     public function setNamespaces(array $namespaces): void
     {

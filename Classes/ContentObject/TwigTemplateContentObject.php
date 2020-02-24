@@ -99,7 +99,6 @@ class TwigTemplateContentObject extends AbstractContentObject
      *     }
      * }
      *
-     *
      * @param array $conf Array of TypoScript properties
      *
      * @throws LoaderError
@@ -139,8 +138,6 @@ class TwigTemplateContentObject extends AbstractContentObject
 
     /**
      * Applies stdWrap on Twig path definitions.
-     *
-     * @param array $paths
      *
      * @return array
      */
@@ -184,10 +181,7 @@ class TwigTemplateContentObject extends AbstractContentObject
             if (!\in_array($variableName, $reservedVariables)) {
                 $variables[$variableName] = $this->cObj->cObjGetSingle($cObjType, $variablesToProcess[$variableName.'.']);
             } else {
-                throw new \InvalidArgumentException(
-                    'Cannot use reserved name "'.$variableName.'" as variable name in TWIGTEMPLATE.',
-                    1288095720
-                );
+                throw new \InvalidArgumentException('Cannot use reserved name "'.$variableName.'" as variable name in TWIGTEMPLATE.', 1288095720);
             }
         }
         $variables['data'] = $this->cObj->data;
