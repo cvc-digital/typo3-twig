@@ -31,10 +31,12 @@ use Cvc\Typo3\CvcTwig\Twig\Loader\Typo3Loader;
 use Twig\Loader\ChainLoader;
 use Twig\Loader\FilesystemLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Mvc\Web\Request;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * A standalone view.
@@ -203,6 +205,10 @@ class StandaloneView
         }
 
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
+        $configurationManager = $objectManager->get(ConfigurationManagerInterface::class);
+        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+        $configurationManager->setContentObject($contentObject);
 
         $request = $objectManager->get(Request::class);
         $request->setRequestUri(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
