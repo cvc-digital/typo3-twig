@@ -65,10 +65,10 @@ jobs:
       name: PHPStan (PHP 7.2)
       php: 7.2
     - <<: *functional_tests
-      name: Functional Tests (TYPO3 10.1, PHP 7.3)
+      name: Functional Tests (TYPO3 10.2, PHP 7.3)
       php: 7.3
-      env: TYPO3_VERSION=^10.1
+      env: TYPO3_VERSION=^10.2
     - <<: *functional_tests
-      name: Functional Tests (TYPO3 10.1, PHP 7.2)
+      name: Functional Tests (TYPO3 10.2, PHP 7.2)
       php: 7.2
-      env: TYPO3_VERSION=^10.1
+      env: TYPO3_VERSION=^10.2
