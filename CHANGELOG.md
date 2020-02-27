@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 * Automatically resolve Twig extensions from service container
-* Support for TYPO3 v10.0
+* Support for TYPO3 v10.3
 * Support for PHP 7.4
 
 ### Removed
