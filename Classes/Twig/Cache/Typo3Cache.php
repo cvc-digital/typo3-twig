@@ -52,12 +52,12 @@ final class Typo3Cache implements CacheInterface
         $this->fileBackend = $fileBackend;
     }
 
-    public function generateKey($name, $className)
+    public function generateKey(string $name, string $className): string
     {
         return hash('sha256', $name.':'.$className);
     }
 
-    public function write($key, $content)
+    public function write(string $key, string $content): void
     {
         if (mb_strpos($content, '<?php') === 0) {
             $content = mb_substr($content, 5);
@@ -66,12 +66,12 @@ final class Typo3Cache implements CacheInterface
         $this->phpFrontend->set($key, $content);
     }
 
-    public function load($key)
+    public function load(string $key): void
     {
         $this->phpFrontend->requireOnce($key);
     }
 
-    public function getTimestamp($key)
+    public function getTimestamp(string $key): int
     {
         return (int) @filemtime($this->fileBackend->getCacheDirectory().$key.'.php');
     }

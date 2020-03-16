@@ -45,14 +45,14 @@ class Typo3Loader implements LoaderInterface
      *
      * @throws LoaderError
      */
-    public function getSourceContext($name)
+    public function getSourceContext(string $name): Source
     {
         $path = $this->findTemplate($name);
 
         return new Source(\file_get_contents($path), $name, $path);
     }
 
-    public function getCacheKey($name)
+    public function getCacheKey(string $name): string
     {
         return $name;
     }
@@ -62,7 +62,7 @@ class Typo3Loader implements LoaderInterface
      *
      * @throws LoaderError
      */
-    public function isFresh($name, $time)
+    public function isFresh(string $name, int $time): bool
     {
         return \filemtime($this->findTemplate($name)) <= $time;
     }
@@ -72,7 +72,7 @@ class Typo3Loader implements LoaderInterface
      *
      * @throws LoaderError
      */
-    public function exists($name)
+    public function exists(string $name): bool
     {
         if (isset($this->cache[$name])) {
             return true;
