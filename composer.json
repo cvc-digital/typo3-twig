@@ -1,8 +1,8 @@
 {
     "name": "cvc/typo3-twig",
+    "type": "typo3-cms-extension",
     "description": "Use the Twig template engine within your TYPO3 project.",
     "homepage": "https://cvc.digital",
-    "type": "typo3-cms-extension",
     "license": "GPL-3.0-or-later",
     "authors": [
         {
@@ -18,21 +18,36 @@
             "role": "Maintainer"
         }
     ],
-    "replace": {
-        "typo3-ter/cvc_twig": "self.version"
-    },
     "require": {
         "php": "^7.2",
-        "twig/twig": "^2.0",
+        "ergebnis/composer-normalize": "^2.3",
+        "twig/twig": "^3",
         "typo3/cms-core": "^10.3",
         "typo3/cms-extbase": "^10.3",
         "typo3/cms-frontend": "^10.3"
     },
+    "replace": {
+        "typo3-ter/cvc_twig": "self.version"
+    },
     "require-dev": {
-        "phpunit/phpunit": "^8",
         "friendsofphp/php-cs-fixer": "^2.3",
-        "typo3/testing-framework": "^6",
-        "phpstan/phpstan": "^0.11.15"
+        "phpstan/phpstan": "^0.11.15",
+        "phpunit/phpunit": "^8",
+        "typo3/testing-framework": "^6"
+    },
+    "config": {
+        "bin-dir": ".Build/bin",
+        "vendor-dir": ".Build/vendor"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        },
+        "typo3/cms": {
+            "extension-key": "cvc_twig",
+            "cms-package-dir": "{$vendor-dir}/typo3/cms",
+            "web-dir": ".Build/public"
+        }
     },
     "autoload": {
         "psr-4": {
@@ -47,20 +62,18 @@
     "scripts": {
         "post-autoload-dump": [
             "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
-        ]
-    },
-    "config": {
-        "vendor-dir": ".Build/vendor",
-        "bin-dir": ".Build/bin"
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0.x-dev"
-        },
-        "typo3/cms": {
-            "extension-key": "cvc_twig",
-            "cms-package-dir": "{$vendor-dir}/typo3/cms",
-            "web-dir": ".Build/public"
-        }
+        ],
+        "fix": [
+            "@fix:code-style",
+            "@composer normalize"
+        ],
+        "test": [
+            "@composer normalize --dry-run",
+            "@test:code-style",
+            "@test:phpunit"
+        ],
+        "test:code-style": "php-cs-fixer fix --dry-run --diff",
+        "test:phpstan": "phpstan analyse",
+        "test:phpunit": "phpunit -c ./phpunit.xml"
     }
 }
