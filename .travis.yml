@@ -54,6 +54,10 @@ jobs:
     include:
         -
             <<: *lint_php
+            name: Lint PHP 7.4
+            php: 7.4
+        -
+            <<: *lint_php
             name: Lint PHP 7.3
             php: 7.3
         -
@@ -63,7 +67,11 @@ jobs:
         -
             <<: *editor_config
             name: Lint Editorconfig
-            php: 7.3
+            php: 7.4
+        -
+            <<: *php_stan
+            name: PHPStan (PHP 7.4)
+            php: 7.4
         -
             <<: *php_stan
             name: PHPStan (PHP 7.3)
@@ -74,6 +82,11 @@ jobs:
             php: 7.2
         -
             <<: *functional_tests
+            name: Functional Tests (TYPO3 9.5, PHP 7.4)
+            php: 7.4
+            env: TYPO3_VERSION=^9.5
+        -
+            <<: *functional_tests
             name: Functional Tests (TYPO3 9.5, PHP 7.3)
             php: 7.3
             env: TYPO3_VERSION=^9.5
@@ -82,6 +95,16 @@ jobs:
             name: Functional Tests (TYPO3 9.5, PHP 7.2)
             php: 7.2
             env: TYPO3_VERSION=^9.5
+        -
+            <<: *functional_tests
+            name: Functional Tests (TYPO3 8.7, PHP 7.4)
+            php: 7.4
+            env: TYPO3_VERSION=^8.7
+        -
+            <<: *functional_tests
+            name: Functional Tests (TYPO3 8.7, PHP 7.3)
+            php: 7.3
+            env: TYPO3_VERSION=^8.7
         -
             <<: *functional_tests
             name: Functional Tests (TYPO3 8.7, PHP 7.2)

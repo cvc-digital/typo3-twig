@@ -22,7 +22,7 @@
         "typo3-ter/cvc_twig": "self.version"
     },
     "require": {
-        "php": ">=7.2,<7.4",
+        "php": ">=7.2",
         "twig/twig": "^2.0",
         "typo3/cms-core": "^8.7||^9.5",
         "typo3/cms-extbase": "^8.7||^9.5",
@@ -32,9 +32,9 @@
         "phpunit/phpunit": "^7",
         "friendsofphp/php-cs-fixer": "^2.3",
         "nimut/testing-framework": "^4.1.5",
-        "phpstan/phpstan": "^0.10.3",
+        "phpstan/phpstan": "^0.12.15",
         "typo3/cms-form": "^8.7||^9.5",
-        "saschaegerer/phpstan-typo3": "^0.10"
+        "saschaegerer/phpstan-typo3": "^0.13"
     },
     "conflict": {
         "comwrap/typo3-twig_for_typo3": "*",
