@@ -17,3 +17,4 @@
  */
 
 define('TYPO3_MODE', 'FE');
+$_EXTKEY = 'cvc_twig';
