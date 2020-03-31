@@ -76,6 +76,99 @@ table
    :aspect:`Type:` :code:`string`
    :sep:`|` :aspect:`Default:` :code:`null`
 
+t3_uri_action
+=============
+
+.. code-block:: twig
+   {{ t3_uri_action(
+       action,
+       arguments = [],
+       controller = null,
+       extensionName = null,
+       pluginName = null,
+       pageUid = null,
+       pageType = 0,
+       noCache = false,
+       section = '',
+       format = '',
+       linkAccessRestrictedPages = false,
+       additionalParams = [],
+       absolute = false,
+       addQueryString = false,
+       argumentsToBeExcludedFromQueryString = [],
+       addQueryStringMethod = ''
+   ) }}
+
+
+
+Arguments
+---------
+
+.. rst-class:: dl-parameters
+
+action
+   :aspect:`Type:` :code:`string`
+
+arguments
+   :aspect:`Type:` :code:`array`
+   :sep:`|` :aspect:`Default:` :code:`[]`
+
+controller
+   :aspect:`Type:` :code:`string`
+   :sep:`|` :aspect:`Default:` :code:`null`
+
+extensionName
+   :aspect:`Type:` :code:`string`
+   :sep:`|` :aspect:`Default:` :code:`null`
+
+pluginName
+   :aspect:`Type:` :code:`string`
+   :sep:`|` :aspect:`Default:` :code:`null`
+
+pageUid
+   :aspect:`Type:` :code:`int`
+   :sep:`|` :aspect:`Default:` :code:`null`
+
+pageType
+   :aspect:`Type:` :code:`int`
+   :sep:`|` :aspect:`Default:` :code:`0`
+
+noCache
+   :aspect:`Type:` :code:`bool`
+   :sep:`|` :aspect:`Default:` :code:`false`
+
+section
+   :aspect:`Type:` :code:`string`
+   :sep:`|` :aspect:`Default:` :code:`''`
+
+format
+   :aspect:`Type:` :code:`string`
+   :sep:`|` :aspect:`Default:` :code:`''`
+
+linkAccessRestrictedPages
+   :aspect:`Type:` :code:`bool`
+   :sep:`|` :aspect:`Default:` :code:`false`
+
+additionalParams
+   :aspect:`Type:` :code:`array`
+   :sep:`|` :aspect:`Default:` :code:`[]`
+
+absolute
+   :aspect:`Type:` :code:`bool`
+   :sep:`|` :aspect:`Default:` :code:`false`
+
+addQueryString
+   :aspect:`Type:` :code:`bool`
+   :sep:`|` :aspect:`Default:` :code:`false`
+
+argumentsToBeExcludedFromQueryString
+   :aspect:`Type:` :code:`array`
+   :sep:`|` :aspect:`Default:` :code:`[]`
+
+addQueryStringMethod
+   :aspect:`Type:` :code:`string`
+   :sep:`|` :aspect:`Default:` :code:`''`
+
 t3_uri_image
 ============
 
@@ -156,11 +249,32 @@ absolute
    :aspect:`Type:` :code:`bool`
    :sep:`|` :aspect:`Default:` :code:`false`
 
+t3_uri_model
+============
+
+.. code-block:: twig
+   {{ t3_uri_model(model) }}
+
+
+Generates a link fro the given domain model.
+
+A `link handler &lt;https://docs.typo3.org/typo3cms/extensions/core/latest/Changelog/8.6/Feature-79626-IntegrateRecordLinkHandler.html&gt;`__ must be configured for the mapped table.
+
+
+Arguments
+---------
+
+.. rst-class:: dl-parameters
+
+model
+   :aspect:`Type:` :code:`TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface`
+
 t3_uri_page
 ===========
 
 .. code-block:: twig
    {{ t3_uri_page(
+       pageUid = null,
        additionalParams = [],
        pageType = 0,
        noCache = false,
@@ -178,6 +292,10 @@ Arguments
 ---------
 
 .. rst-class:: dl-parameters
+
+pageUid
+   :aspect:`Type:` :code:`int`
+   :sep:`|` :aspect:`Default:` :code:`null`
 
 additionalParams
    :aspect:`Type:` :code:`array`

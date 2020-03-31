@@ -69,6 +69,7 @@
             "@fix:code-style",
             "@composer normalize"
         ],
+        "fix:code-style": "php-cs-fixer fix",
         "test": [
             "@composer normalize --dry-run",
             "@test:code-style",

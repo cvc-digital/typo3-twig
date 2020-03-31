@@ -22,17 +22,15 @@ use Twig\Environment;
 use Twig\Error\Error;
 use Twig\Extension\ExtensionInterface;
 use Twig\Loader\ArrayLoader;
-use Twig\RuntimeLoader\RuntimeLoaderInterface;
-use Twig\TwigFilter;
-use Twig\TwigFunction;
-use Twig\TwigTest;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase as Typo3FunctionalTestCase;
 
 /**
- * Copied from twig/twig package src/Test/IntegrationTestCase.php.
+ * Inspired by twig/twig package src/Test/IntegrationTestCase.php and adjusted to TYPO3.
  *
- * We need also to inherit the functional test case from TYPO3.
- * Since multiple inheritance is not possible in PHP, the source code was copied.
+ * Some Extensions require a valid TYPO3 runtime environment.
+ * For example, a valid page needs to be called.
+ * Therefore a Root-Page (UID=1) will be used to render the content.
  */
 abstract class FunctionalTestCase extends Typo3FunctionalTestCase
 {
@@ -52,34 +50,12 @@ abstract class FunctionalTestCase extends Typo3FunctionalTestCase
         $this->doIntegrationTest($file, $message, $condition, $templates, $exception, $outputs, $deprecation);
     }
 
-    /**
-     * @dataProvider getLegacyTests
-     * @group legacy
-     *
-     * @param mixed $file
-     * @param mixed $message
-     * @param mixed $condition
-     * @param mixed $templates
-     * @param mixed $exception
-     * @param mixed $outputs
-     * @param mixed $deprecation
-     */
-    public function testLegacyIntegration($file, $message, $condition, $templates, $exception, $outputs, $deprecation = '')
-    {
-        $this->doIntegrationTest($file, $message, $condition, $templates, $exception, $outputs, $deprecation);
-    }
-
-    public function getTests($name, $legacyTests = false)
+    public function getTests()
     {
         $fixturesDir = realpath($this->getFixturesDir());
-        $tests = [];
 
         foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($fixturesDir), \RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
             if (!preg_match('/\.test$/', $file)) {
-                continue;
-            }
-
-            if ($legacyTests xor false !== mb_strpos($file->getRealpath(), '.legacy.test')) {
                 continue;
             }
 
@@ -103,66 +79,16 @@ abstract class FunctionalTestCase extends Typo3FunctionalTestCase
                 throw new \InvalidArgumentException(sprintf('Test "%s" is not valid.', str_replace($fixturesDir.'/', '', $file)));
             }
 
-            $tests[] = [str_replace($fixturesDir.'/', '', $file), $message, $condition, $templates, $exception, $outputs, $deprecation];
+            $displayFileName = str_replace($fixturesDir.'/', '', $file);
+
+            yield $displayFileName => [$displayFileName, $message, $condition, $templates, $exception, $outputs, $deprecation];
         }
-
-        if ($legacyTests && empty($tests)) {
-            // add a dummy test to avoid a PHPUnit message
-            return [['not', '-', '', [], '', []]];
-        }
-
-        return $tests;
-    }
-
-    public function getLegacyTests()
-    {
-        return $this->getTests('testLegacyIntegration', true);
     }
 
     /**
      * @return string
      */
     abstract protected function getFixturesDir();
-
-    /**
-     * @return RuntimeLoaderInterface[]
-     */
-    protected function getRuntimeLoaders()
-    {
-        return [];
-    }
-
-    /**
-     * @return ExtensionInterface[]
-     */
-    protected function getExtensions()
-    {
-        return [];
-    }
-
-    /**
-     * @return TwigFilter[]
-     */
-    protected function getTwigFilters()
-    {
-        return [];
-    }
-
-    /**
-     * @return TwigFunction[]
-     */
-    protected function getTwigFunctions()
-    {
-        return [];
-    }
-
-    /**
-     * @return TwigTest[]
-     */
-    protected function getTwigTests()
-    {
-        return [];
-    }
 
     protected function doIntegrationTest($file, $message, $condition, $templates, $exception, $outputs, $deprecation = '')
     {
@@ -178,33 +104,20 @@ abstract class FunctionalTestCase extends Typo3FunctionalTestCase
         }
 
         $loader = new ArrayLoader($templates);
+        $typo3TwigEnvironment = GeneralUtility::getContainer()->get(Environment::class);
+        $extensions = array_filter($typo3TwigEnvironment->getExtensions(), function (ExtensionInterface $extension): bool {
+            return mb_strpos(get_class($extension), 'Twig\Extension') !== 0;
+        });
 
         foreach ($outputs as $i => $match) {
             $config = array_merge([
                 'cache' => false,
                 'strict_variables' => true,
             ], $match[2] ? eval($match[2].';') : []);
+
             $twig = new Environment($loader, $config);
             $twig->addGlobal('global', 'global');
-            foreach ($this->getRuntimeLoaders() as $runtimeLoader) {
-                $twig->addRuntimeLoader($runtimeLoader);
-            }
-
-            foreach ($this->getExtensions() as $extension) {
-                $twig->addExtension($extension);
-            }
-
-            foreach ($this->getTwigFilters() as $filter) {
-                $twig->addFilter($filter);
-            }
-
-            foreach ($this->getTwigTests() as $test) {
-                $twig->addTest($test);
-            }
-
-            foreach ($this->getTwigFunctions() as $function) {
-                $twig->addFunction($function);
-            }
+            $twig->setExtensions($extensions);
 
             // avoid using the same PHP class name for different cases
             $p = new \ReflectionProperty($twig, 'templateClassPrefix');

@@ -8,8 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-* Mark `TwigTemplateContentObject` as internal
+* Mark `Cvc\Typo3\CvcTwig\ContentObject\TwigTemplateContentObject` as internal
 * Mark `Cvc\Typo3\CvcTwig\Mvc\View\StandaloneView` as final
+* Mark `Cvc\Typo3\CvcTwig\Extbase\Mvc\View\TwigView` as final
 
 ### Added
 
@@ -24,11 +25,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Support for PHP 7.3
 * Support for PHP 7.2
 * Form related Twig function `t3_form_render` (install `cvc/typo3-twig-form` instead)
-* Extbase related (install `cvc/typo3-twig-extbase` instead)
-    * Twig functions
-        * `t3_uri_model`
-        * `t3_uri_action`
-    * Class `Cvc\Typo3\CvcTwig\Extbase\Mvc\View\TwigView`
 * Class `Cvc\Typo3\CvcTwig\Twig\Environment`
 * Cache configuration `twig_timestamps` ([#31](https://github.com/cvc-digital/typo3-twig/pull/31))
 
