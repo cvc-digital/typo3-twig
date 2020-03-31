@@ -6,9 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## 1.1.1
 
+### Fixed
+
+* Link generating Twig functions ([#12](https://github.com/cvc-digital/typo3-twig/pull/12))
+
 ### Added
 
-* Support PHP 7.4
+* Support PHP 7.4 ([#39](https://github.com/cvc-digital/typo3-twig/pull/39))
 
 ## 1.1.0
 
