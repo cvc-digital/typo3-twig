@@ -52,33 +52,13 @@ jobs:
     - <<: *lint_php
       name: Lint PHP 7.4
       php: 7.4
-    - <<: *lint_php
-      name: Lint PHP 7.3
-      php: 7.3
-    - <<: *lint_php
-      name: Lint PHP 7.2
-      php: 7.2
     - <<: *editor_config
       name: Lint Editorconfig
       php: 7.4
     - <<: *php_stan
       name: PHPStan (PHP 7.4)
       php: 7.4
-    - <<: *php_stan
-      name: PHPStan (PHP 7.3)
-      php: 7.3
-    - <<: *php_stan
-      name: PHPStan (PHP 7.2)
-      php: 7.2
     - <<: *functional_tests
       name: Functional Tests (TYPO3 10.3, PHP 7.4)
       php: 7.4
-      env: TYPO3_VERSION=^10.3
-    - <<: *functional_tests
-      name: Functional Tests (TYPO3 10.3, PHP 7.3)
-      php: 7.3
-      env: TYPO3_VERSION=^10.3
-    - <<: *functional_tests
-      name: Functional Tests (TYPO3 10.3, PHP 7.2)
-      php: 7.2
       env: TYPO3_VERSION=^10.3

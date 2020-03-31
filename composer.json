@@ -19,8 +19,7 @@
         }
     ],
     "require": {
-        "php": "^7.2",
-        "ergebnis/composer-normalize": "^2.3",
+        "php": "^7.4",
         "twig/twig": "^3",
         "typo3/cms-core": "^10.3",
         "typo3/cms-extbase": "^10.3",
@@ -30,9 +29,10 @@
         "typo3-ter/cvc_twig": "self.version"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.3",
-        "phpstan/phpstan": "^0.11.15",
-        "phpunit/phpunit": "^8",
+        "ergebnis/composer-normalize": "^2.3",
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "phpstan/phpstan": "^0.12.18",
+        "phpunit/phpunit": "^9",
         "typo3/testing-framework": "^6"
     },
     "config": {
@@ -70,6 +70,7 @@
         "test": [
             "@composer normalize --dry-run",
             "@test:code-style",
+            "@test:phpstan",
             "@test:phpunit"
         ],
         "test:code-style": "php-cs-fixer fix --dry-run --diff",
