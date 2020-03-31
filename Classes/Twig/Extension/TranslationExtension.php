@@ -35,6 +35,13 @@ class TranslationExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * Translates the given translation key into the active language.
+     *
+     * @param string      $key           the key for the translation
+     * @param array       $arguments     the arguments that are replaced while translating
+     * @param string|null $extensionName the name of the TYPO3 extension where the translation file is located
+     */
     public static function translate(
         Environment $environment,
         string $key,

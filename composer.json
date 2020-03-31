@@ -29,10 +29,12 @@
         "typo3-ter/cvc_twig": "self.version"
     },
     "require-dev": {
+        "cvc/twig-documentor": "^0.2",
         "ergebnis/composer-normalize": "^2.3",
         "friendsofphp/php-cs-fixer": "^2.16",
         "phpstan/phpstan": "^0.12.18",
         "phpunit/phpunit": "^9",
+        "symfony/var-dumper": "^4.3",
         "typo3/testing-framework": "^6"
     },
     "config": {

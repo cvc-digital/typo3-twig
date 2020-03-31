@@ -12,3 +12,6 @@ indent_style = tab
 
 [*.{yaml,yml}]
 indent_size = 2
+
+[*.{rst,rst.twig}]
+indent_size = 3

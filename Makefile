@@ -12,3 +12,11 @@ fix: dependencies
 .PHONY: dependencies
 dependencies:
 	composer install
+
+.PHONY: documentation
+documentation: dependencies
+	php bin/generate-docs.php
+
+.PHONY: clean
+clean:
+	rm -rf .Build composer.lock

@@ -1,0 +1,56 @@
+.. include:: ../../Includes.txt
+
+{% for i in range(1, headline|length) %}={% endfor %}
+
+{{ headline }}
+{% for i in range(1, headline|length) %}={% endfor %}
+
+
+.. contents:: :local:
+   :depth: 1
+{% for description in descriptions %}
+
+{{ description.name }}
+{% for i in range(1, description.name|length) %}={% endfor %}
+
+
+.. code-block:: twig
+{% for line in description.defaultExample|split("\n") %}
+   {{ line | raw }}
+{% endfor %}
+
+{% if description.summary %}
+
+{{ description.summary }}
+{% endif %}
+{% if description.hasDescriptionText %}
+
+{{ description.descriptionText }}
+{% endif %}
+
+{% for example in description.examples %}
+.. code-block:: twig
+{% for line in example.sourceCode|split("\n") %}
+   {{ line | raw }}
+{% endfor %}
+{% endfor %}
+{% if description.parameters %}
+
+Arguments
+---------
+
+.. rst-class:: dl-parameters
+{% for parameter in description.parameters %}
+
+{{ parameter.name }}
+   :aspect:`Type:` :code:`{{ parameter.type | default('mixed') }}`
+{% if parameter.hasDefaultValue %}
+   :sep:`|` :aspect:`Default:` :code:`{{ parameter.defaultValue | raw }}`
+{% endif %}
+{% if parameter.summary %}
+
+   {{ parameter.summary }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}

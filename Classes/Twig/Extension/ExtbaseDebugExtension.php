@@ -44,6 +44,28 @@ class ExtbaseDebugExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * Displays the content of the variable(s) on the screen.
+     *
+     * The :code:`dump()` functions prints the contents of a variable.
+     * This is useful for debugging.
+     * Please ensure that the frontend debug mode is on, because otherwise the function does not print anything.
+     * Internally :code:`DebuggerUtility::var_dump()` is used.
+     *
+     * @param mixed ...$vars Any number of variables.
+     * @param mixed $context
+     *
+     * @return false|string|void
+     *
+     * @example {# print a single variable #}
+     *          {{ dump(foo) }}
+     *
+     *          {# print multiple variables #}
+     *          {{ dump(foo, bar, baz) }}
+     *
+     *          {# print all variables #}
+     *          {{ dump() }}
+     */
     public static function dump(Environment $env, $context, ...$vars)
     {
         if (!$env->isDebug()) {

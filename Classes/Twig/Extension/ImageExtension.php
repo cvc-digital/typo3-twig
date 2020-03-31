@@ -22,7 +22,9 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
+use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Service\ImageService;
 
@@ -38,6 +40,12 @@ class ImageExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * Returns the URL to the given image. If an error occurs, then :code:`null` is returned and no error is raised.
+     *
+     * @param FileInterface|FileReference|null $image the image can be a reference or an instance of :code:`FileInterface` or :code:`FileReference`
+     * @param string|null                      $crop  the JSON-formatted crop settings
+     */
     public static function imageUri(
         string $src = null,
         bool $treatIdAsReference = false,

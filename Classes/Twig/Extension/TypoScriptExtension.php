@@ -66,10 +66,22 @@ class TypoScriptExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * Renders a TypoScript object. The content object renderer can be populated using the data argument.
+     *
+     * @param mixed|null $data
+     */
     public function renderCObject(string $typoScriptObjectPath, $data = null, string $currentValueKey = null, string $table = null)
     {
+        /*
+         * Sets the $TSFE->cObjectDepthCounter in Backend mode
+         * This somewhat hacky work around is currently needed because the cObjGetSingle() function of
+         * \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer relies on this setting.
+         */
         if (TYPO3_MODE === 'BE') {
-            $this->simulateFrontendEnvironment();
+            $tsfeBackup = isset($GLOBALS['TSFE']) ? $GLOBALS['TSFE'] : null;
+            $GLOBALS['TSFE'] = new \stdClass();
+            $GLOBALS['TSFE']->cObjectDepthCounter = 100;
         }
         $currentValue = null;
         if (is_object($data)) {
@@ -94,31 +106,10 @@ class TypoScriptExtension extends AbstractExtension
             $setup = $setup[$segment.'.'];
         }
         $content = $this->contentObjectRenderer->cObjGetSingle($setup[$lastSegment], $setup[$lastSegment.'.']);
-        if (TYPO3_MODE === 'BE') {
-            $this->resetFrontendEnvironment();
+        if (isset($tsfeBackup)) {
+            $GLOBALS['TSFE'] = $tsfeBackup;
         }
 
         return $content;
-    }
-
-    /**
-     * Sets the $TSFE->cObjectDepthCounter in Backend mode
-     * This somewhat hacky work around is currently needed because the cObjGetSingle() function of \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer relies on this setting.
-     */
-    protected function simulateFrontendEnvironment()
-    {
-        $this->tsfeBackup = isset($GLOBALS['TSFE']) ? $GLOBALS['TSFE'] : null;
-        $GLOBALS['TSFE'] = new \stdClass();
-        $GLOBALS['TSFE']->cObjectDepthCounter = 100;
-    }
-
-    /**
-     * Resets $GLOBALS['TSFE'] if it was previously changed by simulateFrontendEnvironment().
-     *
-     * @see simulateFrontendEnvironment()
-     */
-    protected function resetFrontendEnvironment()
-    {
-        $GLOBALS['TSFE'] = $this->tsfeBackup;
     }
 }
