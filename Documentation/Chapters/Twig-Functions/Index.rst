@@ -11,7 +11,9 @@ dump
 ====
 
 .. code-block:: twig
+
    {{ dump(vars) }}
+
 
 
 Displays the content of the variable(s) on the screen.
@@ -22,6 +24,7 @@ Please ensure that the frontend debug mode is on, because otherwise the function
 Internally :code:`DebuggerUtility::var_dump()` is used.
 
 .. code-block:: twig
+
    {# print a single variable #}
    {{ dump(foo) }}
    
@@ -30,6 +33,8 @@ Internally :code:`DebuggerUtility::var_dump()` is used.
    
    {# print all variables #}
    {{ dump() }}
+
+
 
 Arguments
 ---------
@@ -45,6 +50,7 @@ t3_cobject
 ==========
 
 .. code-block:: twig
+
    {{ t3_cobject(
        typoScriptObjectPath,
        data = null,
@@ -53,8 +59,8 @@ t3_cobject
    ) }}
 
 
-Renders a TypoScript object. The content object renderer can be populated using the data argument.
 
+Renders a TypoScript object. The content object renderer can be populated using the data argument.
 
 Arguments
 ---------
@@ -80,6 +86,7 @@ t3_uri_action
 =============
 
 .. code-block:: twig
+
    {{ t3_uri_action(
        action,
        arguments = [],
@@ -173,6 +180,7 @@ t3_uri_image
 ============
 
 .. code-block:: twig
+
    {{ t3_uri_image(
        src = null,
        treatIdAsReference = false,
@@ -189,8 +197,8 @@ t3_uri_image
    ) }}
 
 
-Returns the URL to the given image. If an error occurs, then :code:`null` is returned and no error is raised.
 
+Returns the URL to the given image. If an error occurs, then :code:`null` is returned and no error is raised.
 
 Arguments
 ---------
@@ -253,12 +261,14 @@ t3_uri_model
 ============
 
 .. code-block:: twig
+
    {{ t3_uri_model(model) }}
+
 
 
 Generates a link fro the given domain model.
 
-A `link handler &lt;https://docs.typo3.org/typo3cms/extensions/core/latest/Changelog/8.6/Feature-79626-IntegrateRecordLinkHandler.html&gt;`__ must be configured for the mapped table.
+A `link handler <https://docs.typo3.org/typo3cms/extensions/core/latest/Changelog/8.6/Feature-79626-IntegrateRecordLinkHandler.html>`__ must be configured for the mapped table.
 
 
 Arguments
@@ -273,6 +283,7 @@ t3_uri_page
 ===========
 
 .. code-block:: twig
+
    {{ t3_uri_page(
        pageUid = null,
        additionalParams = [],
@@ -337,12 +348,14 @@ t3_uri_record
 =============
 
 .. code-block:: twig
+
    {{ t3_uri_record(table, recordUid) }}
+
 
 
 Generates a link for the given record.
 
-A `link handler &lt;https://docs.typo3.org/typo3cms/extensions/core/latest/Changelog/8.6/Feature-79626-IntegrateRecordLinkHandler.html&gt;`__ must be configured for the mapped table.
+A `link handler <https://docs.typo3.org/typo3cms/extensions/core/latest/Changelog/8.6/Feature-79626-IntegrateRecordLinkHandler.html>`__ must be configured for the mapped table.
 
 
 Arguments
@@ -364,6 +377,7 @@ t3_uri_typolink
 ===============
 
 .. code-block:: twig
+
    {{ t3_uri_typolink(parameter, additionalParams = []) }}
 
 
