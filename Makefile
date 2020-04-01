@@ -5,6 +5,10 @@ export typo3DatabaseName=typo3
 test: dependencies
 	composer test
 
+.PHONY: test-phpunit
+test-phpunit: dependencies
+	composer test:phpunit
+
 .PHONY: fix
 fix: dependencies
 	composer fix

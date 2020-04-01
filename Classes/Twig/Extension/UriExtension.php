@@ -21,7 +21,10 @@ namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
 
@@ -30,22 +33,28 @@ use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
  *
  * @internal
  */
-class UriExtension extends AbstractExtension
+final class UriExtension extends AbstractExtension
 {
-    /**
-     * @var UriBuilder
-     */
-    private $uriBuilder;
+    private UriBuilder $uriBuilder;
+    private TypoLinkCodecService $typoLinkCodecService;
+    private DataMapper $dataMapper;
 
-    public function __construct(UriBuilder $uriBuilder)
-    {
+    public function __construct(
+        UriBuilder $uriBuilder,
+        TypoLinkCodecService $typoLinkCodecService,
+        ObjectManager $objectManager
+    ) {
         $this->uriBuilder = $uriBuilder;
+        $this->typoLinkCodecService = $typoLinkCodecService;
+        $this->dataMapper = $objectManager->get(DataMapper::class);
     }
 
     public function getFunctions()
     {
         return [
-            new TwigFunction('t3_uri_page', [$this, 'uriPage'], ['needs_environment' => true]),
+            new TwigFunction('t3_uri_action', [$this, 'uriAction']),
+            new TwigFunction('t3_uri_model', [$this, 'modelUri']),
+            new TwigFunction('t3_uri_page', [$this, 'uriPage']),
             new TwigFunction('t3_uri_record', [$this, 'recordUri']),
             new TwigFunction('t3_uri_typolink', [$this, 'typoLinkUri']),
         ];
@@ -119,17 +128,28 @@ class UriExtension extends AbstractExtension
      *
      * @param string $table     the table of the record
      * @param int    $recordUid the UID of the record
-     *
-     * @return string
      */
     public function recordUri(string $table, int $recordUid): ?string
     {
-        $parameter = 't3://record?identifier='.$table.'&uid='.$recordUid;
+        $paramter = 't3://record?'.http_build_query(['identifier' => $table, 'uid' => $recordUid]);
 
-        return static::typolinkUri($parameter);
+        return static::typoLinkUri($paramter);
     }
 
-    public function typolinkUri(
+    /**
+     * Generates a link fro the given domain model.
+     *
+     * A `link handler <https://docs.typo3.org/typo3cms/extensions/core/latest/Changelog/8.6/Feature-79626-IntegrateRecordLinkHandler.html>`__ must be configured for the mapped table.
+     */
+    public function modelUri(DomainObjectInterface $model): ?string
+    {
+        $table = $this->dataMapper->convertClassNameToTableName(get_class($model));
+        $recordUid = $model->getUid();
+
+        return static::recordUri($table, $recordUid);
+    }
+
+    public function typoLinkUri(
         string $parameter,
         array $additionalParams = []
     ): ?string {
@@ -139,7 +159,7 @@ class UriExtension extends AbstractExtension
             $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $content = $contentObject->typoLink_URL(
                 [
-                    'parameter' => self::createTypolinkParameterFromArguments($parameter, $additionalParams),
+                    'parameter' => self::createTypoLinkParameterFromArguments($parameter, http_build_query($additionalParams)),
                 ]
             );
         }
@@ -147,16 +167,11 @@ class UriExtension extends AbstractExtension
         return $content;
     }
 
-    private function createTypolinkParameterFromArguments($parameter, $additionalParameters = '')
+    private function createTypoLinkParameterFromArguments(string $parameter, string $additionalParameters): string
     {
-        $typoLinkCodec = GeneralUtility::makeInstance(TypoLinkCodecService::class);
-        $typolinkConfiguration = $typoLinkCodec->decode($parameter);
+        $typoLinkConfiguration = $this->typoLinkCodecService->decode($parameter);
+        $typoLinkConfiguration['additionalParams'] .= $additionalParameters;
 
-        // Combine additionalParams
-        if ($additionalParameters) {
-            $typolinkConfiguration['additionalParams'] .= $additionalParameters;
-        }
-
-        return $typoLinkCodec->encode($typolinkConfiguration);
+        return $this->typoLinkCodecService->encode($typoLinkConfiguration);
     }
 }
