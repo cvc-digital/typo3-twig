@@ -34,32 +34,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 final class StandaloneView
 {
-    /**
-     * @var string
-     */
-    private $templateName;
-
-    /**
-     * @var string[]
-     */
-    private $templateRootPaths = [];
-
-    /**
-     * @var array[]
-     */
-    private $namespaces = [];
-
-    /**
-     * @var array
-     *
-     * @see assign()
-     */
-    private $variables;
-
-    /**
-     * @var Environment
-     */
-    private $environment;
+    private ?string $templateName = null;
+    private array $templateRootPaths = [];
+    private array $namespaces = [];
+    private array $variables = [];
+    private Environment $environment;
 
     public function __construct(Environment $environment)
     {
@@ -69,9 +48,9 @@ final class StandaloneView
     /**
      * Renders the view.
      *
-     * @throws RuntimeError
      * @throws SyntaxError
      * @throws LoaderError
+     * @throws RuntimeError
      *
      * @return string The rendered view
      */

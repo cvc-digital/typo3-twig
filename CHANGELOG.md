@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Mark `Cvc\Typo3\CvcTwig\ContentObject\TwigTemplateContentObject` as internal
 * Mark `Cvc\Typo3\CvcTwig\Mvc\View\StandaloneView` as final
 * Mark `Cvc\Typo3\CvcTwig\Extbase\Mvc\View\TwigView` as final
+* Mark Twig Extension classes as final
 
 ### Added
 

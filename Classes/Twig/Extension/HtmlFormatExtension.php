@@ -28,7 +28,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 /**
  * @internal
  */
-class HtmlFormatExtension extends AbstractExtension
+final class HtmlFormatExtension extends AbstractExtension
 {
     public function getFilters()
     {

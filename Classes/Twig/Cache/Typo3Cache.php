@@ -27,15 +27,8 @@ use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
  */
 final class Typo3Cache implements CacheInterface
 {
-    /**
-     * @var PhpFrontend
-     */
-    private $phpFrontend;
-
-    /**
-     * @var FileBackend
-     */
-    private $fileBackend;
+    private PhpFrontend $phpFrontend;
+    private FileBackend $fileBackend;
 
     public function __construct(PhpFrontend $phpFrontend)
     {

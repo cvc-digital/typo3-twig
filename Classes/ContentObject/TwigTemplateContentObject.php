@@ -49,15 +49,8 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class TwigTemplateContentObject extends AbstractContentObject
 {
-    /**
-     * @var ContentDataProcessor
-     */
-    private $contentDataProcessor;
-
-    /**
-     * @var StandaloneViewFactory
-     */
-    private $standaloneViewFactory;
+    private ContentDataProcessor $contentDataProcessor;
+    private StandaloneViewFactory $standaloneViewFactory;
 
     public function __construct(ContentObjectRenderer $cObj)
     {

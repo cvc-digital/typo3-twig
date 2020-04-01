@@ -27,7 +27,7 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 /**
  * @internal
  */
-class ExtbaseDebugExtension extends AbstractExtension
+final class ExtbaseDebugExtension extends AbstractExtension
 {
     public function getFunctions()
     {

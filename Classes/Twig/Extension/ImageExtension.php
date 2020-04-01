@@ -31,7 +31,7 @@ use TYPO3\CMS\Extbase\Service\ImageService;
 /**
  * @internal
  */
-class ImageExtension extends AbstractExtension
+final class ImageExtension extends AbstractExtension
 {
     public function getFunctions()
     {
