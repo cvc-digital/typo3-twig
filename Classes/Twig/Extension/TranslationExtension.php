@@ -26,7 +26,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 /**
  * @internal
  */
-class TranslationExtension extends AbstractExtension
+final class TranslationExtension extends AbstractExtension
 {
     public function getFilters()
     {

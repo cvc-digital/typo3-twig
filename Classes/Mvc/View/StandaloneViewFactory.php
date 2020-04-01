@@ -23,10 +23,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 
 final class StandaloneViewFactory implements SingletonInterface
 {
-    /**
-     * @var Environment
-     */
-    private $twigEnvironment;
+    private Environment $twigEnvironment;
 
     public function __construct(Environment $twigEnvironment)
     {

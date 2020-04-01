@@ -31,14 +31,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Typo3Loader implements LoaderInterface
 {
-    /**
-     * @var array
-     */
-    private $cache = [];
-    /**
-     * @var array
-     */
-    private $errorCache = [];
+    private array $cache = [];
+    private array $errorCache = [];
 
     /**
      * {@inheritdoc}

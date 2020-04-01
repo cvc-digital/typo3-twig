@@ -29,17 +29,13 @@ final class TwigEnvironmentCompilerPass implements CompilerPassInterface
 {
     /**
      * Indicates that debugging context is enabled.
-     *
-     * @var bool
      */
-    private $debug;
+    private bool $debug;
 
     /**
      * Indicates that test context is enabled.
-     *
-     * @var bool
      */
-    private $test;
+    private bool $test;
 
     public function __construct(bool $debug, bool $test)
     {

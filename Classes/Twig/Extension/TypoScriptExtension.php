@@ -21,41 +21,20 @@ namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * @internal
  */
-class TypoScriptExtension extends AbstractExtension
+final class TypoScriptExtension extends AbstractExtension
 {
-    /**
-     * @var array
-     */
-    protected $typoScriptSetup;
+    protected array $typoScriptSetup;
+    protected ContentObjectRenderer $contentObjectRenderer;
 
-    /**
-     * @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController contains a backup of the current['TSFE'] if used in BE mode
-     */
-    protected $tsfeBackup;
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-     */
-    protected $configurationManager;
-
-    /**
-     * @var ContentObjectRenderer
-     */
-    protected $contentObjectRenderer;
-
-    public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager)
+    public function __construct(ConfigurationManagerInterface $configurationManager, ContentObjectRenderer $contentObjectRenderer)
     {
-        $this->configurationManager = $configurationManager;
-        $this->typoScriptSetup = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-    }
-
-    public function injectContentObjectRenderer(ContentObjectRenderer $contentObjectRenderer)
-    {
+        $this->typoScriptSetup = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
         $this->contentObjectRenderer = $contentObjectRenderer;
     }
 
