@@ -82,6 +82,51 @@ table
    :aspect:`Type:` :code:`string`
    :sep:`|` :aspect:`Default:` :code:`null`
 
+t3_form_render
+==============
+
+.. code-block:: twig
+
+   {{ t3_form_render(
+       persistenceIdentifier = null,
+       factoryClass = 'TYPO3\\CMS\\Form\\Domain\\Factory\\ArrayFormFactory',
+       prototypeName = null,
+       overrideConfiguration = []
+   ) }}
+
+
+
+Renders a form using the `form framework <https://docs.typo3.org/typo3cms/extensions/form/Index.html>`__.
+
+Arguments
+---------
+
+.. rst-class:: dl-parameters
+
+persistenceIdentifier
+   :aspect:`Type:` :code:`string`
+   :sep:`|` :aspect:`Default:` :code:`null`
+
+   The identifier of the form, if a YAML file is used. If :code:`null`, then a Factory class needs to be set.
+
+factoryClass
+   :aspect:`Type:` :code:`string`
+   :sep:`|` :aspect:`Default:` :code:`'TYPO3\\CMS\\Form\\Domain\\Factory\\ArrayFormFactory'`
+
+   the fully qualified class name of the factory
+
+prototypeName
+   :aspect:`Type:` :code:`string`
+   :sep:`|` :aspect:`Default:` :code:`null`
+
+   name of the prototype to use
+
+overrideConfiguration
+   :aspect:`Type:` :code:`array`
+   :sep:`|` :aspect:`Default:` :code:`[]`
+
+   Factory specific configuration. This will allow to add additional configuration related to the current view.
+
 t3_uri_action
 =============
 
