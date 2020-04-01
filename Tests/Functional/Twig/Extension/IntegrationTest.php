@@ -19,6 +19,7 @@
 namespace Cvc\Typo3\CvcTwig\Tests\Functional\Twig\Extension;
 
 use Cvc\Typo3\CvcTwig\Twig\Test\FunctionalTestCase;
+use TYPO3\CMS\Core\Core\Bootstrap;
 
 class IntegrationTest extends FunctionalTestCase
 {
@@ -34,11 +35,11 @@ class IntegrationTest extends FunctionalTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->importDataSet(__DIR__.'/Fixtures/pages.xml');
+        Bootstrap::initializeLanguageObject();
     }
 
     protected function getFixturesDir()
     {
-        return __DIR__.'/TwigTests';
+        return __DIR__.'/Fixtures';
     }
 }
