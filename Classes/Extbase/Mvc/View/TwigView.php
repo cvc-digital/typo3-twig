@@ -18,6 +18,7 @@
 
 namespace Cvc\Typo3\CvcTwig\Extbase\Mvc\View;
 
+use Cvc\Typo3\CvcTwig\Extbase\Mvc\ControllerContextStack;
 use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneView;
 use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneViewFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -28,15 +29,17 @@ final class TwigView implements ViewInterface
 {
     private StandaloneView $standaloneView;
     private ?ControllerContext $controllerContext = null;
+    private ControllerContextStack $controllerContextStack;
 
-    public function __construct()
+    public function __construct(ControllerContextStack $controllerContextStack)
     {
         $this->standaloneView = GeneralUtility::makeInstance(StandaloneViewFactory::class)->create();
+        $this->controllerContextStack = $controllerContextStack;
     }
 
     public function setControllerContext(ControllerContext $controllerContext)
     {
-        $this->setControllerContext($controllerContext);
+        $this->controllerContext = $controllerContext;
     }
 
     public function assign($key, $value)
@@ -60,7 +63,19 @@ final class TwigView implements ViewInterface
 
     public function render()
     {
-        return $this->standaloneView->render();
+        $hasControllerContext = $this->controllerContext !== null;
+
+        if ($hasControllerContext) {
+            $this->controllerContextStack->push($this->controllerContext);
+        }
+
+        $content = $this->standaloneView->render();
+
+        if ($hasControllerContext) {
+            $this->controllerContextStack->pop();
+        }
+
+        return $content;
     }
 
     public function initializeView()

@@ -35,6 +35,7 @@
         "phpstan/phpstan": "^0.12.18",
         "phpunit/phpunit": "^9",
         "symfony/var-dumper": "^4.3",
+        "typo3/cms-form": "^10.3",
         "typo3/testing-framework": "^6"
     },
     "config": {

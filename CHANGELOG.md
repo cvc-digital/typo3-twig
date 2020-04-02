@@ -26,7 +26,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Support for TYPO3 v8
 * Support for PHP 7.3
 * Support for PHP 7.2
-* Form related Twig function `t3_form_render` (install `cvc/typo3-twig-form` instead)
 * Class `Cvc\Typo3\CvcTwig\Twig\Environment`
 * Cache configuration `twig_timestamps` ([#31](https://github.com/cvc-digital/typo3-twig/pull/31))
 
