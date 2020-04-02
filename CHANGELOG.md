@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Automatically resolve Twig extensions from service container
 * Support for TYPO3 v10.3
 * Support for PHP 7.4
-* Twig Filter `t3_typolink`
+* Twig Filter `t3_typolink` ([#5](https://github.com/cvc-digital/typo3-twig/pull/5))
 
 ### Removed
 
@@ -28,6 +28,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Support for PHP 7.2
 * Class `Cvc\Typo3\CvcTwig\Twig\Environment`
 * Cache configuration `twig_timestamps` ([#31](https://github.com/cvc-digital/typo3-twig/pull/31))
+
+## 1.1.2
+
+### Fixed
+
+* Release version (it was not included in `ext_emconf.php`)
+
+## 1.1.1
+
+### Fixed
+
+* Link generating Twig functions ([#12](https://github.com/cvc-digital/typo3-twig/pull/12))
+
+### Added
+
+* Support PHP 7.4 ([#39](https://github.com/cvc-digital/typo3-twig/pull/39))
 
 ## 1.1.0
 
