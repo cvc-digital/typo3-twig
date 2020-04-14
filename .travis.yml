@@ -9,12 +9,7 @@ cache:
   directories:
     - $HOME/.composer/cache
 
-stages:
-  - static_analysis
-  - test
-
-.Functional Tests Template: &functional_tests
-  stage: test
+.Tests: &tests
   services:
     - mysql
   install:
@@ -24,41 +19,22 @@ stages:
     - export typo3DatabaseHost=localhost
     - export typo3DatabaseUsername=root
     - export typo3DatabasePassword=
+    - export PHPUNIT_OPTIONS="--coverage-clover=coverage.xml"
   script:
-    - php .Build/bin/phpunit -c ./phpunit.xml --coverage-clover=coverage.xml
+    - make test
     - bash <(curl -s https://codecov.io/bash)
 
-.Lint PHP: &lint_php
-  stage: static_analysis
-  script:
-    - find . -name \*.php ! -path "./.Build/*" ! -path "./vendor/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
-
 .Lint Editorconfig: &editor_config
-  stage: static_analysis
   install:
     - npm install -g editorconfig-checker@^2.0
   script:
     - editorconfig-checker -exclude '(LICENSE|^Documentation/)'
 
-.PHPStan: &php_stan
-  stage: static_analysis
-  install:
-    - composer install --prefer-dist --no-progress
-  script:
-    - php .Build/bin/phpstan analyse
-
 jobs:
   include:
-    - <<: *lint_php
-      name: Lint PHP 7.4
-      php: 7.4
     - <<: *editor_config
       name: Lint Editorconfig
-      php: 7.4
-    - <<: *php_stan
-      name: PHPStan (PHP 7.4)
-      php: 7.4
-    - <<: *functional_tests
-      name: Functional Tests (TYPO3 10.3, PHP 7.4)
+    - <<: *tests
+      name: Tests (TYPO3 10.3, PHP 7.4)
       php: 7.4
       env: TYPO3_VERSION=^10.3
