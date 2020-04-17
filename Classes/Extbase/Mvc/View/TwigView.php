@@ -92,4 +92,9 @@ final class TwigView implements ViewInterface
 
         $this->standaloneView->setTemplateName("$controller/$action.$format.twig");
     }
+
+    public function setTemplateRootPaths(array $templateRootPaths)
+    {
+        $this->standaloneView->setTemplateRootPaths($templateRootPaths);
+    }
 }
