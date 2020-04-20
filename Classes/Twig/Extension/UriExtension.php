@@ -18,11 +18,11 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
+use Cvc\Typo3\CvcTwig\Extbase\Mvc\ControllerContextStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
-use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -35,16 +35,16 @@ use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
  */
 final class UriExtension extends AbstractExtension
 {
-    private UriBuilder $uriBuilder;
+    private ControllerContextStack $controllerContextStack;
     private TypoLinkCodecService $typoLinkCodecService;
     private DataMapper $dataMapper;
 
     public function __construct(
-        UriBuilder $uriBuilder,
+        ControllerContextStack $controllerContextStack,
         TypoLinkCodecService $typoLinkCodecService,
         ObjectManager $objectManager
     ) {
-        $this->uriBuilder = $uriBuilder;
+        $this->controllerContextStack = $controllerContextStack;
         $this->typoLinkCodecService = $typoLinkCodecService;
         $this->dataMapper = $objectManager->get(DataMapper::class);
     }
@@ -72,9 +72,14 @@ final class UriExtension extends AbstractExtension
         array $argumentsToBeExcludedFromQueryString = [],
         string $addQueryStringMethod = ''): ?string
     {
-        return $this->uriBuilder
+        $uriBuilder = $this->controllerContextStack->getControllerContext()->getUriBuilder()->reset();
+
+        if ($pageUid !== null) {
+            $uriBuilder->setTargetPageUid($pageUid);
+        }
+
+        return $uriBuilder
             ->reset()
-            ->setTargetPageUid($pageUid)
             ->setTargetPageType($pageType)
             ->setNoCache($noCache)
             ->setSection($section)
@@ -105,9 +110,13 @@ final class UriExtension extends AbstractExtension
         array $argumentsToBeExcludedFromQueryString = [],
         string $addQueryStringMethod = ''): ?string
     {
-        return $this->uriBuilder
-            ->reset()
-            ->setTargetPageUid($pageUid)
+        $uriBuilder = $this->controllerContextStack->getControllerContext()->getUriBuilder()->reset();
+
+        if ($pageUid !== null) {
+            $uriBuilder->setTargetPageUid($pageUid);
+        }
+
+        return $uriBuilder
             ->setTargetPageType($pageType)
             ->setNoCache($noCache)
             ->setSection($section)
