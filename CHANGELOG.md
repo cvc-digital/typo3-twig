@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## 2.0.0-alpha1
+## 2.0.0
 
 ### Changed
 
@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 * Automatically resolve Twig extensions from service container
-* Support for TYPO3 v10.3
+* Support for TYPO3 v10.4
 * Support for PHP 7.4
 * Twig Filter `t3_typolink` ([#5](https://github.com/cvc-digital/typo3-twig/pull/5))
 

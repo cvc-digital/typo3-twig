@@ -21,21 +21,21 @@
     "require": {
         "php": "^7.4",
         "twig/twig": "^3",
-        "typo3/cms-core": "^10.3",
-        "typo3/cms-extbase": "^10.3",
-        "typo3/cms-frontend": "^10.3"
+        "typo3/cms-core": "^10.4",
+        "typo3/cms-extbase": "^10.4",
+        "typo3/cms-frontend": "^10.4"
     },
     "replace": {
         "typo3-ter/cvc_twig": "self.version"
     },
     "require-dev": {
-        "cvc/twig-documentor": "^0.2",
+        "cvc/twig-documentor": "^0.3",
         "ergebnis/composer-normalize": "^2.3",
         "friendsofphp/php-cs-fixer": "^2.16",
         "phpstan/phpstan": "^0.12.18",
         "phpunit/phpunit": "^9",
         "symfony/var-dumper": "^4.3",
-        "typo3/cms-form": "^10.3",
+        "typo3/cms-form": "^10.4",
         "typo3/testing-framework": "^6"
     },
     "config": {

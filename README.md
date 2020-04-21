@@ -13,8 +13,10 @@ You can use Twig templates in your Extbase controllers or in your TypoScript.
 ## Version compatibility
 
 The following table shows which versions of this package are compatible with which TYPO3 version.
-Version 1 is compatible to TYPO3 v8.7 and v9.5.
-Version 2 that is developed on the `master` branch is compatible to TYPO3 v10.
+
+* Version 1 is compatible to TYPO3 `8.7` and `9.5`.
+* Version 2 that is developed on the `master` branch is compatible to TYPO3 v10.4.
+
 Since Version 2, PHP `7.4` is required.
 
 |           | [1.x](https://github.com/cvc-digital/typo3-twig/tree/1.x) |    2.x   |
