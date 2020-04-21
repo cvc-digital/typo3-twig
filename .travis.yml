@@ -35,6 +35,6 @@ jobs:
     - <<: *editor_config
       name: Lint Editorconfig
     - <<: *tests
-      name: Tests (TYPO3 10.3, PHP 7.4)
+      name: Tests (TYPO3 10.4, PHP 7.4)
       php: 7.4
-      env: TYPO3_VERSION=^10.3
+      env: TYPO3_VERSION=^10.4
