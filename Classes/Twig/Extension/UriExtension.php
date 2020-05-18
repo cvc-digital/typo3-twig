@@ -79,7 +79,6 @@ final class UriExtension extends AbstractExtension
         }
 
         return $uriBuilder
-            ->reset()
             ->setTargetPageType($pageType)
             ->setNoCache($noCache)
             ->setSection($section)
