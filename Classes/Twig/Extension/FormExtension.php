@@ -22,6 +22,7 @@ use Cvc\Typo3\CvcTwig\Extbase\Mvc\ControllerContextStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Request;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -39,6 +40,7 @@ class FormExtension extends AbstractExtension
 
     public function __construct(ControllerContextStack $controllerContextStack)
     {
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->controllerContextStack = $controllerContextStack;
     }
 
