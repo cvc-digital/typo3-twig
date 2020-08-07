@@ -32,11 +32,11 @@
         "cvc/twig-documentor": "^0.3",
         "ergebnis/composer-normalize": "^2.3",
         "friendsofphp/php-cs-fixer": "^2.16",
+        "nimut/testing-framework": "^5.1",
         "phpstan/phpstan": "^0.12.18",
-        "phpunit/phpunit": "^9",
+        "phpunit/phpunit": "^7",
         "symfony/var-dumper": "^4.3",
-        "typo3/cms-form": "^10.4",
-        "typo3/testing-framework": "^6"
+        "typo3/cms-form": "^10.4"
     },
     "config": {
         "bin-dir": ".Build/bin",
@@ -64,7 +64,7 @@
     },
     "scripts": {
         "post-autoload-dump": [
-            "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
+            "Nimut\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
         ]
     }
 }

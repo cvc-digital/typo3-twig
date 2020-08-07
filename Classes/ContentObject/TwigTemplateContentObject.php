@@ -22,6 +22,7 @@ use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneViewFactory;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
@@ -35,13 +36,13 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  *
  * page.10 = TWIGTEMPLATE
  * page.10 {
- *     template = example.html.twig
+ *     templateName = example.html.twig
  *     variables {
  *         foo = TEXT
  *         foo.value = Bar!
  *     }
  *     templateRootPaths {
- *         10 = EXT:twig/Resources/Private/TwigTemplates
+ *         10 = EXT:twig/Resources/Private/TwigTemplates/
  *     }
  * }
  *
@@ -51,6 +52,7 @@ class TwigTemplateContentObject extends AbstractContentObject
 {
     private ContentDataProcessor $contentDataProcessor;
     private StandaloneViewFactory $standaloneViewFactory;
+    private TypoScriptService $typoScriptService;
 
     public function __construct(ContentObjectRenderer $cObj)
     {
@@ -60,9 +62,12 @@ class TwigTemplateContentObject extends AbstractContentObject
         assert($contentDataProcessor instanceof ContentDataProcessor);
         $standaloneViewFactory = GeneralUtility::getContainer()->get(StandaloneViewFactory::class);
         assert($standaloneViewFactory instanceof StandaloneViewFactory);
+        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
+        assert($typoScriptService instanceof TypoScriptService);
 
         $this->contentDataProcessor = $contentDataProcessor;
         $this->standaloneViewFactory = $standaloneViewFactory;
+        $this->typoScriptService = $typoScriptService;
     }
 
     /**
@@ -191,17 +196,11 @@ class TwigTemplateContentObject extends AbstractContentObject
      * Returns any TypoScript settings.
      *
      * @param array $conf Configuration
-     *
-     * @return array|null
      */
     private function getSettings(array $conf): ?array
     {
         if (isset($conf['settings.'])) {
-            /** @var TypoScriptService $typoScriptService */
-            $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
-            $settings = $typoScriptService->convertTypoScriptArrayToPlainArray($conf['settings.']);
-
-            return $settings;
+            return $this->typoScriptService->convertTypoScriptArrayToPlainArray($conf['settings.']);
         }
 
         return null;
