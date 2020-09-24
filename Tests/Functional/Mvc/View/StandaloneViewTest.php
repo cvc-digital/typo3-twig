@@ -19,8 +19,8 @@
 namespace Cvc\Typo3\CvcTwig\Tests\Functional\Mvc\View;
 
 use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneViewFactory;
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class StandaloneViewTest extends FunctionalTestCase
 {

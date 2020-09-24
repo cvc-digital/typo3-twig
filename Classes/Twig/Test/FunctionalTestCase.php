@@ -18,12 +18,12 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Test;
 
+use Nimut\TestingFramework\TestCase\FunctionalTestCase as Typo3FunctionalTestCase;
 use Twig\Environment;
 use Twig\Error\Error;
 use Twig\Extension\ExtensionInterface;
 use Twig\Loader\ArrayLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase as Typo3FunctionalTestCase;
 
 /**
  * Inspired by twig/twig package src/Test/IntegrationTestCase.php and adjusted to TYPO3.
