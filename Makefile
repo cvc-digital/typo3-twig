@@ -1,5 +1,6 @@
 export typo3DatabaseDriver=pdo_sqlite
 export typo3DatabaseName=typo3
+export XDEBUG_MODE=coverage
 
 .PHONY: test
 test: test-phpunit test-code-style test-composer-normalize test-phpstan
