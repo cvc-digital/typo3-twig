@@ -28,7 +28,7 @@ class StandaloneViewTest extends FunctionalTestCase
         'typo3conf/ext/cvc_twig',
     ];
 
-    public function test_twig_view_renders_template()
+    public function testTwigViewRendersTemplate()
     {
         $standaloneViewFactory = GeneralUtility::getContainer()->get(StandaloneViewFactory::class);
         $twigView = $standaloneViewFactory->create();

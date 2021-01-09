@@ -35,7 +35,7 @@ class RenderTwigTemplateTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(1, [__DIR__.'/../Fixtures/Extensions/twig_test/Configuration/TypoScript/page.typoscript']);
     }
 
-    public function test_template_is_rendered(): void
+    public function testTemplateIsRendered(): void
     {
         $this->assertContains("Foo Bar! Settings: Ipsum.\n", $this->getFrontendResponse(1)->getContent());
     }

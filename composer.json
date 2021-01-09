@@ -47,8 +47,8 @@
             "dev-master": "2.0.x-dev"
         },
         "typo3/cms": {
-            "extension-key": "cvc_twig",
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
+            "extension-key": "cvc_twig",
             "web-dir": ".Build/public"
         }
     },
