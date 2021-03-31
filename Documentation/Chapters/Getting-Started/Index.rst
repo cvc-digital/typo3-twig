@@ -24,7 +24,7 @@ To render a Twig template you can use the :code:`TWIGTEMPLATE` content object.
             foo.value = Bar!
         }
         templateRootPaths {
-            10 = EXT:twig/Resources/Private/TwigTemplates/
+            10 = EXT:cvc_twig/Resources/Private/TwigTemplates/
         }
     }
 
