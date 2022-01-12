@@ -65,9 +65,8 @@ final class ControllerContextStack
             $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $configurationManager->setContentObject($contentObject);
 
+            /** @var $request Request::class */
             $request = $this->objectManager->get(Request::class);
-            $request->setRequestUri(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
-            $request->setBaseUri(GeneralUtility::getIndpEnv('TYPO3_SITE_URL'));
             $uriBuilder = $this->objectManager->get(UriBuilder::class);
             $uriBuilder->setRequest($request);
             $this->default = $this->objectManager->get(ControllerContext::class);
