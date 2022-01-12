@@ -21,9 +21,9 @@
     "require": {
         "php": "^7.4",
         "twig/twig": "^3",
-        "typo3/cms-core": "^10.4",
-        "typo3/cms-extbase": "^10.4",
-        "typo3/cms-frontend": "^10.4"
+        "typo3/cms-core": "^11.5",
+        "typo3/cms-extbase": "^11.5",
+        "typo3/cms-frontend": "^11.5"
     },
     "replace": {
         "typo3-ter/cvc_twig": "self.version"
@@ -36,7 +36,7 @@
         "phpstan/phpstan": "^0.12.18",
         "phpunit/phpunit": "^7",
         "symfony/var-dumper": "^4.3",
-        "typo3/cms-form": "^10.4"
+        "typo3/cms-form": "^11.5"
     },
     "config": {
         "bin-dir": ".Build/bin",
