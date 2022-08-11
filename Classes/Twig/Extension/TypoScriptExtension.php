@@ -79,7 +79,7 @@ final class TypoScriptExtension extends AbstractExtension
         $lastSegment = array_pop($pathSegments);
         $setup = $this->typoScriptSetup;
         foreach ($pathSegments as $segment) {
-            if (!array_key_exists(($segment.'.'), $setup)) {
+            if (!array_key_exists($segment.'.', $setup)) {
                 throw new \RuntimeException('TypoScript object path "'.htmlspecialchars($typoScriptObjectPath).'" does not exist', 1253191023);
             }
             $setup = $setup[$segment.'.'];
