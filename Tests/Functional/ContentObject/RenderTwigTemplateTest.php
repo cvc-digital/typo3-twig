@@ -37,6 +37,6 @@ class RenderTwigTemplateTest extends FunctionalTestCase
 
     public function testTemplateIsRendered(): void
     {
-        $this->assertContains("Foo Bar! Settings: Ipsum.\n", $this->getFrontendResponse(1)->getContent());
+        $this->assertStringContainsString("Foo Bar! Settings: Ipsum.\n", $this->getFrontendResponse(1)->getContent());
     }
 }

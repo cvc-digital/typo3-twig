@@ -23,8 +23,7 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Web\Request;
-use TYPO3\CMS\Extbase\Mvc\Web\Response;
+use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory;
 use TYPO3\CMS\Form\Domain\Factory\FormFactoryInterface;
@@ -87,24 +86,9 @@ class FormExtension extends AbstractExtension
         /** @var FormFactoryInterface $factory */
         $factory = $this->objectManager->get($factoryClass);
         $formDefinition = $factory->build($overrideConfiguration, $prototypeName);
-        $response = $controllerContext->getResponse() ?? $this->objectManager->get(Response::class);
-        assert($response instanceof Response);
         $request = $controllerContext->getRequest();
         assert($request instanceof Request);
-        $form = $formDefinition->bind($request, $response);
-
-        // If the controller context does not contain a response object, this viewhelper is used in a
-        // fluid template rendered by the FluidTemplateContentObject. Handle the StopActionException
-        // as there is no extbase dispatcher involved that catches that. */
-        /** @var Response|null $responseFromControllerContext */
-        $responseFromControllerContext = $controllerContext->getResponse();
-        if ($responseFromControllerContext === null) {
-            try {
-                return $form->render();
-            } catch (\TYPO3\CMS\Extbase\Mvc\Exception\StopActionException $exception) {
-                return $response->shutdown();
-            }
-        }
+        $form = $formDefinition->bind($request);
 
         return $form->render();
     }
