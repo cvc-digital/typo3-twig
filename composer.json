@@ -1,9 +1,8 @@
 {
     "name": "cvc/typo3-twig",
-    "type": "typo3-cms-extension",
     "description": "Use the Twig template engine within your TYPO3 project.",
-    "homepage": "https://cvc.digital",
     "license": "GPL-3.0-or-later",
+    "type": "typo3-cms-extension",
     "authors": [
         {
             "name": "Markus Poerschke",
@@ -18,27 +17,43 @@
             "role": "Maintainer"
         }
     ],
+    "homepage": "https://cvc.digital",
     "require": {
-        "php": "^7.4",
+        "php": "^7.4 || ^8.0 || ^8.1",
         "twig/twig": "^3",
-        "typo3/cms-core": "^10.4",
-        "typo3/cms-extbase": "^10.4",
-        "typo3/cms-frontend": "^10.4"
+        "typo3/cms-core": "^10.4 || ^11.5",
+        "typo3/cms-extbase": "^10.4 || ^11.5",
+        "typo3/cms-frontend": "^10.4 || ^11.5"
+    },
+    "require-dev": {
+        "cvc/twig-documentor": "^0.3",
+        "ergebnis/composer-normalize": "^2.28",
+        "friendsofphp/php-cs-fixer": "^3.9",
+        "nimut/testing-framework": "^6.0",
+        "phpstan/phpstan": "^1.5",
+        "phpunit/phpunit": "^9.5",
+        "symfony/var-dumper": "^5.4",
+        "typo3/cms-form": "^10.4 || ^11.5"
     },
     "replace": {
         "typo3-ter/cvc_twig": "self.version"
     },
-    "require-dev": {
-        "cvc/twig-documentor": "^0.3",
-        "ergebnis/composer-normalize": "^2.3",
-        "friendsofphp/php-cs-fixer": "^2.16",
-        "nimut/testing-framework": "^5.1",
-        "phpstan/phpstan": "^0.12.18",
-        "phpunit/phpunit": "^7",
-        "symfony/var-dumper": "^4.3",
-        "typo3/cms-form": "^10.4"
+    "autoload": {
+        "psr-4": {
+            "Cvc\\Typo3\\CvcTwig\\": "Classes"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cvc\\Typo3\\CvcTwig\\Tests\\": "Tests"
+        }
     },
     "config": {
+        "allow-plugins": {
+            "typo3/cms-composer-installers": true,
+            "typo3/class-alias-loader": true,
+            "ergebnis/composer-normalize": true
+        },
         "bin-dir": ".Build/bin",
         "vendor-dir": ".Build/vendor"
     },
@@ -50,16 +65,6 @@
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
             "extension-key": "cvc_twig",
             "web-dir": ".Build/public"
-        }
-    },
-    "autoload": {
-        "psr-4": {
-            "Cvc\\Typo3\\CvcTwig\\": "Classes"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Cvc\\Typo3\\CvcTwig\\Tests\\": "Tests"
         }
     },
     "scripts": {

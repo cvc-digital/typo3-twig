@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2021 CARL von CHIARI GmbH
+ * Copyright (C) 2022 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -23,18 +23,17 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 final class ControllerContextStack
 {
     private array $stack = [];
     private ?ControllerContext $default = null;
-    private ObjectManager $objectManager;
+    private ConfigurationManagerInterface $configurationManager;
 
-    public function __construct(ObjectManager $objectManager)
+    public function __construct(ConfigurationManagerInterface $configurationManager)
     {
-        $this->objectManager = $objectManager;
+        $this->configurationManager = $configurationManager;
     }
 
     /**
@@ -61,16 +60,14 @@ final class ControllerContextStack
     public function getDefault(): ControllerContext
     {
         if ($this->default === null) {
-            $configurationManager = $this->objectManager->get(ConfigurationManagerInterface::class);
             $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-            $configurationManager->setContentObject($contentObject);
+            $this->configurationManager->setContentObject($contentObject);
 
-            $request = $this->objectManager->get(Request::class);
-            $request->setRequestUri(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
-            $request->setBaseUri(GeneralUtility::getIndpEnv('TYPO3_SITE_URL'));
-            $uriBuilder = $this->objectManager->get(UriBuilder::class);
+            /** @var Request $request */
+            $request = GeneralUtility::makeInstance(Request::class);
+            $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
             $uriBuilder->setRequest($request);
-            $this->default = $this->objectManager->get(ControllerContext::class);
+            $this->default = GeneralUtility::makeInstance(ControllerContext::class);
             $this->default->setRequest($request);
             $this->default->setUriBuilder($uriBuilder);
         }

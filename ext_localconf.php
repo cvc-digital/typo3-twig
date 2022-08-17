@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2021 CARL von CHIARI GmbH
+ * Copyright (C) 2022 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,7 +22,8 @@ $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'] = \array_merge($GLOBALS['TYP
 ]);
 
 // register caches for twig
-if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['twig_templates'])) {
+if (!array_key_exists('twig_templates', $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'])
+    || !is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['twig_templates'])) {
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['twig_templates'] = [
         'backend' => \TYPO3\CMS\Core\Cache\Backend\FileBackend::class,
         'frontend' => \TYPO3\CMS\Core\Cache\Frontend\PhpFrontend::class,

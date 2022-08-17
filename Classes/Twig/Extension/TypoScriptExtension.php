@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2021 CARL von CHIARI GmbH
+ * Copyright (C) 2022 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,6 +20,7 @@ namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -57,10 +58,9 @@ final class TypoScriptExtension extends AbstractExtension
          * This somewhat hacky work around is currently needed because the cObjGetSingle() function of
          * \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer relies on this setting.
          */
-        if (TYPO3_MODE === 'BE') {
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             $tsfeBackup = isset($GLOBALS['TSFE']) ? $GLOBALS['TSFE'] : null;
             $GLOBALS['TSFE'] = new \stdClass();
-            $GLOBALS['TSFE']->cObjectDepthCounter = 100;
         }
         $currentValue = null;
         if (is_object($data)) {
@@ -79,7 +79,7 @@ final class TypoScriptExtension extends AbstractExtension
         $lastSegment = array_pop($pathSegments);
         $setup = $this->typoScriptSetup;
         foreach ($pathSegments as $segment) {
-            if (!array_key_exists(($segment.'.'), $setup)) {
+            if (!array_key_exists($segment.'.', $setup)) {
                 throw new \RuntimeException('TypoScript object path "'.htmlspecialchars($typoScriptObjectPath).'" does not exist', 1253191023);
             }
             $setup = $setup[$segment.'.'];

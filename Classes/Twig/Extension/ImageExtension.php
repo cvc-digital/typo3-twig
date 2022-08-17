@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2021 CARL von CHIARI GmbH
+ * Copyright (C) 2022 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -25,7 +25,6 @@ use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Service\ImageService;
 
 /**
@@ -102,6 +101,6 @@ final class ImageExtension extends AbstractExtension
 
     protected static function getImageService(): ImageService
     {
-        return GeneralUtility::makeInstance(ObjectManager::class)->get(ImageService::class);
+        return GeneralUtility::makeInstance(ImageService::class);
     }
 }

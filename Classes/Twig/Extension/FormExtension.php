@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2021 CARL von CHIARI GmbH
+ * Copyright (C) 2022 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,14 +18,11 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
-use Cvc\Typo3\CvcTwig\Extbase\Mvc\ControllerContextStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Web\Request;
-use TYPO3\CMS\Extbase\Mvc\Web\Response;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory;
 use TYPO3\CMS\Form\Domain\Factory\FormFactoryInterface;
 use TYPO3\CMS\Form\Mvc\Persistence\FormPersistenceManagerInterface;
@@ -35,15 +32,6 @@ use TYPO3\CMS\Form\Mvc\Persistence\FormPersistenceManagerInterface;
  */
 class FormExtension extends AbstractExtension
 {
-    private ObjectManager $objectManager;
-    private ControllerContextStack $controllerContextStack;
-
-    public function __construct(ControllerContextStack $controllerContextStack)
-    {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->controllerContextStack = $controllerContextStack;
-    }
-
     public function getFunctions()
     {
         return [
@@ -67,11 +55,8 @@ class FormExtension extends AbstractExtension
         string $prototypeName = null,
         array $overrideConfiguration = []
     ): string {
-        $controllerContext = $this->controllerContextStack->getControllerContext();
-
         if (!empty($persistenceIdentifier)) {
-            $formPersistenceManager = $this->objectManager->get(FormPersistenceManagerInterface::class);
-            $formConfiguration = $formPersistenceManager->load($persistenceIdentifier);
+            $formConfiguration = GeneralUtility::makeInstance(FormPersistenceManagerInterface::class)->load($persistenceIdentifier);
             ArrayUtility::mergeRecursiveWithOverrule(
                 $formConfiguration,
                 $overrideConfiguration
@@ -85,26 +70,11 @@ class FormExtension extends AbstractExtension
         }
 
         /** @var FormFactoryInterface $factory */
-        $factory = $this->objectManager->get($factoryClass);
+        $factory = GeneralUtility::makeInstance($factoryClass);
         $formDefinition = $factory->build($overrideConfiguration, $prototypeName);
-        $response = $controllerContext->getResponse() ?? $this->objectManager->get(Response::class);
-        assert($response instanceof Response);
-        $request = $controllerContext->getRequest();
+        $request = $GLOBALS['TYPO3_REQUEST'];
         assert($request instanceof Request);
-        $form = $formDefinition->bind($request, $response);
-
-        // If the controller context does not contain a response object, this viewhelper is used in a
-        // fluid template rendered by the FluidTemplateContentObject. Handle the StopActionException
-        // as there is no extbase dispatcher involved that catches that. */
-        /** @var Response|null $responseFromControllerContext */
-        $responseFromControllerContext = $controllerContext->getResponse();
-        if ($responseFromControllerContext === null) {
-            try {
-                return $form->render();
-            } catch (\TYPO3\CMS\Extbase\Mvc\Exception\StopActionException $exception) {
-                return $response->shutdown();
-            }
-        }
+        $form = $formDefinition->bind($request);
 
         return $form->render();
     }

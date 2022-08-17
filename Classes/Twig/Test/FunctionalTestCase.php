@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2021 CARL von CHIARI GmbH
+ * Copyright (C) 2022 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -193,7 +193,7 @@ abstract class FunctionalTestCase extends Typo3FunctionalTestCase
         $templates = [];
         preg_match_all('/--TEMPLATE(?:\((.*?)\))?--(.*?)(?=\-\-TEMPLATE|$)/s', $test, $matches, PREG_SET_ORDER);
         foreach ($matches as $match) {
-            $templates[($match[1] ? $match[1] : 'index.twig')] = $match[2];
+            $templates[$match[1] ? $match[1] : 'index.twig'] = $match[2];
         }
 
         return $templates;

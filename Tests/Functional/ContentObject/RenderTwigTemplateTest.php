@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2021 CARL von CHIARI GmbH
+ * Copyright (C) 2022 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -37,6 +37,6 @@ class RenderTwigTemplateTest extends FunctionalTestCase
 
     public function testTemplateIsRendered(): void
     {
-        $this->assertContains("Foo Bar! Settings: Ipsum.\n", $this->getFrontendResponse(1)->getContent());
+        $this->assertStringContainsString("Foo Bar! Settings: Ipsum.\n", $this->getFrontendResponse(1)->getContent());
     }
 }
