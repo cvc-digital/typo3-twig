@@ -40,10 +40,11 @@ final class UriExtension extends AbstractExtension
     private DataMapper $dataMapper;
 
     public function __construct(
-        TypoLinkCodecService $typoLinkCodecService
+        TypoLinkCodecService $typoLinkCodecService,
+        DataMapper $dataMapper
     ) {
         $this->typoLinkCodecService = $typoLinkCodecService;
-        $this->dataMapper = GeneralUtility::makeInstance(DataMapper::class);
+        $this->dataMapper = $dataMapper;
     }
 
     public function getFunctions()
