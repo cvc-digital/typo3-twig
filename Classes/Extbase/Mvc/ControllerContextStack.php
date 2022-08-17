@@ -29,6 +29,12 @@ final class ControllerContextStack
 {
     private array $stack = [];
     private ?ControllerContext $default = null;
+    private ConfigurationManagerInterface $configurationManager;
+
+    public function __construct(ConfigurationManagerInterface $configurationManager)
+    {
+        $this->configurationManager = $configurationManager;
+    }
 
     /**
      * @internal
@@ -54,9 +60,8 @@ final class ControllerContextStack
     public function getDefault(): ControllerContext
     {
         if ($this->default === null) {
-            $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
             $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-            $configurationManager->setContentObject($contentObject);
+            $this->configurationManager->setContentObject($contentObject);
 
             /** @var Request $request */
             $request = GeneralUtility::makeInstance(Request::class);

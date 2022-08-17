@@ -56,8 +56,7 @@ class FormExtension extends AbstractExtension
         array $overrideConfiguration = []
     ): string {
         if (!empty($persistenceIdentifier)) {
-            $formPersistenceManager = GeneralUtility::makeInstance(FormPersistenceManagerInterface::class);
-            $formConfiguration = $formPersistenceManager->load($persistenceIdentifier);
+            $formConfiguration = GeneralUtility::makeInstance(FormPersistenceManagerInterface::class)->load($persistenceIdentifier);
             ArrayUtility::mergeRecursiveWithOverrule(
                 $formConfiguration,
                 $overrideConfiguration

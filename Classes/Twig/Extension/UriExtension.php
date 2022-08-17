@@ -38,13 +38,20 @@ final class UriExtension extends AbstractExtension
 {
     private TypoLinkCodecService $typoLinkCodecService;
     private DataMapper $dataMapper;
+    private UriBuilder $uriBuilder;
 
     public function __construct(
         TypoLinkCodecService $typoLinkCodecService,
-        DataMapper $dataMapper
+        DataMapper $dataMapper,
+        UriBuilder $uriBuilder,
+        Request $request
     ) {
         $this->typoLinkCodecService = $typoLinkCodecService;
         $this->dataMapper = $dataMapper;
+        $this->uriBuilder = $uriBuilder;
+        $attribute = new ExtbaseRequestParameters('');
+        $request = $request->withAttribute('extbase', $attribute);
+        $this->uriBuilder->setRequest($request);
     }
 
     public function getFunctions()
@@ -70,17 +77,13 @@ final class UriExtension extends AbstractExtension
         array $argumentsToBeExcludedFromQueryString = [],
         string $addQueryStringMethod = ''): ?string
     {
-        $request = GeneralUtility::makeInstance(Request::class);
-        $attribute = new ExtbaseRequestParameters('');
-        $request = $request->withAttribute('extbase', $attribute);
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        $uriBuilder->setRequest($request);
+        $this->uriBuilder->reset();
 
         if ($pageUid !== null) {
-            $uriBuilder->setTargetPageUid($pageUid);
+            $this->uriBuilder->setTargetPageUid($pageUid);
         }
 
-        $uriBuilder
+        $this->uriBuilder
             ->setTargetPageType($pageType)
             ->setNoCache($noCache)
             ->setSection($section)
@@ -91,10 +94,10 @@ final class UriExtension extends AbstractExtension
             ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString);
 
         if ($addQueryStringMethod !== '') {
-            $uriBuilder->setAddQueryStringMethod($addQueryStringMethod);
+            $this->uriBuilder->setAddQueryStringMethod($addQueryStringMethod);
         }
 
-        return $uriBuilder->build();
+        return $this->uriBuilder->build();
     }
 
     public function uriAction(
@@ -115,18 +118,13 @@ final class UriExtension extends AbstractExtension
         array $argumentsToBeExcludedFromQueryString = [],
         string $addQueryStringMethod = ''): ?string
     {
-        $request = GeneralUtility::makeInstance(Request::class);
-        $attribute = new ExtbaseRequestParameters('');
-        $request = $request->withAttribute('extbase', $attribute);
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        $uriBuilder->setRequest($request)
-            ->reset();
+        $this->uriBuilder->reset();
 
         if ($pageUid !== null) {
-            $uriBuilder->setTargetPageUid($pageUid);
+            $this->uriBuilder->setTargetPageUid($pageUid);
         }
 
-        $uriBuilder
+        $this->uriBuilder
             ->setTargetPageType($pageType)
             ->setNoCache($noCache)
             ->setSection($section)
@@ -138,10 +136,10 @@ final class UriExtension extends AbstractExtension
             ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString);
 
         if ($addQueryStringMethod !== '') {
-            $uriBuilder->setAddQueryStringMethod($addQueryStringMethod);
+            $this->uriBuilder->setAddQueryStringMethod($addQueryStringMethod);
         }
 
-        return $uriBuilder->uriFor($action, $arguments, $controller, $extensionName, $pluginName);
+        return $this->uriBuilder->uriFor($action, $arguments, $controller, $extensionName, $pluginName);
     }
 
     /**
