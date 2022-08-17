@@ -6,5 +6,3 @@ parameters:
         - Classes
     excludes_analyse:
         - Classes/Twig/Test/FunctionalTestCase.php
-    ignoreErrors:
-        - '#Constant TYPO3_MODE not found.#'

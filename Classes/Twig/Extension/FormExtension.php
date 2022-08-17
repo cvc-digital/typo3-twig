@@ -18,13 +18,11 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
-use Cvc\Typo3\CvcTwig\Extbase\Mvc\ControllerContextStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory;
 use TYPO3\CMS\Form\Domain\Factory\FormFactoryInterface;
 use TYPO3\CMS\Form\Mvc\Persistence\FormPersistenceManagerInterface;
@@ -34,15 +32,6 @@ use TYPO3\CMS\Form\Mvc\Persistence\FormPersistenceManagerInterface;
  */
 class FormExtension extends AbstractExtension
 {
-    private ObjectManager $objectManager;
-    private ControllerContextStack $controllerContextStack;
-
-    public function __construct(ControllerContextStack $controllerContextStack)
-    {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->controllerContextStack = $controllerContextStack;
-    }
-
     public function getFunctions()
     {
         return [
@@ -66,10 +55,8 @@ class FormExtension extends AbstractExtension
         string $prototypeName = null,
         array $overrideConfiguration = []
     ): string {
-        $controllerContext = $this->controllerContextStack->getControllerContext();
-
         if (!empty($persistenceIdentifier)) {
-            $formPersistenceManager = $this->objectManager->get(FormPersistenceManagerInterface::class);
+            $formPersistenceManager = GeneralUtility::makeInstance(FormPersistenceManagerInterface::class);
             $formConfiguration = $formPersistenceManager->load($persistenceIdentifier);
             ArrayUtility::mergeRecursiveWithOverrule(
                 $formConfiguration,
@@ -84,9 +71,9 @@ class FormExtension extends AbstractExtension
         }
 
         /** @var FormFactoryInterface $factory */
-        $factory = $this->objectManager->get($factoryClass);
+        $factory = GeneralUtility::makeInstance($factoryClass);
         $formDefinition = $factory->build($overrideConfiguration, $prototypeName);
-        $request = $controllerContext->getRequest();
+        $request = $GLOBALS['TYPO3_REQUEST'];
         assert($request instanceof Request);
         $form = $formDefinition->bind($request);
 

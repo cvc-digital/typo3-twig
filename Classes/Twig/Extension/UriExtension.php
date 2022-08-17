@@ -18,12 +18,13 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
-use Cvc\Typo3\CvcTwig\Extbase\Mvc\ControllerContextStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
+use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
@@ -35,18 +36,14 @@ use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
  */
 final class UriExtension extends AbstractExtension
 {
-    private ControllerContextStack $controllerContextStack;
     private TypoLinkCodecService $typoLinkCodecService;
     private DataMapper $dataMapper;
 
     public function __construct(
-        ControllerContextStack $controllerContextStack,
-        TypoLinkCodecService $typoLinkCodecService,
-        ObjectManager $objectManager
+        TypoLinkCodecService $typoLinkCodecService
     ) {
-        $this->controllerContextStack = $controllerContextStack;
         $this->typoLinkCodecService = $typoLinkCodecService;
-        $this->dataMapper = $objectManager->get(DataMapper::class);
+        $this->dataMapper = GeneralUtility::makeInstance(DataMapper::class);
     }
 
     public function getFunctions()
@@ -69,10 +66,13 @@ final class UriExtension extends AbstractExtension
         bool $linkAccessRestrictedPages = false,
         bool $absolute = false,
         bool $addQueryString = false,
-        array $argumentsToBeExcludedFromQueryString = [],
-        string $addQueryStringMethod = ''): ?string
+        array $argumentsToBeExcludedFromQueryString = []): ?string
     {
-        $uriBuilder = $this->controllerContextStack->getControllerContext()->getUriBuilder()->reset();
+        $request = GeneralUtility::makeInstance(Request::class);
+        $attribute = new ExtbaseRequestParameters('');
+        $request = $request->withAttribute('extbase', $attribute);
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $uriBuilder->setRequest($request);
 
         if ($pageUid !== null) {
             $uriBuilder->setTargetPageUid($pageUid);
@@ -87,7 +87,6 @@ final class UriExtension extends AbstractExtension
             ->setCreateAbsoluteUri($absolute)
             ->setAddQueryString($addQueryString)
             ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString)
-            ->setAddQueryStringMethod($addQueryStringMethod)
             ->build();
     }
 
@@ -106,10 +105,14 @@ final class UriExtension extends AbstractExtension
         array $additionalParams = [],
         bool $absolute = false,
         bool $addQueryString = false,
-        array $argumentsToBeExcludedFromQueryString = [],
-        string $addQueryStringMethod = ''): ?string
+        array $argumentsToBeExcludedFromQueryString = []): ?string
     {
-        $uriBuilder = $this->controllerContextStack->getControllerContext()->getUriBuilder()->reset();
+        $request = GeneralUtility::makeInstance(Request::class);
+        $attribute = new ExtbaseRequestParameters('');
+        $request = $request->withAttribute('extbase', $attribute);
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $uriBuilder->setRequest($request)
+            ->reset();
 
         if ($pageUid !== null) {
             $uriBuilder->setTargetPageUid($pageUid);
@@ -125,7 +128,6 @@ final class UriExtension extends AbstractExtension
             ->setCreateAbsoluteUri($absolute)
             ->setAddQueryString($addQueryString)
             ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString)
-            ->setAddQueryStringMethod($addQueryStringMethod)
             ->uriFor($action, $arguments, $controller, $extensionName, $pluginName);
     }
 

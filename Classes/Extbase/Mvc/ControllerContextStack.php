@@ -23,19 +23,12 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 final class ControllerContextStack
 {
     private array $stack = [];
     private ?ControllerContext $default = null;
-    private ObjectManager $objectManager;
-
-    public function __construct(ObjectManager $objectManager)
-    {
-        $this->objectManager = $objectManager;
-    }
 
     /**
      * @internal
@@ -61,15 +54,15 @@ final class ControllerContextStack
     public function getDefault(): ControllerContext
     {
         if ($this->default === null) {
-            $configurationManager = $this->objectManager->get(ConfigurationManagerInterface::class);
+            $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
             $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $configurationManager->setContentObject($contentObject);
 
             /** @var Request $request */
-            $request = $this->objectManager->get(Request::class);
-            $uriBuilder = $this->objectManager->get(UriBuilder::class);
+            $request = GeneralUtility::makeInstance(Request::class);
+            $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
             $uriBuilder->setRequest($request);
-            $this->default = $this->objectManager->get(ControllerContext::class);
+            $this->default = GeneralUtility::makeInstance(ControllerContext::class);
             $this->default->setRequest($request);
             $this->default->setUriBuilder($uriBuilder);
         }

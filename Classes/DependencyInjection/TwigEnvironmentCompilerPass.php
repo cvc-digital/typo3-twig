@@ -30,7 +30,7 @@ final class TwigEnvironmentCompilerPass implements CompilerPassInterface
     /**
      * Indicates that debugging context is enabled.
      */
-    private bool $debug;
+    private bool $debugContext;
 
     /**
      * Indicates that test context is enabled.
@@ -39,7 +39,7 @@ final class TwigEnvironmentCompilerPass implements CompilerPassInterface
 
     public function __construct(bool $debug, bool $test)
     {
-        $this->debug = $debug;
+        $this->debugContext = $debug;
         $this->test = $test;
     }
 
@@ -57,6 +57,6 @@ final class TwigEnvironmentCompilerPass implements CompilerPassInterface
             $twigEnvironmentDefinition->setPublic(true);
         }
 
-        $container->setParameter('twig.debug', $this->debug);
+        $container->setParameter('twig.debug', $this->debugContext);
     }
 }

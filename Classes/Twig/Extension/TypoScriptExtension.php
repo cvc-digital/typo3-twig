@@ -20,6 +20,7 @@ namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -57,10 +58,9 @@ final class TypoScriptExtension extends AbstractExtension
          * This somewhat hacky work around is currently needed because the cObjGetSingle() function of
          * \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer relies on this setting.
          */
-        if (TYPO3_MODE === 'BE') {
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             $tsfeBackup = isset($GLOBALS['TSFE']) ? $GLOBALS['TSFE'] : null;
             $GLOBALS['TSFE'] = new \stdClass();
-            $GLOBALS['TSFE']->cObjectDepthCounter = 100;
         }
         $currentValue = null;
         if (is_object($data)) {
