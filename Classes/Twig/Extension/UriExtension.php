@@ -49,8 +49,10 @@ final class UriExtension extends AbstractExtension
         $this->typoLinkCodecService = $typoLinkCodecService;
         $this->dataMapper = $dataMapper;
         $this->uriBuilder = $uriBuilder;
-        $attribute = new ExtbaseRequestParameters('');
-        $request = $request->withAttribute('extbase', $attribute);
+        if (class_exists(ExtbaseRequestParameters::class)) {
+            $attribute = new ExtbaseRequestParameters('');
+            $request = $request->withAttribute('extbase', $attribute);
+        }
         $this->uriBuilder->setRequest($request);
     }
 
