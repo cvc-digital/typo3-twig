@@ -1,8 +1,10 @@
 <?php
 
+$year = date('Y');
+
 $headerComment = <<<DOC
 Twig extension for TYPO3 CMS
-Copyright (C) 2021 CARL von CHIARI GmbH
+Copyright (C) {$year} CARL von CHIARI GmbH
 
 This file is part of the TYPO3 CMS project.
 

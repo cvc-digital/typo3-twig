@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2021 CARL von CHIARI GmbH
+ * Copyright (C) 2022 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -66,7 +66,8 @@ final class UriExtension extends AbstractExtension
         bool $linkAccessRestrictedPages = false,
         bool $absolute = false,
         bool $addQueryString = false,
-        array $argumentsToBeExcludedFromQueryString = []): ?string
+        array $argumentsToBeExcludedFromQueryString = [],
+        string $addQueryStringMethod = ''): ?string
     {
         $request = GeneralUtility::makeInstance(Request::class);
         $attribute = new ExtbaseRequestParameters('');
@@ -78,7 +79,7 @@ final class UriExtension extends AbstractExtension
             $uriBuilder->setTargetPageUid($pageUid);
         }
 
-        return $uriBuilder
+        $uriBuilder
             ->setTargetPageType($pageType)
             ->setNoCache($noCache)
             ->setSection($section)
@@ -86,8 +87,13 @@ final class UriExtension extends AbstractExtension
             ->setArguments($additionalParams)
             ->setCreateAbsoluteUri($absolute)
             ->setAddQueryString($addQueryString)
-            ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString)
-            ->build();
+            ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString);
+
+        if ($addQueryStringMethod !== '') {
+            $uriBuilder->setAddQueryStringMethod($addQueryStringMethod);
+        }
+
+        return $uriBuilder->build();
     }
 
     public function uriAction(
@@ -105,7 +111,8 @@ final class UriExtension extends AbstractExtension
         array $additionalParams = [],
         bool $absolute = false,
         bool $addQueryString = false,
-        array $argumentsToBeExcludedFromQueryString = []): ?string
+        array $argumentsToBeExcludedFromQueryString = [],
+        string $addQueryStringMethod = ''): ?string
     {
         $request = GeneralUtility::makeInstance(Request::class);
         $attribute = new ExtbaseRequestParameters('');
@@ -118,7 +125,7 @@ final class UriExtension extends AbstractExtension
             $uriBuilder->setTargetPageUid($pageUid);
         }
 
-        return $uriBuilder
+        $uriBuilder
             ->setTargetPageType($pageType)
             ->setNoCache($noCache)
             ->setSection($section)
@@ -127,8 +134,13 @@ final class UriExtension extends AbstractExtension
             ->setArguments($additionalParams)
             ->setCreateAbsoluteUri($absolute)
             ->setAddQueryString($addQueryString)
-            ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString)
-            ->uriFor($action, $arguments, $controller, $extensionName, $pluginName);
+            ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString);
+
+        if ($addQueryStringMethod !== '') {
+            $uriBuilder->setAddQueryStringMethod($addQueryStringMethod);
+        }
+
+        return $uriBuilder->uriFor($action, $arguments, $controller, $extensionName, $pluginName);
     }
 
     /**
