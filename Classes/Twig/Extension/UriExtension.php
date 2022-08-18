@@ -18,12 +18,11 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
+use Cvc\Typo3\CvcTwig\Extbase\Mvc\ControllerContextStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
-use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
-use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -39,21 +38,18 @@ final class UriExtension extends AbstractExtension
     private TypoLinkCodecService $typoLinkCodecService;
     private DataMapper $dataMapper;
     private UriBuilder $uriBuilder;
+    private ControllerContextStack $controllerContextStack;
 
     public function __construct(
+        ControllerContextStack $controllerContextStack,
         TypoLinkCodecService $typoLinkCodecService,
         DataMapper $dataMapper,
-        UriBuilder $uriBuilder,
-        Request $request
+        UriBuilder $uriBuilder
     ) {
+        $this->controllerContextStack = $controllerContextStack;
         $this->typoLinkCodecService = $typoLinkCodecService;
         $this->dataMapper = $dataMapper;
         $this->uriBuilder = $uriBuilder;
-        if (class_exists(ExtbaseRequestParameters::class)) {
-            $attribute = new ExtbaseRequestParameters('');
-            $request = $request->withAttribute('extbase', $attribute);
-        }
-        $this->uriBuilder->setRequest($request);
     }
 
     public function getFunctions()
@@ -121,6 +117,8 @@ final class UriExtension extends AbstractExtension
         string $addQueryStringMethod = ''): ?string
     {
         $this->uriBuilder->reset();
+
+        $this->uriBuilder->setRequest($this->controllerContextStack->getControllerContext()->getRequest());
 
         if ($pageUid !== null) {
             $this->uriBuilder->setTargetPageUid($pageUid);

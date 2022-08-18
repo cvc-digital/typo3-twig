@@ -18,6 +18,7 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
+use Cvc\Typo3\CvcTwig\Extbase\Mvc\ControllerContextStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -32,6 +33,13 @@ use TYPO3\CMS\Form\Mvc\Persistence\FormPersistenceManagerInterface;
  */
 class FormExtension extends AbstractExtension
 {
+    private ControllerContextStack $controllerContextStack;
+
+    public function __construct(ControllerContextStack $controllerContextStack)
+    {
+        $this->controllerContextStack = $controllerContextStack;
+    }
+
     public function getFunctions()
     {
         return [
@@ -72,7 +80,7 @@ class FormExtension extends AbstractExtension
         /** @var FormFactoryInterface $factory */
         $factory = GeneralUtility::makeInstance($factoryClass);
         $formDefinition = $factory->build($overrideConfiguration, $prototypeName);
-        $request = $GLOBALS['TYPO3_REQUEST'];
+        $request = $this->controllerContextStack->getControllerContext()->getRequest();
         assert($request instanceof Request);
         $form = $formDefinition->bind($request);
 
