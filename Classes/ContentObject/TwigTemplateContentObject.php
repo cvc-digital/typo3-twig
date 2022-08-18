@@ -99,9 +99,9 @@ class TwigTemplateContentObject extends AbstractContentObject
      *
      * @param array $conf Array of TypoScript properties
      *
-     * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws LoaderError
      *
      * @return string The HTML output
      */
@@ -175,7 +175,7 @@ class TwigTemplateContentObject extends AbstractContentObject
         $variables = [];
         $reservedVariables = ['data', 'current'];
         // Accumulate the variables to be process and loop them through cObjGetSingle
-        $variablesToProcess = (array) $conf['variables.'];
+        $variablesToProcess = array_key_exists('variables.', $conf) ? (array) $conf['variables.'] : null;
         foreach ($variablesToProcess as $variableName => $cObjType) {
             if (\is_array($cObjType)) {
                 continue;
@@ -187,7 +187,7 @@ class TwigTemplateContentObject extends AbstractContentObject
             }
         }
         $variables['data'] = $this->cObj->data;
-        $variables['current'] = $this->cObj->data[$this->cObj->currentValKey];
+        $variables['current'] = array_key_exists($this->cObj->currentValKey, $this->cObj->data) ? $this->cObj->data[$this->cObj->currentValKey] : null;
 
         return $variables;
     }
