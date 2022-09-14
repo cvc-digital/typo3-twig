@@ -92,15 +92,3 @@ In the table below you can find other extensions that provides an integration fo
 * [T3twig](https://extensions.typo3.org/extension/t3twig/)
 * [Twypo](https://extensions.typo3.org/extension/twypo/)
 
-## Development Team
-
-<table>
-    <tr>
-        <td align="center" valign="top">
-            <img width="150" height="150" src="https://github.com/markuspoerschke.png?s=150">
-            <br>
-            <a href="https://github.com/markuspoerschke">Markus Poerschke</a>
-            <p>Developer</p>
-        </td>
-    </tr>
-</table>
