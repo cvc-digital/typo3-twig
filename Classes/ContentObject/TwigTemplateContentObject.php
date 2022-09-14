@@ -176,14 +176,16 @@ class TwigTemplateContentObject extends AbstractContentObject
         $reservedVariables = ['data', 'current'];
         // Accumulate the variables to be process and loop them through cObjGetSingle
         $variablesToProcess = array_key_exists('variables.', $conf) ? (array) $conf['variables.'] : null;
-        foreach ($variablesToProcess as $variableName => $cObjType) {
-            if (\is_array($cObjType)) {
-                continue;
-            }
-            if (!\in_array($variableName, $reservedVariables)) {
-                $variables[$variableName] = $this->cObj->cObjGetSingle($cObjType, $variablesToProcess[$variableName.'.']);
-            } else {
-                throw new \InvalidArgumentException('Cannot use reserved name "'.$variableName.'" as variable name in TWIGTEMPLATE.', 1288095720);
+        if (is_iterable($variablesToProcess)){
+            foreach ($variablesToProcess as $variableName => $cObjType) {
+                if (\is_array($cObjType)) {
+                    continue;
+                }
+                if (!\in_array($variableName, $reservedVariables)) {
+                    $variables[$variableName] = $this->cObj->cObjGetSingle($cObjType, $variablesToProcess[$variableName.'.']);
+                } else {
+                    throw new \InvalidArgumentException('Cannot use reserved name "'.$variableName.'" as variable name in TWIGTEMPLATE.', 1288095720);
+                }
             }
         }
         $variables['data'] = $this->cObj->data;
