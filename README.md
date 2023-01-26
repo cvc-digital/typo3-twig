@@ -15,21 +15,23 @@ You can use Twig templates in your Extbase controllers or in your TypoScript.
 The following table shows which versions of this package are compatible with which TYPO3 version.
 
 * Version 1 is compatible to TYPO3 `8.7` and `9.5`.
-* Version 2 that is developed on the `master` branch is compatible to TYPO3 v10.4 and v11.5.
+* Version 2 is compatible to TYPO3 `10.4` and `11.5`.
+* Version 3 that is developed on the `master` branch is only compatible to TYPO3 v12
 
 Since Version 2, PHP `7.4` is required.
 
-|           | [1.x](https://github.com/cvc-digital/typo3-twig/tree/1.x) |    2.x   |
-|-----------|:---------------------------------------------------------:|:--------:|
-| TYPO3 v11 |                             ❌                             |    ✅    |
-| TYPO3 v10 |                             ❌                             |    ✅    |
-| TYPO3 v9  |                             ✅                             |    ❌    |
-| TYPO3 v8  |                             ✅                             |    ❌    |
-| PHP 8.1   |                             ❌                             |    ✅    |
-| PHP 8.0   |                             ❌                             |    ✅    |
-| PHP 7.4   |                             ✅                             |    ✅    |
-| PHP 7.3   |                             ✅                             |    ❌    |
-| PHP 7.2   |                             ✅                             |    ❌    |
+|           | [1.x](https://github.com/cvc-digital/typo3-twig/tree/1.x) |   2.x   |   3.x    |
+|-----------|:---------------------------------------------------------:|:-------:|:--------:|
+| TYPO3 v12 |                             ❌                             |    ❌    |    ✅    |
+| TYPO3 v11 |                             ❌                             |    ✅    |    ❌    |
+| TYPO3 v10 |                             ❌                             |    ✅    |    ❌    |
+| TYPO3 v9  |                             ✅                             |    ❌    |    ❌    |
+| TYPO3 v8  |                             ✅                             |    ❌    |    ❌    |
+| PHP 8.1   |                             ❌                             |    ✅    |    ✅    |
+| PHP 8.0   |                             ❌                             |    ✅    |    ❌    |
+| PHP 7.4   |                             ✅                             |    ✅    |    ❌    |
+| PHP 7.3   |                             ✅                             |    ❌    |    ❌    |
+| PHP 7.2   |                             ✅                             |    ❌    |    ❌    |
 
 ## Installation
 

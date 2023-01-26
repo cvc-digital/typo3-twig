@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2022 CARL von CHIARI GmbH
+ * Copyright (C) 2023 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,55 +18,55 @@
 
 namespace Cvc\Typo3\CvcTwig\Extbase\Mvc\View;
 
-use Cvc\Typo3\CvcTwig\Extbase\Mvc\ControllerContextStack;
+use Cvc\Typo3\CvcTwig\Extbase\Mvc\RenderingContextStack;
 use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneView;
 use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneViewFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3\CMS\Core\View\ViewInterface;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 
 final class TwigView implements ViewInterface
 {
     private StandaloneView $standaloneView;
-    private ?ControllerContext $controllerContext = null;
-    private ControllerContextStack $controllerContextStack;
+    private ?RenderingContext $renderingContext = null;
+    private RenderingContextStack $controllerContextStack;
 
-    public function __construct(ControllerContextStack $controllerContextStack)
+    public function __construct(RenderingContextStack $controllerContextStack)
     {
         $this->standaloneView = GeneralUtility::makeInstance(StandaloneViewFactory::class)->create();
         $this->controllerContextStack = $controllerContextStack;
     }
 
-    public function setControllerContext(ControllerContext $controllerContext)
+    public function setRenderingContext(RenderingContext $renderingContext)
     {
-        $this->controllerContext = $controllerContext;
+        $this->renderingContext = $renderingContext;
     }
 
-    public function assign($key, $value)
+    public function assign($key, $value): self
     {
         $this->standaloneView->assign($key, $value);
 
         return $this;
     }
 
-    public function assignMultiple(array $values)
+    public function assignMultiple(array $values): self
     {
         $this->standaloneView->assignMultiple($values);
 
         return $this;
     }
 
-    public function canRender(ControllerContext $controllerContext)
+    public function canRender(RenderingContext $controllerContext): bool
     {
         return true;
     }
 
-    public function render()
+    public function render(string $templateFileName = ''): string
     {
-        $hasControllerContext = $this->controllerContext !== null;
+        $hasControllerContext = $this->renderingContext !== null;
 
         if ($hasControllerContext) {
-            $this->controllerContextStack->push($this->controllerContext);
+            $this->controllerContextStack->push($this->renderingContext);
         }
 
         $content = $this->standaloneView->render();
@@ -80,14 +80,14 @@ final class TwigView implements ViewInterface
 
     public function initializeView()
     {
-        if ($this->controllerContext === null) {
+        if ($this->renderingContext === null) {
             return;
         }
 
-        $request = $this->controllerContext->getRequest();
+        $request = $this->renderingContext->getRequest();
 
-        $action = $request->getControllerActionName();
-        $controller = $request->getControllerName();
+        $action = $this->renderingContext->getControllerAction();
+        $controller = $this->renderingContext->getControllerName();
         $format = $request->getFormat();
 
         $this->standaloneView->setTemplateName("$controller/$action.$format.twig");

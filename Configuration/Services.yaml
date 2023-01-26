@@ -24,3 +24,8 @@ services:
     class: TYPO3\CMS\Core\Cache\Frontend\PhpFrontend
     factory: ['@TYPO3\CMS\Core\Cache\CacheManager', getCache]
     arguments: ['twig_templates']
+
+  Cvc\Typo3\CvcTwig\ContentObject\TwigTemplateContentObject:
+    tags:
+      - name: frontend.contentobject
+        identifier: 'TWIGTEMPLATE'

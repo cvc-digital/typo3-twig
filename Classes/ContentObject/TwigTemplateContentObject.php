@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2022 CARL von CHIARI GmbH
+ * Copyright (C) 2023 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -24,7 +24,6 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -56,7 +55,7 @@ class TwigTemplateContentObject extends AbstractContentObject
 
     public function __construct(ContentObjectRenderer $cObj)
     {
-        parent::__construct($cObj);
+         parent::__construct($cObj);
         // fixme: checkout how to use dependency injection
         $contentDataProcessor = GeneralUtility::makeInstance(ContentDataProcessor::class);
         assert($contentDataProcessor instanceof ContentDataProcessor);
@@ -147,7 +146,7 @@ class TwigTemplateContentObject extends AbstractContentObject
     {
         $finalPaths = [];
         foreach ($paths as $key => $path) {
-            if (StringUtility::endsWith($key, '.')) {
+            if (str_ends_with($key, '.')) {
                 if (isset($paths[\mb_substr($key, 0, -1)])) {
                     continue;
                 }
@@ -176,7 +175,7 @@ class TwigTemplateContentObject extends AbstractContentObject
         $reservedVariables = ['data', 'current'];
         // Accumulate the variables to be process and loop them through cObjGetSingle
         $variablesToProcess = array_key_exists('variables.', $conf) ? (array) $conf['variables.'] : null;
-        if (is_iterable($variablesToProcess)){
+        if (is_iterable($variablesToProcess)) {
             foreach ($variablesToProcess as $variableName => $cObjType) {
                 if (\is_array($cObjType)) {
                     continue;
