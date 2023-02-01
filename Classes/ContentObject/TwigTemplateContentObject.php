@@ -23,10 +23,8 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * This class provides the TWIGTEMPLATE Content Object.
@@ -53,17 +51,8 @@ class TwigTemplateContentObject extends AbstractContentObject
     private StandaloneViewFactory $standaloneViewFactory;
     private TypoScriptService $typoScriptService;
 
-    public function __construct(ContentObjectRenderer $cObj)
+    public function __construct(ContentDataProcessor $contentDataProcessor, StandaloneViewFactory $standaloneViewFactory, TypoScriptService $typoScriptService)
     {
-         parent::__construct($cObj);
-        // fixme: checkout how to use dependency injection
-        $contentDataProcessor = GeneralUtility::makeInstance(ContentDataProcessor::class);
-        assert($contentDataProcessor instanceof ContentDataProcessor);
-        $standaloneViewFactory = GeneralUtility::getContainer()->get(StandaloneViewFactory::class);
-        assert($standaloneViewFactory instanceof StandaloneViewFactory);
-        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
-        assert($typoScriptService instanceof TypoScriptService);
-
         $this->contentDataProcessor = $contentDataProcessor;
         $this->standaloneViewFactory = $standaloneViewFactory;
         $this->typoScriptService = $typoScriptService;
