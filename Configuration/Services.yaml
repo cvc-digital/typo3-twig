@@ -29,3 +29,6 @@ services:
     tags:
       - name: frontend.contentobject
         identifier: 'TWIGTEMPLATE'
+
+  Cvc\Typo3\CvcTwig\Extbase\Mvc\View\TwigView:
+    public: true

@@ -18,28 +18,18 @@
 
 namespace Cvc\Typo3\CvcTwig\Extbase\Mvc\View;
 
-use Cvc\Typo3\CvcTwig\Extbase\Mvc\RenderingContextStack;
 use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneView;
 use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneViewFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\View\ViewInterface;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 
-final class TwigView implements ViewInterface
+final class TwigView extends \TYPO3\CMS\Fluid\View\StandaloneView
 {
     private StandaloneView $standaloneView;
-    private ?RenderingContext $renderingContext = null;
-    private RenderingContextStack $controllerContextStack;
 
-    public function __construct(RenderingContextStack $controllerContextStack)
+    public function __construct()
     {
+        parent::__construct();
         $this->standaloneView = GeneralUtility::makeInstance(StandaloneViewFactory::class)->create();
-        $this->controllerContextStack = $controllerContextStack;
-    }
-
-    public function setRenderingContext(RenderingContext $renderingContext)
-    {
-        $this->renderingContext = $renderingContext;
     }
 
     public function assign($key, $value): self
@@ -56,44 +46,24 @@ final class TwigView implements ViewInterface
         return $this;
     }
 
-    public function canRender(RenderingContext $controllerContext): bool
+    public function render($actionName = null)
     {
-        return true;
-    }
-
-    public function render(string $templateFileName = ''): string
-    {
-        $hasControllerContext = $this->renderingContext !== null;
-
-        if ($hasControllerContext) {
-            $this->controllerContextStack->push($this->renderingContext);
+        $renderingContext = $this->getCurrentRenderingContext();
+        if ($renderingContext === null) {
+            return '';
         }
 
-        $content = $this->standaloneView->render();
-
-        if ($hasControllerContext) {
-            $this->controllerContextStack->pop();
-        }
-
-        return $content;
-    }
-
-    public function initializeView()
-    {
-        if ($this->renderingContext === null) {
-            return;
-        }
-
-        $request = $this->renderingContext->getRequest();
-
-        $action = $this->renderingContext->getControllerAction();
-        $controller = $this->renderingContext->getControllerName();
+        $request = $renderingContext->getRequest();
+        $action = $renderingContext->getControllerAction();
+        $controller = $renderingContext->getControllerName();
         $format = $request->getFormat();
 
         $this->standaloneView->setTemplateName("$controller/$action.$format.twig");
+
+        return $this->standaloneView->render();
     }
 
-    public function setTemplateRootPaths(array $templateRootPaths)
+    public function setTemplateRootPaths(array $templateRootPaths): void
     {
         $this->standaloneView->setTemplateRootPaths($templateRootPaths);
     }
