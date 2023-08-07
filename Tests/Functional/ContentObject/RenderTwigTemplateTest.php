@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2022 CARL von CHIARI GmbH
+ * Copyright (C) 2023 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -31,12 +31,19 @@ class RenderTwigTemplateTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->importDataSet(__DIR__.'/../../../.Build/vendor/nimut/testing-framework/res/Fixtures/Database/pages.xml');
-        $this->setUpFrontendRootPage(1, [__DIR__.'/../Fixtures/Extensions/twig_test/Configuration/TypoScript/page.typoscript']);
+        $this->importDataSet('ntf://Database/pages.xml');
+        $this->setUpFrontendRootPage(
+            1,
+            array(
+                'ntf://TypoScript/JsonRenderer.ts',
+                'EXT:cvc_twig/Tests/Functional/Fixtures/Extensions/twig_test/Configuration/TypoScript/page.typoscript'
+            )
+        );
     }
 
     public function testTemplateIsRendered(): void
     {
-        $this->assertStringContainsString("Foo Bar! Settings: Ipsum.\n", $this->getFrontendResponse(1)->getContent());
+        $response = $this->getFrontendResponse(1);
+        $this->assertStringContainsString("Foo Bar! Settings: Ipsum.\n", $response->getContent());
     }
 }

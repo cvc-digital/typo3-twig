@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2022 CARL von CHIARI GmbH
+ * Copyright (C) 2023 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,11 +15,6 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
-
-// register template content object for TWIGTEMPLATE
-$GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'] = \array_merge($GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'], [
-    'TWIGTEMPLATE' => \Cvc\Typo3\CvcTwig\ContentObject\TwigTemplateContentObject::class,
-]);
 
 // register caches for twig
 if (!array_key_exists('twig_templates', $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'])
