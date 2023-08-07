@@ -22,5 +22,6 @@ if (!array_key_exists('twig_templates', $GLOBALS['TYPO3_CONF_VARS']['SYS']['cach
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['twig_templates'] = [
         'backend' => \TYPO3\CMS\Core\Cache\Backend\FileBackend::class,
         'frontend' => \TYPO3\CMS\Core\Cache\Frontend\PhpFrontend::class,
+        'groups' => ['pages'],
     ];
 }
