@@ -20,20 +20,15 @@
     "homepage": "https://cvc.digital",
     "require": {
         "php": "^8.1",
-        "twig/twig": "^3",
-        "typo3/cms-core": "^12",
-        "typo3/cms-extbase": "^12",
-        "typo3/cms-frontend": "^12"
+        "twig/twig": "^3"
     },
     "require-dev": {
         "cvc/twig-documentor": "^0.3",
         "ergebnis/composer-normalize": "^2.28",
         "friendsofphp/php-cs-fixer": "^3.13",
-        "nimut/testing-framework": "dev-main",
         "phpstan/phpstan": "^1.5",
-        "phpunit/phpunit": "^9.5",
-        "symfony/var-dumper": "^5.4",
-        "typo3/cms-form": "^12"
+        "phpunit/phpunit": "^10",
+        "symfony/var-dumper": "^5.4"
     },
     "minimum-stability": "dev",
     "replace": {
@@ -55,8 +50,8 @@
             "typo3/class-alias-loader": true,
             "ergebnis/composer-normalize": true
         },
-        "bin-dir": ".Build/bin",
-        "vendor-dir": ".Build/vendor"
+        "bin-dir": "bin",
+        "vendor-dir": "vendor"
     },
     "extra": {
         "branch-alias": {
@@ -65,13 +60,7 @@
         "typo3/cms": {
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
             "extension-key": "cvc_twig",
-            "web-dir": ".Build/public",
-            "app-dir": ".Build"
+            "web-dir": "public"
         }
-    },
-    "scripts": {
-        "post-autoload-dump": [
-            "Nimut\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
-        ]
     }
 }
