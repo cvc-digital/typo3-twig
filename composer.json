@@ -20,17 +20,22 @@
     "homepage": "https://cvc.digital",
     "require": {
         "php": "^8.1",
-        "twig/twig": "^3"
+        "twig/twig": "^3",
+        "symfony/console": "^5.4 || ^6.4 || ^7.0",
+        "typo3/cms-backend": "^11.5.24 || ^12.4.2",
+        "typo3/cms-core": "^11.5.24 || ^12.4.2",
+        "typo3/cms-extbase": "^11.5.24 || ^12.4.2",
+        "typo3/cms-frontend": "^11.5.24 || ^12.4.2"
     },
     "require-dev": {
         "cvc/twig-documentor": "^0.3",
         "ergebnis/composer-normalize": "^2.28",
         "friendsofphp/php-cs-fixer": "^3.13",
+        "typo3/testing-framework": "^8",
         "phpstan/phpstan": "^1.5",
         "phpunit/phpunit": "^10",
         "symfony/var-dumper": "^5.4"
     },
-    "minimum-stability": "dev",
     "replace": {
         "typo3-ter/cvc_twig": "self.version"
     },
@@ -50,8 +55,8 @@
             "typo3/class-alias-loader": true,
             "ergebnis/composer-normalize": true
         },
-        "bin-dir": "bin",
-        "vendor-dir": "vendor"
+        "bin-dir": ".Build/bin",
+        "vendor-dir": ".Build/vendor"
     },
     "extra": {
         "branch-alias": {
@@ -60,7 +65,13 @@
         "typo3/cms": {
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
             "extension-key": "cvc_twig",
-            "web-dir": "public"
+            "app-dir": ".Build",
+            "web-dir": ".Build/public"
         }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
+        ]
     }
 }
