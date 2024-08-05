@@ -153,6 +153,9 @@ cleanComposer() {
 
 getPhpImageVersion() {
     case ${1} in
+        8.1)
+            echo -n 'latest'
+            ;;
         8.2)
             echo -n "1.12"
             ;;
