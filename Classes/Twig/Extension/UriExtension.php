@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2022 CARL von CHIARI GmbH
+ * Copyright (C) 2024 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,15 +18,15 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
-use Cvc\Typo3\CvcTwig\Extbase\Mvc\ControllerContextStack;
+use Cvc\Typo3\CvcTwig\Extbase\Mvc\RenderingContextStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use TYPO3\CMS\Core\LinkHandling\TypoLinkCodecService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
 
 /**
  * Provides functions to generate URIs.
@@ -38,10 +38,10 @@ final class UriExtension extends AbstractExtension
     private TypoLinkCodecService $typoLinkCodecService;
     private DataMapper $dataMapper;
     private UriBuilder $uriBuilder;
-    private ControllerContextStack $controllerContextStack;
+    private RenderingContextStack $controllerContextStack;
 
     public function __construct(
-        ControllerContextStack $controllerContextStack,
+        RenderingContextStack $controllerContextStack,
         TypoLinkCodecService $typoLinkCodecService,
         DataMapper $dataMapper,
         UriBuilder $uriBuilder
@@ -52,7 +52,7 @@ final class UriExtension extends AbstractExtension
         $this->uriBuilder = $uriBuilder;
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('t3_uri_action', [$this, 'uriAction']),
@@ -72,8 +72,7 @@ final class UriExtension extends AbstractExtension
         bool $linkAccessRestrictedPages = false,
         bool $absolute = false,
         bool $addQueryString = false,
-        array $argumentsToBeExcludedFromQueryString = [],
-        string $addQueryStringMethod = ''): ?string
+        array $argumentsToBeExcludedFromQueryString = []): ?string
     {
         $this->uriBuilder->reset();
 
@@ -90,10 +89,6 @@ final class UriExtension extends AbstractExtension
             ->setCreateAbsoluteUri($absolute)
             ->setAddQueryString($addQueryString)
             ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString);
-
-        if ($addQueryStringMethod !== '') {
-            $this->uriBuilder->setAddQueryStringMethod($addQueryStringMethod);
-        }
 
         return $this->uriBuilder->build();
     }
@@ -113,12 +108,11 @@ final class UriExtension extends AbstractExtension
         array $additionalParams = [],
         bool $absolute = false,
         bool $addQueryString = false,
-        array $argumentsToBeExcludedFromQueryString = [],
-        string $addQueryStringMethod = ''): ?string
+        array $argumentsToBeExcludedFromQueryString = []): ?string
     {
         $this->uriBuilder->reset();
 
-        $this->uriBuilder->setRequest($this->controllerContextStack->getControllerContext()->getRequest());
+        $this->uriBuilder->setRequest($this->controllerContextStack->getRenderingContext()->getRequest());
 
         if ($pageUid !== null) {
             $this->uriBuilder->setTargetPageUid($pageUid);
@@ -134,10 +128,6 @@ final class UriExtension extends AbstractExtension
             ->setCreateAbsoluteUri($absolute)
             ->setAddQueryString($addQueryString)
             ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString);
-
-        if ($addQueryStringMethod !== '') {
-            $this->uriBuilder->setAddQueryStringMethod($addQueryStringMethod);
-        }
 
         return $this->uriBuilder->uriFor($action, $arguments, $controller, $extensionName, $pluginName);
     }

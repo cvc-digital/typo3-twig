@@ -5,3 +5,5 @@
 /composer.lock
 /Documentation-GENERATED-temp
 /vendor
+Build/phpunit/.phpunit.cache
+.cache

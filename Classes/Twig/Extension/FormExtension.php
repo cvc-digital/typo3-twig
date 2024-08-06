@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2022 CARL von CHIARI GmbH
+ * Copyright (C) 2024 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,12 +18,13 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
-use Cvc\Typo3\CvcTwig\Extbase\Mvc\ControllerContextStack;
+use Cvc\Typo3\CvcTwig\Extbase\Mvc\RenderingContextStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Form\Domain\Exception\RenderingException;
 use TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory;
 use TYPO3\CMS\Form\Domain\Factory\FormFactoryInterface;
 use TYPO3\CMS\Form\Mvc\Persistence\FormPersistenceManagerInterface;
@@ -33,14 +34,14 @@ use TYPO3\CMS\Form\Mvc\Persistence\FormPersistenceManagerInterface;
  */
 class FormExtension extends AbstractExtension
 {
-    private ControllerContextStack $controllerContextStack;
+    private RenderingContextStack $controllerContextStack;
 
-    public function __construct(ControllerContextStack $controllerContextStack)
+    public function __construct(RenderingContextStack $controllerContextStack)
     {
         $this->controllerContextStack = $controllerContextStack;
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('t3_form_render', [$this, 'formRender'], ['is_safe' => ['html']]),
@@ -55,7 +56,7 @@ class FormExtension extends AbstractExtension
      * @param string|null $prototypeName         name of the prototype to use
      * @param array       $overrideConfiguration Factory specific configuration. This will allow to add additional configuration related to the current view.
      *
-     * @throws \TYPO3\CMS\Form\Domain\Exception\RenderingException
+     * @throws RenderingException
      */
     public function formRender(
         string $persistenceIdentifier = null,
@@ -74,13 +75,13 @@ class FormExtension extends AbstractExtension
         }
 
         if (empty($prototypeName)) {
-            $prototypeName = isset($overrideConfiguration['prototypeName']) ? $overrideConfiguration['prototypeName'] : 'standard';
+            $prototypeName = $overrideConfiguration['prototypeName'] ?? 'standard';
         }
 
         /** @var FormFactoryInterface $factory */
         $factory = GeneralUtility::makeInstance($factoryClass);
         $formDefinition = $factory->build($overrideConfiguration, $prototypeName);
-        $request = $this->controllerContextStack->getControllerContext()->getRequest();
+        $request = $this->controllerContextStack->getRenderingContext()->getRequest();
         assert($request instanceof Request);
         $form = $formDefinition->bind($request);
 

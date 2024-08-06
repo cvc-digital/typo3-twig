@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2022 CARL von CHIARI GmbH
+ * Copyright (C) 2023 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,25 +18,41 @@
 
 namespace Cvc\Typo3\CvcTwig\Tests\Functional\ContentObject;
 
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class RenderTwigTemplateTest extends FunctionalTestCase
 {
-    protected $testExtensionsToLoad = [
+    use SiteBasedTestTrait;
+
+    protected array $testExtensionsToLoad = [
         'typo3conf/ext/cvc_twig',
         'typo3conf/ext/cvc_twig/Tests/Functional/Fixtures/Extensions/twig_test',
     ];
 
+    private const ROOT_PAGE_ID = 1;
+
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->importDataSet(__DIR__.'/../../../.Build/vendor/nimut/testing-framework/res/Fixtures/Database/pages.xml');
-        $this->setUpFrontendRootPage(1, [__DIR__.'/../Fixtures/Extensions/twig_test/Configuration/TypoScript/page.typoscript']);
+        $this->importCSVDataSet(__DIR__.'/../../../.Build/vendor/typo3/cms-core/Tests/Functional/Fixtures/pages.csv');
+        $this->writeSiteConfiguration(
+            'frontend_twig_contentobject_test',
+            $this->buildSiteConfiguration(self::ROOT_PAGE_ID, '/'),
+        );
     }
 
     public function testTemplateIsRendered(): void
     {
-        $this->assertStringContainsString("Foo Bar! Settings: Ipsum.\n", $this->getFrontendResponse(1)->getContent());
+        $this->setUpFrontendRootPage(
+            self::ROOT_PAGE_ID,
+            [
+                'EXT:cvc_twig/Tests/Functional/Fixtures/Extensions/twig_test/Configuration/TypoScript/page.typoscript'
+            ]
+        );
+        $response = $this->executeFrontendSubRequest((new InternalRequest())->withPageId(1));
+
+        $this->assertStringContainsString("Foo Bar! Settings: Ipsum.\n", (string) $response->getBody());
     }
 }
