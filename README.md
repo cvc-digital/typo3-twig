@@ -27,6 +27,8 @@ Since Version 2, PHP `7.4` is required.
 | TYPO3 v10 |                             ❌                             |    ✅    |    ❌    |
 | TYPO3 v9  |                             ✅                             |    ❌    |    ❌    |
 | TYPO3 v8  |                             ✅                             |    ❌    |    ❌    |
+| PHP 8.3   |                             ❌                             |    ❌    |    ✅    |
+| PHP 8.2   |                             ❌                             |    ❌    |    ✅    |
 | PHP 8.1   |                             ❌                             |    ✅    |    ✅    |
 | PHP 8.0   |                             ❌                             |    ✅    |    ❌    |
 | PHP 7.4   |                             ✅                             |    ✅    |    ❌    |
