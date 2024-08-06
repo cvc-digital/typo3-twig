@@ -46,7 +46,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Cvc\\Typo3\\CvcTwig\\Tests\\": "Tests"
+            "Cvc\\Typo3\\CvcTwig\\Tests\\": "Tests",
+            "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms-core/Tests/"
         }
     },
     "config": {
@@ -56,7 +57,10 @@
             "ergebnis/composer-normalize": true
         },
         "bin-dir": ".Build/bin",
-        "vendor-dir": ".Build/vendor"
+        "vendor-dir": ".Build/vendor",
+        "preferred-install": {
+            "typo3/cms-core": "source"
+        }
     },
     "extra": {
         "branch-alias": {
