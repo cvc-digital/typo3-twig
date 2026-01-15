@@ -18,11 +18,13 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
-use Cvc\Typo3\CvcTwig\Extbase\Mvc\RenderingContextStack;
+use Psr\Http\Message\ServerRequestInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use TYPO3\CMS\Core\Http\UploadedFile;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Form\Domain\Exception\RenderingException;
 use TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory;
@@ -34,13 +36,6 @@ use TYPO3\CMS\Form\Mvc\Persistence\FormPersistenceManagerInterface;
  */
 class FormExtension extends AbstractExtension
 {
-    private RenderingContextStack $controllerContextStack;
-
-    public function __construct(RenderingContextStack $controllerContextStack)
-    {
-        $this->controllerContextStack = $controllerContextStack;
-    }
-
     public function getFunctions(): array
     {
         return [
@@ -78,13 +73,33 @@ class FormExtension extends AbstractExtension
             $prototypeName = $overrideConfiguration['prototypeName'] ?? 'standard';
         }
 
+        $mainRequest = $this->getRequest();
+
+        $files = $mainRequest->getUploadedFiles();
+        $files = $files['tx_form_formframework'] ?? [];
+        if ($files instanceof UploadedFile) {
+            // ensure it's always an array
+            $files = [$files];
+        }
+
+        $extbaseAttribute = new ExtbaseRequestParameters();
+        $extbaseAttribute->setPluginName('FormFramework');
+        $extbaseAttribute->setControllerExtensionName('Form');
+        $extbaseAttribute->setControllerName('FormFrontend');
+        $extbaseAttribute->setControllerActionName('perform');
+        $extbaseAttribute->setUploadedFiles($files);
+        $request = new Request($mainRequest->withAttribute('extbase', $extbaseAttribute));
+
         /** @var FormFactoryInterface $factory */
         $factory = GeneralUtility::makeInstance($factoryClass);
         $formDefinition = $factory->build($overrideConfiguration, $prototypeName);
-        $request = $this->controllerContextStack->getRenderingContext()->getRequest();
-        assert($request instanceof Request);
         $form = $formDefinition->bind($request);
 
         return $form->render();
+    }
+
+    private function getRequest(): ServerRequestInterface
+    {
+        return $GLOBALS['TYPO3_REQUEST'];
     }
 }
