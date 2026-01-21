@@ -18,6 +18,7 @@
 
 namespace Cvc\Typo3\CvcTwig\Mvc\View;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -38,10 +39,17 @@ final class StandaloneView
     private array $namespaces = [];
     private array $variables = [];
     private Environment $environment;
+    private ?ServerRequestInterface $request = null;
 
     public function __construct(Environment $environment)
     {
         $this->environment = $environment;
+    }
+
+    public function setRequest(ServerRequestInterface $request): StandaloneView
+    {
+        $this->request = $request;
+        return $this;
     }
 
     /**
@@ -68,7 +76,10 @@ final class StandaloneView
             $fileSystemLoader->setPaths($namespacedPaths, $namespace);
         }
         $this->environment->setLoader($fileSystemLoader);
-        return $this->environment->render($this->templateName, $this->variables);
+        return $this->environment->render($this->templateName,[
+            'request' => $this->request,
+            ...$this->variables
+        ]);
     }
 
     /**

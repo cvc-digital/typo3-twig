@@ -39,13 +39,14 @@ class FormExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('t3_form_render', [$this, 'formRender'], ['is_safe' => ['html']]),
+            new TwigFunction('t3_form_render', [$this, 'formRender'], ['is_safe' => ['html'],'needs_context' => true]),
         ];
     }
 
     /**
      * Renders a form using the `form framework <https://docs.typo3.org/typo3cms/extensions/form/Index.html>`__.
      *
+     * @param array       $context               Compete context of the twig template
      * @param string|null $persistenceIdentifier The identifier of the form, if a YAML file is used. If :code:`null`, then a Factory class needs to be set.
      * @param string      $factoryClass          the fully qualified class name of the factory
      * @param string|null $prototypeName         name of the prototype to use
@@ -54,6 +55,7 @@ class FormExtension extends AbstractExtension
      * @throws RenderingException
      */
     public function formRender(
+        array $context,
         string $persistenceIdentifier = null,
         string $factoryClass = ArrayFormFactory::class,
         string $prototypeName = null,
@@ -73,33 +75,14 @@ class FormExtension extends AbstractExtension
             $prototypeName = $overrideConfiguration['prototypeName'] ?? 'standard';
         }
 
-        $mainRequest = $this->getRequest();
-
-        $files = $mainRequest->getUploadedFiles();
-        $files = $files['tx_form_formframework'] ?? [];
-        if ($files instanceof UploadedFile) {
-            // ensure it's always an array
-            $files = [$files];
-        }
-
-        $extbaseAttribute = new ExtbaseRequestParameters();
-        $extbaseAttribute->setPluginName('FormFramework');
-        $extbaseAttribute->setControllerExtensionName('Form');
-        $extbaseAttribute->setControllerName('FormFrontend');
-        $extbaseAttribute->setControllerActionName('perform');
-        $extbaseAttribute->setUploadedFiles($files);
-        $request = new Request($mainRequest->withAttribute('extbase', $extbaseAttribute));
-
         /** @var FormFactoryInterface $factory */
         $factory = GeneralUtility::makeInstance($factoryClass);
         $formDefinition = $factory->build($overrideConfiguration, $prototypeName);
+
+        $request = $context['request'];
+        assert($request instanceof Request);
         $form = $formDefinition->bind($request);
 
         return $form->render();
-    }
-
-    private function getRequest(): ServerRequestInterface
-    {
-        return $GLOBALS['TYPO3_REQUEST'];
     }
 }
