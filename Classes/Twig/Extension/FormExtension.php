@@ -79,7 +79,7 @@ class FormExtension extends AbstractExtension
         $factory = GeneralUtility::makeInstance($factoryClass);
         $formDefinition = $factory->build($overrideConfiguration, $prototypeName);
 
-        $request = $context['request'];
+        $request = $context['request'] ?? null;
         assert($request instanceof Request);
         $form = $formDefinition->bind($request);
 

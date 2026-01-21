@@ -127,6 +127,7 @@ class TwigTemplateContentObject extends AbstractContentObject
         $view->setTemplateRootPaths($templateRootPaths);
         $view->setNamespaces($namespaces);
         $view->assignMultiple($variables);
+        $view->setRequest($this->request);
 
         return $view->render();
     }
