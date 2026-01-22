@@ -68,7 +68,7 @@ The :code:`templateRootPaths` are configured using TypoScript:
         }
     }
 
-The Twig template has to be paced in :code:`my_extension/Resources/Private/Templates/`
+The Twig template has to be placed in :code:`my_extension/Resources/Private/Templates/`
 and has to be named :code:`MyFantastical/someAwesome.html.twig`.
 
 .. code-block:: twig
