@@ -54,7 +54,7 @@ final class TwigView extends \TYPO3\CMS\Fluid\View\StandaloneView
         }
 
         $request = $renderingContext->getRequest();
-        $action = $renderingContext->getControllerAction();
+        $action = ucfirst($renderingContext->getControllerAction());
         $controller = $renderingContext->getControllerName();
         $format = $request->getFormat();
 
@@ -66,5 +66,10 @@ final class TwigView extends \TYPO3\CMS\Fluid\View\StandaloneView
     public function setTemplateRootPaths(array $templateRootPaths): void
     {
         $this->standaloneView->setTemplateRootPaths($templateRootPaths);
+    }
+
+    public function setNamespaces(array $namespaces): void
+    {
+        $this->standaloneView->setNamespaces($namespaces);
     }
 }
