@@ -27,10 +27,10 @@ Internally :code:`DebuggerUtility::var_dump()` is used.
 
    {# print a single variable #}
    {{ dump(foo) }}
-   
+
    {# print multiple variables #}
    {{ dump(foo, bar, baz) }}
-   
+
    {# print all variables #}
    {{ dump() }}
 
@@ -97,6 +97,41 @@ t3_form_render
 
 
 Renders a form using the `form framework <https://docs.typo3.org/typo3cms/extensions/form/Index.html>`__.
+
+.. note::
+    To use the t3_form_render function you first have to create a new content element with the following typoscript config:
+
+    .. code-block:: typoscript
+
+        tt_content {
+            twig_testform = COA_INT
+            twig_testform {
+                20 = TWIGTEMPLATE
+                20 {
+                    templateRootPaths {
+                        10 = EXT:ExtensionName/Resources/Private/TwigTemplates
+                    }
+                    templateName = TwigtestContentElement.html.twig
+
+                    settings {
+                        persistenceIdentifier = 1:/form_definitions/formIdentifier.form.yaml
+                    }
+
+                    extbase.pluginName = Formframework
+                    extbase.controllerExtensionName = Form
+                    extbase.controllerName = FormFrontend
+                    extbase.controllerActionName = perform
+                }
+            }
+        }
+
+.. code-block:: twig
+    :caption: TwigtestContentElement.html.twig
+
+    {{ t3_form_render(settings.persistenceIdentifier) }}
+
+.. warning::
+    Formframeworks redirect finisher cannot be used as it throws a PropagateResponseException and Twig has no handling for that.
 
 Arguments
 ---------
