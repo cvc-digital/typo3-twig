@@ -39,14 +39,14 @@ class FormExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('t3_form_render', [$this, 'formRender'], ['is_safe' => ['html'],'needs_context' => true]),
+            new TwigFunction('t3_form_render', [$this, 'formRender'], ['is_safe' => ['html'], 'needs_context' => true]),
         ];
     }
 
     /**
      * Renders a form using the `form framework <https://docs.typo3.org/typo3cms/extensions/form/Index.html>`__.
      *
-     * @param array       $context               Compete context of the twig template
+     * @param array       $context               Complete context of the twig template
      * @param string|null $persistenceIdentifier The identifier of the form, if a YAML file is used. If :code:`null`, then a Factory class needs to be set.
      * @param string      $factoryClass          the fully qualified class name of the factory
      * @param string|null $prototypeName         name of the prototype to use
