@@ -47,7 +47,7 @@ handleDbmsOptions() {
                 exit 1
             fi
             [ -z "${DBMS_VERSION}" ] && DBMS_VERSION="10.3"
-            if ! [[ ${DBMS_VERSION} =~ ^(10.3|10.4|10.5|10.6|10.7|10.8|10.9|10.10|10.11|11.0|11.1|11.2|11.3|11.4)$ ]]; then
+            if ! [[ ${DBMS_VERSION} =~ ^(10.3|10.4|10.5|10.6|10.7|10.8|10.9|10.10|10.11|11.0|11.1)$ ]]; then
                 echo "Invalid combination -d ${DBMS} -i ${DBMS_VERSION}" >&2
                 echo >&2
                 echo "Use \".Build/Scripts/runTests.sh -h\" to display help and valid options" >&2
@@ -63,7 +63,7 @@ handleDbmsOptions() {
                 exit 1
             fi
             [ -z "${DBMS_VERSION}" ] && DBMS_VERSION="8.0"
-            if ! [[ ${DBMS_VERSION} =~ ^(8.0|8.1|8.2|8.3|8.4)$ ]]; then
+            if ! [[ ${DBMS_VERSION} =~ ^(8.0)$ ]]; then
                 echo "Invalid combination -d ${DBMS} -i ${DBMS_VERSION}" >&2
                 echo >&2
                 echo "Use \".Build/Scripts/runTests.sh -h\" to display help and valid options" >&2
@@ -488,13 +488,13 @@ if [[ -z "${CONTAINER_BIN}" ]]; then
     fi
 fi
 
-if [ $(uname) != "Darwin" ] && [ ${CONTAINER_BIN} = "docker" ]; then
+if [ $(uname) != "Darwin" ] && [ "${CONTAINER_BIN}" == "docker" ]; then
     # Run docker jobs as current user to prevent permission issues. Not needed with podman.
     USERSET="--user $HOST_UID"
 fi
 
 if ! type ${CONTAINER_BIN} >/dev/null 2>&1; then
-    echo "Selected container environment \"${CONTAINER_BIN}\" not found. Please install or use -b option to select one." >&2
+    echo "Selected container environment \"${CONTAINER_BIN}\" not found. Please install \"${CONTAINER_BIN}\" or use -b option to select one." >&2
     exit 1
 fi
 
