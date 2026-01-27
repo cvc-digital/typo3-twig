@@ -1,10 +1,13 @@
 page = PAGE
 page.10 = TWIGTEMPLATE
 page.10 {
-    templateName = EXT:twig_test/Resources/Private/TwigTemplates/example.html.twig
+    templateName = example.html.twig
     variables {
         foo = TEXT
         foo.value = Bar!
+    }
+    templateRootPaths {
+        10 = EXT:twig_test/Resources/Private/TwigTemplates
     }
     settings {
         lorem = Ipsum
