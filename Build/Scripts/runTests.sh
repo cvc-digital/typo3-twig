@@ -51,8 +51,8 @@ handleDbmsOptions() {
                 echo "Use \".Build/Scripts/runTests.sh -h\" to display help and valid options" >&2
                 exit 1
             fi
-            [ -z "${DBMS_VERSION}" ] && DBMS_VERSION="10.3"
-            if ! [[ ${DBMS_VERSION} =~ ^(10.3|10.4|10.5|10.6|10.7|10.8|10.9|10.10|10.11|11.0|11.1|11.2|11.3|11.4)$ ]]; then
+            [ -z "${DBMS_VERSION}" ] && DBMS_VERSION="10.4"
+            if ! [[ ${DBMS_VERSION} =~ ^(10.4|10.5|10.6|10.7|10.8|10.9|10.10|10.11|11.0|11.1|11.2|11.3|11.4)$ ]]; then
                 echo "Invalid combination -d ${DBMS} -i ${DBMS_VERSION}" >&2
                 echo >&2
                 echo "Use \".Build/Scripts/runTests.sh -h\" to display help and valid options" >&2
@@ -124,227 +124,48 @@ cleanBuildFiles() {
 cleanCacheFiles() {
     echo -n "Clean caches ... "
     rm -rf \
-        .cache \
-        Build/.cache \
-        Build/composer/.cache/ \
+        .Build/.cache \
         .php-cs-fixer.cache
     echo "done"
 }
 
 cleanTestFiles() {
-    # composer distribution test
-    echo -n "Clean composer distribution test ... "
-    rm -rf \
-        Build/composer/composer.json \
-        Build/composer/composer.lock \
-        Build/composer/public/index.php \
-        Build/composer/public/typo3 \
-        Build/composer/public/typo3conf/ext \
-        Build/composer/var/ \
-        Build/composer/vendor/
-    echo "done"
-
     # test related
     echo -n "Clean test related files ... "
     rm -rf \
-        Build/phpunit/FunctionalTests-Job-*.xml \
-        typo3/sysext/core/Tests/AcceptanceTests-Job-* \
-        typo3/sysext/core/Tests/Acceptance/Support/_generated \
-        typo3temp/var/tests/
+        .Build/public/typo3temp/var/tests/
     echo "done"
 }
 
 cleanRenderedDocumentationFiles() {
     echo -n "Clean rendered documentation files ... "
     rm -rf \
-        typo3/sysext/*/Documentation-GENERATED-temp
+        Documentation-GENERATED-temp
     echo "done"
+}
+
+cleanComposer() {
+  rm -rf \
+    .Build/vendor \
+    .Build/bin \
+    composer.lock
 }
 
 getPhpImageVersion() {
     case ${1} in
         8.1)
-            echo -n "2.15"
+            echo -n 'latest'
             ;;
         8.2)
-            echo -n "1.15"
+            echo -n "1.12"
             ;;
         8.3)
-            echo -n "1.16"
+            echo -n "1.13"
             ;;
         8.4)
-            echo -n "1.8"
-            ;;
-        8.5)
-            echo -n "1.0"
+            echo -n "1.1"
             ;;
     esac
-}
-
-executeRstRendering() {
-    local systemExtensionName="$1"
-    local systemExtensionFolder="typo3/sysext/${systemExtensionName}"
-    if [[ ! -d "${systemExtensionFolder}/Documentation" ]]; then
-        return 1
-    fi
-    echo "Processing RST directory: ${systemExtensionFolder}/Documentation"
-    ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-rst-rendering-${systemExtensionName}-${SUFFIX}  -w /project -v "${CORE_ROOT}/${systemExtensionFolder}:/project" ${IMAGE_RSTRENDERING} --fail-on-log --fail-on-error --no-progress --config=Documentation Documentation
-    local exitCode=$?
-    echo "Render result for ${systemExtensionFolder}: ${exitCode}"
-    return ${exitCode}
-}
-
-executeRstRenderingWithWatch() {
-    local GREEN='\033[0;32m'
-    local YELLOW='\033[1;33m'
-    local RED='\033[1;31m'
-    local NC='\033[0m' # No Color
-
-    local systemExtensionName="$1"
-    local entryFile="$2"
-    local portOverride="$3"
-
-    if [[ "${portOverride}x" != "x" ]]; then
-        local actualRstPort="${portOverride}"
-    else
-        local actualRstPort="${RST_PORT}"
-    fi
-
-    local systemExtensionFolder="typo3/sysext/${systemExtensionName}"
-    if [[ ! -d "${systemExtensionFolder}/Documentation" ]]; then
-        return 1
-    fi
-
-    if [[ "${systemExtensionKey}" == "core" ]]; then
-        echo -e "${GREEN}Hint:${NC} For the 'core' documentation (Changelog), a second argument can directly create/use a new entry."
-        echo -e "Use '${YELLOW}interactive${NC}' for an interactive file creation process."
-        echo "Example:"
-        echo "# Create a new file (if the file already exists, it is utilized)"
-        echo "./Build/Scripts/runTests.sh -s watchRst core Changelog/${RST_TYPO3_MAIN_VERSION}/Feature-12343-MyFeature.rst"
-        echo "# Interactively ask for the target file, created in "${RST_TYPO3_MAIN_VERSION}" (branch dependent)"
-        echo "./Build/Scripts/runTests.sh -s watchRst core interactive"
-        echo "# Run on port different than ${RST_PORT}"
-        echo "./Build/Scripts/runTests.sh -s watchRst core interactive 4711"
-        echo ""
-
-        if [[ "${entryFile}x" != "x" ]]; then
-            if [[ "${entryFile}" == "interactive" ]]; then
-                echo "What kind of changelog should be created?"
-                echo "1) Feature"
-                echo "2) Breaking"
-                echo "3) Important"
-                echo "4) Deprecation"
-                echo -en "${GREEN}Enter your choice (1-4)${NC}: "
-                read -r choice
-
-                case $choice in
-                    1) local issueType="Feature" ;;
-                    2) local issueType="Breaking" ;;
-                    3) local issueType="Important" ;;
-                    4) local issueType="Deprecation" ;;
-                    *)
-                        echo -e "${RED}Invalid choice. Exiting.${NC}"
-                        return 1
-                        ;;
-                esac
-
-                echo -en "${GREEN}Enter issue number for this ${YELLOW}${issueType}${GREEN} file${NC}: "
-                read -r issueNumber
-                local issueNumber=$(echo "$issueNumber" | sed 's/[^0-9]//g')
-
-                echo -en "${GREEN}Enter title for issue #${issueNumber} (spaces are removed in filename) ${NC}: "
-                read -r issueTitle
-
-                local issueFileTitle=$(echo "$issueTitle" | sed 's/[^a-zA-Z_0-9-]//g')
-
-                local newFile="Changelog/${RST_TYPO3_MAIN_VERSION}/${issueType}-${issueNumber}-${issueFileTitle}.rst"
-            else
-                # non-interactive mode and file not existing. Let's evaluate some stuff!
-                local pattern='^Changelog/([0-9.]+)/(Breaking|Important|Feature|Deprecation)-([0-9]+)-(.+)\.rst$'
-                if [[ $entryFile =~ $pattern ]]; then
-                    local issueType="${BASH_REMATCH[2]}"
-                    local issueNumber="${BASH_REMATCH[3]}"
-                    local issueFileTitle="${BASH_REMATCH[4]}"
-                    local issueTitle="${issueFileTitle}"
-                else
-                    echo -e "${RED}Invalid filename, does not match changelog pattern: ${YELLOW}${pattern}${RED} - exiting.${NC}"
-                    return 1
-                fi
-                local newFile="${entryFile}"
-            fi
-
-            local fullTargetFile="${systemExtensionFolder}/Documentation/${newFile}"
-            local templateFile="../rstTemplates/rstTemplate${issueType}.rst"
-
-            # This will also be triggered for a filename "interactive", since this will not yet exist
-            if [[ ! -f "${fullTargetFile}" ]]; then
-                local fullTemplateFile="${THIS_SCRIPT_DIR}/${templateFile}"
-                echo -e "Creating: ${GREEN}${fullTargetFile}${NC}"
-                echo -e "Template: ${YELLOW}${fullTemplateFile}${NC}"
-
-                local escapedTitle=$(printf '%s\n' "$issueTitle" | sed 's/[&/\]/\\&/g')
-                local escapedIssue=$(printf '%s\n' "$issueNumber" | sed 's/[&/\]/\\&/g')
-                local escapedTimestamp=$(date +%s)
-
-                local creationPath=$(dirname "${fullTargetFile}")
-                if [[ ! -d "${creationPath}" ]]; then
-                    echo -e "${RED}${creationPath}${NC} is not a valid directory, no file could be created."
-                    return 1
-                fi
-
-                sed -e "s/{ISSUE}/$escapedIssue/g;" \
-                    -e "s/{TITLE}/$escapedTitle/g;" \
-                    -e "s/{TIMESTAMP}/$escapedTimestamp/g;" \
-                    "${fullTemplateFile}" > "${fullTargetFile}"
-
-                echo -e "${GREEN} ✓ New file created${NC}"
-                echo ""
-            fi
-
-            if [[ ! -f "${fullTargetFile}" ]]; then
-                echo -e "${RED}${fullTargetFile}${NC} could not be found and could not be created."
-                return 1
-            fi
-        fi
-    else
-        echo -e "${YELLOW}HINT: File creation only works for EXT:core context."
-        echo -e "For other manuals, please create files distinctively, because the follow no pattern."
-        echo -e "Filename input is ignored.${NC}"
-        echo ""
-    fi
-
-    echo -e "${YELLOW}NOTICE: Live documentation rendering is an experimental feature.${NC}"
-    echo "  - Adding new files after the process is running will not include them"
-    echo "  - Navigation / Menus on live-rendering may not fully work"
-    echo "  - Leaving the process running for a long time may cause memory leaks / consumption"
-    echo ""
-    echo "After the initial rendering is done, you can access the local browser and edit the file"
-    echo "simultaneously. Every time the file is changed, your browser will automatically reload"
-    echo "the page, and scroll to the last position."
-    echo ""
-
-    local htmlFile="${newFile%.rst}.html"
-    echo -e "Processing RST directory: ${GREEN}${systemExtensionFolder}/Documentation${NC}"
-    if [[ -f "${fullTargetFile}" ]]; then
-        echo -e "Working on: ${GREEN}${newFile}${NC}"
-        echo -e "Browser URL: ${GREEN}http://localhost:${actualRstPort}/${htmlFile}${NC}"
-    else
-        echo -e "Browser URL: ${GREEN}http://localhost:${actualRstPort}/${NC}"
-    fi
-
-    echo -e "(Press ${RED}Control-C${NC} when finished writing documentation)"
-    echo ""
-
-    # Command taken from Playwright example
-    if [ ${CONTAINER_BIN} = "docker" ]; then
-        ${CONTAINER_BIN} run -it --name watch-rst-rendering-${systemExtensionName}-${SUFFIX} -p ${actualRstPort}:${actualRstPort} --network ${NETWORK} --network-alias watch-rst --add-host "${CONTAINER_HOST}:host-gateway" -w /project -v "${CORE_ROOT}/${systemExtensionFolder}:/project" ${IMAGE_RSTRENDERING} --port ${actualRstPort} --watch --config=Documentation Documentation
-    else
-        ${CONTAINER_BIN} run -it ${CI_PARAMS} --name watch-rst-rendering-${systemExtensionName}-${SUFFIX} -p ${actualRstPort}:${actualRstPort} --network ${NETWORK} --network-alias watch-rst -w /project -v "${CORE_ROOT}/${systemExtensionFolder}:/project" ${IMAGE_RSTRENDERING} --port ${actualRstPort} --watch --config=Documentation Documentation
-    fi
-
-    local exitCode=$?
-    echo "Render result for ${systemExtensionFolder}: ${exitCode}"
-    return ${exitCode}
 }
 
 loadHelp() {
@@ -368,24 +189,16 @@ Options:
             - cglGit: test and fix latest committed patch for CGL compliance
             - cglHeader: test and fix file header for all core php files
             - cglHeaderGit: test and fix latest committed patch for CGL file header compliance
-            - checkAnnotations: check php code for allowed annotations
             - checkBom: check UTF-8 files do not contain BOM
             - checkComposer: check composer.json files for version integrity
-            - checkExceptionCodes: test core for duplicate exception codes
             - checkExtensionScannerRst: test all .rst files referenced by extension scanner exist
             - checkFilePathLength: test core file paths do not exceed maximum length
-            - checkFilesAndPathsForSpaces: test paths and files for spaces
             - checkGitSubmodule: test core git has no sub modules defined
             - checkGruntClean: Verify "grunt build" is clean. Warning: Executes git commands! Usually used in CI only.
+            - checkIntegrityPhp: check php code for with registered integrity rules
             - checkIsoDatabase: Verify "updateIsoDatabase.php" does not change anything.
-            - checkNamespaceIntegrity: Verify namespace integrity in class and test code files are in good shape.
             - checkPermissions: test some core files for correct executable bits
             - checkRst: test .rst files for integrity
-            - checkTestClassFinal: check test case classes are final
-            - checkTestMethodsPrefix: check tests methods do not start with "test"
-            - checkRstRenderingAll: Test all system extension .rst files for rendering errors
-            - checkRstRenderingSingle: Test specified system extension .rst files for rendering errors
-            - watchRst: Live documentation editing of specified system extension (can interactively create changelog entries).
             - clean: clean up build, cache and testing related files and folders
             - cleanBuild: clean up build related files and folders
             - cleanCache: clean up cache related files and folders
@@ -407,7 +220,6 @@ Options:
             - lintTypescript: TS linting
             - lintYaml: YAML Linting (excluding Services.yaml)
             - npm: "npm" command dispatcher, to execute various npm commands directly
-            - accessibility: accessibility tests
             - phpstan: phpstan tests
             - phpstanGenerateBaseline: regenerate phpstan baseline, handy after phpstan updates
             - unit (default): PHP unit tests
@@ -441,8 +253,7 @@ Options:
     -i version
         Specify a specific database version
         With "-d mariadb":
-            - 10.3   short-term, maintained until 2023-05-25 (default)
-            - 10.4   short-term, maintained until 2024-06-18
+            - 10.4   short-term, maintained until 2024-06-18 (default)
             - 10.5   short-term, maintained until 2025-06-24
             - 10.6   long-term, maintained until 2026-06
             - 10.7   short-term, no longer maintained
@@ -475,13 +286,17 @@ Options:
         Hack functional or acceptance tests into #numberOfChunks pieces and run tests of #chunk.
         Example -c 3/13
 
-    -p <8.1|8.2|8.3|8.4|8.5>
+    -p <8.2|8.3|8.4>
         Specifies the PHP minor version to be used
-            - 8.1 (default): use PHP 8.1
-            - 8.2: use PHP 8.2
+            - 8.2 (default): use PHP 8.2
             - 8.3: use PHP 8.3
             - 8.4: use PHP 8.4
-            - 8.5: use PHP 8.5
+
+    -t sets|systemplate
+        Only with -s acceptance|acceptanceComposer
+        Specifies which frontend rendering mechanism should be used
+            - sets: (default): use site sets
+            - systemplate: use sys_template records
 
     -g
         Only with -s acceptance|acceptanceComposer|acceptanceInstall
@@ -510,21 +325,21 @@ Options:
         Show this help.
 
 Examples:
-    # Run all core unit tests using PHP 8.1
+    # Run all core unit tests using PHP 8.2
     ./Build/Scripts/runTests.sh
     ./Build/Scripts/runTests.sh -s unit
 
     # Run all core units tests and enable xdebug (have a PhpStorm listening on port 9003!)
     ./Build/Scripts/runTests.sh -x
 
-    # Run unit tests in phpunit with xdebug on PHP 8.1 and filter for test filterByValueRecursiveCorrectlyFiltersArray
-    ./Build/Scripts/runTests.sh -x -p 8.1 -- --filter filterByValueRecursiveCorrectlyFiltersArray
+    # Run unit tests in phpunit with xdebug on PHP 8.3 and filter for test filterByValueRecursiveCorrectlyFiltersArray
+    ./Build/Scripts/runTests.sh -x -p 8.3 -- --filter filterByValueRecursiveCorrectlyFiltersArray
 
     # Run functional tests in phpunit with a filtered test method name in a specified file
     ./Build/Scripts/runTests.sh -s functional -- --filter aTestName path/to/fileTest.php
 
-    # Run functional tests on postgres with xdebug, php 8.1 and execute a restricted set of tests
-    ./Build/Scripts/runTests.sh -x -p 8.1 -s functional -d postgres typo3/sysext/core/Tests/Functional/Authentication
+    # Run functional tests on postgres with xdebug, php 8.3 and execute a restricted set of tests
+    ./Build/Scripts/runTests.sh -x -p 8.3 -s functional -d postgres typo3/sysext/core/Tests/Functional/Authentication
 
     # Run functional tests on postgres 11
     ./Build/Scripts/runTests.sh -s functional -d postgres -i 11
@@ -548,12 +363,6 @@ Examples:
     ./Build/Scripts/runTests.sh -s npm -- run build
     ./Build/Scripts/runTests.sh -s npm -- run watch:build
     ./Build/Scripts/runTests.sh -s npm -- install --save bootstrap@^5.3.2
-
-    # Run ReST live (hot reload) rendering with provided local webserver
-    ./Build/Scripts/runTests.sh -s watchRst core interactive
-    ./Build/Scripts/runTests.sh -s watchRst core Changelog/14.0/Breaking-123456-something.rst
-    ./Build/Scripts/runTests.sh -s watchRst form
-    ./Build/Scripts/runTests.sh -s watchRst felogin KnownProblems/Index.rst
 EOF
 }
 
@@ -574,16 +383,17 @@ CORE_ROOT="${PWD}"
 TEST_SUITE="unit"
 DBMS="sqlite"
 DBMS_VERSION=""
-PHP_VERSION="8.1"
+PHP_VERSION="8.2"
 PHP_XDEBUG_ON=0
 PHP_XDEBUG_PORT=9003
 ACCEPTANCE_HEADLESS=1
+ACCEPTANCE_TOPIC="sets"
 CGLCHECK_DRY_RUN=""
 DATABASE_DRIVER=""
 CHUNKS=0
 THISCHUNK=0
 CONTAINER_BIN=""
-COMPOSER_ROOT_VERSION="12.4.x-dev"
+COMPOSER_ROOT_VERSION="13.3.x-dev"
 PHPSTAN_CONFIG_FILE="phpstan.local.neon"
 CONTAINER_INTERACTIVE="-it --init"
 HOST_UID=$(id -u)
@@ -597,8 +407,6 @@ if [ ${CI_JOB_ID} ]; then
 fi
 NETWORK="typo3-core-${SUFFIX}"
 CONTAINER_HOST="host.docker.internal"
-RST_TYPO3_MAIN_VERSION="12.4.x"
-RST_PORT="1337"
 
 # Option parsing updates above default vars
 # Reset in case getopts has been used previously in the shell
@@ -606,7 +414,7 @@ OPTIND=1
 # Array for invalid options
 INVALID_OPTIONS=()
 # Simple option parsing based on getopts (! not getopt)
-while getopts ":a:b:s:c:d:i:p:xy:nhug" OPT; do
+while getopts ":a:b:s:c:d:i:t:p:xy:nhug" OPT; do
     case ${OPT} in
         s)
             TEST_SUITE=${OPTARG}
@@ -637,12 +445,15 @@ while getopts ":a:b:s:c:d:i:p:xy:nhug" OPT; do
             ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(8.1|8.2|8.3|8.4|8.5)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(8.1|8.2|8.3|8.4)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             ;;
         g)
             ACCEPTANCE_HEADLESS=0
+            ;;
+        t)
+            ACCEPTANCE_TOPIC=${OPTARG}
             ;;
         x)
             PHP_XDEBUG_ON=1
@@ -708,22 +519,24 @@ if ! type ${CONTAINER_BIN} >/dev/null 2>&1; then
     exit 1
 fi
 
-IMAGE_APACHE="ghcr.io/typo3/core-testing-apache24:1.7"
+IMAGE_APACHE="ghcr.io/typo3/core-testing-apache24:1.5"
 IMAGE_PHP="ghcr.io/typo3/core-testing-$(echo "php${PHP_VERSION}" | sed -e 's/\.//'):$(getPhpImageVersion $PHP_VERSION)"
 
-IMAGE_NODEJS="ghcr.io/typo3/core-testing-nodejs22:1.3"
-IMAGE_NODEJS_CHROME="ghcr.io/typo3/core-testing-nodejs22-chrome:1.3"
-IMAGE_PLAYWRIGHT="mcr.microsoft.com/playwright:v1.56.1-noble"
+IMAGE_NODEJS="ghcr.io/typo3/core-testing-nodejs22:1.1"
+IMAGE_NODEJS_CHROME="ghcr.io/typo3/core-testing-nodejs22-chrome:1.1"
 IMAGE_ALPINE="docker.io/alpine:3.8"
-# HEADS UP: We need to pin to <132 for --headless=old support until https://issues.chromium.org/issues/362522328 is resolved
-IMAGE_SELENIUM="docker.io/selenium/standalone-chromium:131.0-20250101"
+IMAGE_SELENIUM="docker.io/selenium/standalone-chrome:4.20.0-20240505"
 IMAGE_REDIS="docker.io/redis:4-alpine"
 IMAGE_MEMCACHED="docker.io/memcached:1.5-alpine"
 IMAGE_MARIADB="docker.io/mariadb:${DBMS_VERSION}"
 IMAGE_MYSQL="docker.io/mysql:${DBMS_VERSION}"
 IMAGE_POSTGRES="docker.io/postgres:${DBMS_VERSION}-alpine"
-# Not a bug; render-guides has no "1.x" release yet.
-IMAGE_RSTRENDERING="ghcr.io/typo3-documentation/render-guides:0.35"
+
+# Detect arm64 to use seleniarm image.
+ARCH=$(uname -m)
+if [ ${ARCH} = "arm64" ]; then
+    IMAGE_SELENIUM="docker.io/seleniarm/standalone-chromium:4.20.0-20240427"
+fi
 
 # Remove handled options and leaving the rest in the line, so it can be passed raw to commands
 shift $((OPTIND - 1))
@@ -737,16 +550,10 @@ ${CONTAINER_BIN} network create ${NETWORK} >/dev/null
 if [ ${CONTAINER_BIN} = "docker" ]; then
     # docker needs the add-host for xdebug remote debugging. podman has host.container.internal built in
     CONTAINER_COMMON_PARAMS="${CONTAINER_INTERACTIVE} --rm --network ${NETWORK} --add-host "${CONTAINER_HOST}:host-gateway" ${USERSET} -v ${CORE_ROOT}:${CORE_ROOT} -w ${CORE_ROOT}"
-    TMPFS_MOUNT_OPTIONS="rw,noexec,nosuid,uid=${HOST_UID},gid=${HOST_PID}"
 else
     # podman
     CONTAINER_HOST="host.containers.internal"
     CONTAINER_COMMON_PARAMS="${CONTAINER_INTERACTIVE} ${CI_PARAMS} --rm --network ${NETWORK} -v ${CORE_ROOT}:${CORE_ROOT} -w ${CORE_ROOT}"
-    TMPFS_MOUNT_OPTIONS="rw,noexec,nosuid"
-fi
-
-if [[ "${CI}" == "true" ]]; then
-    CONTAINER_COMMON_PARAMS="${CONTAINER_COMMON_PARAMS} ${CONTAINER_COMMON_PARAMS_CI:-}"
 fi
 
 if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
@@ -762,9 +569,9 @@ fi
 # Suite execution
 case ${TEST_SUITE} in
     acceptance)
-        CODECEPION_ENV="--env ci,classic"
+        CODECEPION_ENV="--env ci,classic,${ACCEPTANCE_TOPIC}"
         if [ "${ACCEPTANCE_HEADLESS}" -eq 1 ]; then
-            CODECEPION_ENV="--env ci,classic,headless"
+            CODECEPION_ENV="--env ci,classic,headless,${ACCEPTANCE_TOPIC}"
         fi
         if [ "${CHUNKS}" -gt 0 ]; then
             ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name ac-splitter-${SUFFIX} ${IMAGE_PHP} php -dxdebug.mode=off Build/Scripts/splitAcceptanceTests.php -v ${CHUNKS}
@@ -858,12 +665,12 @@ case ${TEST_SUITE} in
                 ;;
         esac
 
-        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name acceptance-prepare ${XDEBUG_MODE} -e COMPOSER_CACHE_DIR=${CORE_ROOT}/.cache/composer -e COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${PREPAREPARAMS} ${IMAGE_PHP} "${CORE_ROOT}/Build/Scripts/setupAcceptanceComposer.sh" "typo3temp/var/tests/acceptance-composer"
+        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name acceptance-prepare ${XDEBUG_MODE} -e COMPOSER_CACHE_DIR=${CORE_ROOT}/.cache/composer -e COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${PREPAREPARAMS} ${IMAGE_PHP} "${CORE_ROOT}/Build/Scripts/setupAcceptanceComposer.sh" "typo3temp/var/tests/acceptance-composer" sqlite "" "${ACCEPTANCE_TOPIC}"
         SUITE_EXIT_CODE=$?
         if [[ ${SUITE_EXIT_CODE} -eq 0 ]]; then
-            CODECEPION_ENV="--env ci,composer"
+            CODECEPION_ENV="--env ci,composer,${ACCEPTANCE_TOPIC}"
             if [ "${ACCEPTANCE_HEADLESS}" -eq 1 ]; then
-                CODECEPION_ENV="--env ci,composer,headless"
+                CODECEPION_ENV="--env ci,composer,headless,${ACCEPTANCE_TOPIC}"
             fi
             if [ "${CHUNKS}" -gt 0 ]; then
                 ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name ac-splitter-${SUFFIX} ${IMAGE_PHP} php -dxdebug.mode=off Build/Scripts/splitAcceptanceTests.php -v ${CHUNKS}
@@ -976,65 +783,6 @@ case ${TEST_SUITE} in
                 ;;
         esac
         ;;
-    accessibility*)
-        [[ "$TEST_SUITE" = 'accessibility-prepare' ]] && ACCESSIBILITY_PREPARE=1 || ACCESSIBILITY_PREPARE=0
-        PREPAREPARAMS="-e TYPO3_DB_DRIVER=sqlite"
-        TESTPARAMS="-e typo3DatabaseDriver=pdo_sqlite"
-
-        if [ "${ACCESSIBILITY_USE_EXISTING_INSTANCE}x" = "x" ]; then
-            rm -rf "${CORE_ROOT}/typo3temp/var/tests/playwright-composer" "${CORE_ROOT}/typo3temp/var/tests/playwright-reports" "${CORE_ROOT}/typo3temp/var/tests/playwright-results"
-            ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name accessibility-prepare ${XDEBUG_MODE} -e COMPOSER_CACHE_DIR=${CORE_ROOT}/.cache/composer -e COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${PREPAREPARAMS} ${IMAGE_PHP} "${CORE_ROOT}/Build/Scripts/setupAcceptanceComposer.sh" "typo3temp/var/tests/playwright-composer" sqlite
-            if [[ $? -gt 0 ]]; then
-                kill -SIGINT -$$
-            fi
-        fi
-
-        [[ -e "${CORE_ROOT}/Build/node_modules/.bin/playwright" ]] || ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name playwright-${SUFFIX}-npm-ci \
-            -e HOME=${CORE_ROOT}/.cache \
-            ${IMAGE_NODEJS_CHROME} \
-            npm --prefix=Build ci
-            if [[ $? -gt 0 ]]; then
-                kill -SIGINT -$$
-            fi
-
-        APACHE_OPTIONS="-e APACHE_RUN_USER=#${HOST_UID} -e APACHE_RUN_SERVERNAME=web -e APACHE_RUN_GROUP=#${HOST_PID} -e APACHE_RUN_DOCROOT=${CORE_ROOT}/typo3temp/var/tests/playwright-composer/public -e PHPFPM_HOST=phpfpm -e PHPFPM_PORT=9000"
-        if [[ ${ACCESSIBILITY_PREPARE} -eq 1 ]]; then
-            APACHE_OPTIONS="${APACHE_OPTIONS} -p 127.0.0.1::80"
-        fi
-
-        if [ ${CONTAINER_BIN} = "docker" ]; then
-            ${CONTAINER_BIN} run --rm -d --name ac-phpfpm-${SUFFIX} --network ${NETWORK} --network-alias phpfpm --add-host "${CONTAINER_HOST}:host-gateway" ${USERSET} -e PHPFPM_USER=${HOST_UID} -e PHPFPM_GROUP=${HOST_PID} -v ${CORE_ROOT}:${CORE_ROOT} ${IMAGE_PHP} php-fpm ${PHP_FPM_OPTIONS} >/dev/null
-            ${CONTAINER_BIN} run --rm -d --name ac-web-${SUFFIX} --network ${NETWORK} --network-alias web --add-host "${CONTAINER_HOST}:host-gateway" -v ${CORE_ROOT}:${CORE_ROOT} ${APACHE_OPTIONS} ${IMAGE_APACHE} >/dev/null
-        else
-            ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name ac-phpfpm-${SUFFIX} --network ${NETWORK} --network-alias phpfpm ${USERSET} -e PHPFPM_USER=0 -e PHPFPM_GROUP=0 -v ${CORE_ROOT}:${CORE_ROOT} ${IMAGE_PHP} php-fpm -R ${PHP_FPM_OPTIONS} >/dev/null
-            ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name ac-web-${SUFFIX} --network ${NETWORK} --network-alias web -v ${CORE_ROOT}:${CORE_ROOT} ${APACHE_OPTIONS} ${IMAGE_APACHE} >/dev/null
-        fi
-
-        waitFor web 80
-
-        COMMAND="npm --prefix=${CORE_ROOT}/Build run playwright:run"
-        if [[ ${ACCESSIBILITY_PREPARE} -eq 0 ]]; then
-            ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name accessibility-${SUFFIX} -e CHROME_SANDBOX=false -e CI=1 ${IMAGE_PLAYWRIGHT} ${COMMAND}
-            SUITE_EXIT_CODE=$?
-        else
-            ACCESSIBILITY_BASE_URL="http://$(${CONTAINER_BIN} port ac-web-${SUFFIX} 80/tcp)/"
-            echo
-            echo -en "\033[32m✓\033[0m "
-            echo "Environment prepared. You can now manually run the following command or press Enter to run all tests."
-            echo
-            echo -n "  "
-            echo "ACCESSIBILITY_BASE_URL=${ACCESSIBILITY_BASE_URL}typo3 ${COMMAND}"
-            echo
-            echo -e "(Press \033[31mControl-C\033[0m to quit, \033[32mEnter\033[0m to run tests)"
-            # maybe use https://stackoverflow.com/a/58508884/4223467
-            while read -r _; do
-                ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name accessibility-${SUFFIX} -e CHROME_SANDBOX=false -e CI=1 ${IMAGE_PLAYWRIGHT} ${COMMAND}
-                SUITE_EXIT_CODE=$?
-                echo
-                echo -e "(Press \033[31mControl-C\033[0m to quit, \033[32mEnter\033[0m to re-run tests)"
-            done </dev/tty
-        fi
-        ;;
     buildCss)
         COMMAND="cd Build; npm ci || exit 1; node_modules/grunt/bin/grunt css"
         ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name build-css-${SUFFIX} -e HOME=${CORE_ROOT}/.cache ${IMAGE_NODEJS} /bin/sh -c "${COMMAND}"
@@ -1071,16 +819,8 @@ case ${TEST_SUITE} in
         ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name cgl-header-git-${SUFFIX} ${IMAGE_PHP} Build/Scripts/cglFixMyCommitFileHeader.sh ${CGLCHECK_DRY_RUN}
         SUITE_EXIT_CODE=$?
         ;;
-    checkAnnotations)
-        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-annotations-${SUFFIX} ${IMAGE_PHP} php -dxdebug.mode=off Build/Scripts/annotationChecker.php
-        SUITE_EXIT_CODE=$?
-        ;;
-    checkTestClassFinal)
-        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-test-classes-final-${SUFFIX} ${IMAGE_PHP} php -dxdebug.mode=off Build/Scripts/testClassFinalChecker.php
-        SUITE_EXIT_CODE=$?
-        ;;
-    checkTestMethodsPrefix)
-        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-test-methods-prefix-${SUFFIX} ${IMAGE_PHP} php -dxdebug.mode=off Build/Scripts/testMethodPrefixChecker.php
+    checkIntegrityPhp)
+        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-annotations-${SUFFIX} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${IMAGE_PHP} php Build/Scripts/phpIntegrityChecker.php -p ${PHP_VERSION}
         SUITE_EXIT_CODE=$?
         ;;
     checkBom)
@@ -1091,20 +831,12 @@ case ${TEST_SUITE} in
         ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-composer-${SUFFIX} ${IMAGE_PHP} php -dxdebug.mode=off Build/Scripts/checkIntegrityComposer.php
         SUITE_EXIT_CODE=$?
         ;;
-    checkExceptionCodes)
-        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-exception-codes-${SUFFIX} ${IMAGE_PHP} Build/Scripts/duplicateExceptionCodeCheck.sh
-        SUITE_EXIT_CODE=$?
-        ;;
     checkExtensionScannerRst)
         ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-extensionscanner-rst-${SUFFIX} ${IMAGE_PHP} php -dxdebug.mode=off Build/Scripts/extensionScannerRstFileReferences.php
         SUITE_EXIT_CODE=$?
         ;;
     checkFilePathLength)
         ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-file-path-length-${SUFFIX} ${IMAGE_PHP} Build/Scripts/maxFilePathLength.sh
-        SUITE_EXIT_CODE=$?
-        ;;
-    checkFilesAndPathsForSpaces)
-        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-file-path-length-${SUFFIX} ${IMAGE_PHP} Build/Scripts/spacesInPathsAndFilenames.sh
         SUITE_EXIT_CODE=$?
         ;;
     checkGitSubmodule)
@@ -1122,10 +854,6 @@ case ${TEST_SUITE} in
         ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-iso-database-${SUFFIX} ${IMAGE_PHP} /bin/sh -c "${COMMAND}"
         SUITE_EXIT_CODE=$?
         ;;
-    checkNamespaceIntegrity)
-        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-namespaces-${SUFFIX} ${IMAGE_PHP} php -dxdebug.mode=off Build/Scripts/checkNamespaceIntegrity.php
-        SUITE_EXIT_CODE=$?
-        ;;
     checkPermissions)
         ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-permissions-${SUFFIX} ${IMAGE_PHP} Build/Scripts/checkFilePermissions.sh
         SUITE_EXIT_CODE=$?
@@ -1133,55 +861,6 @@ case ${TEST_SUITE} in
     checkRst)
         ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name check-rst-${SUFFIX} ${IMAGE_PHP} php -dxdebug.mode=off Build/Scripts/validateRstFiles.php
         SUITE_EXIT_CODE=$?
-        ;;
-    checkRstRenderingAll)
-        SUITE_EXIT_CODE=0
-        echo "Scanning typo3/sysext for directories with Documentation..."
-        for systemExtensionFolder in typo3/sysext/*/Documentation; do
-            systemExtensionName="${systemExtensionFolder%/Documentation}"
-            systemExtensionName=$(basename "${systemExtensionName}")
-            executeRstRendering "${systemExtensionName}"
-            TMP_SUITE_EXIT_CODE=$?
-            if [ ${TMP_SUITE_EXIT_CODE} -ne 0 ]; then
-                SUITE_EXIT_CODE=${TMP_SUITE_EXIT_CODE}
-            fi
-        done
-        ;;
-    checkRstRenderingSingle)
-        systemExtensionKey="${1}"
-        if [ -n "${systemExtensionKey}" ]; then
-            if [[ ! -d "typo3/sysext/${systemExtensionKey}" ]]; then
-                echo "Error: Invalid system extension key provided: \"${systemExtensionKey}\""
-                SUITE_EXIT_CODE=1
-            elif [[ ! -d "typo3/sysext/${systemExtensionKey}/Documentation" ]]; then
-                echo "Error: Valid system extension \"${systemExtensionKey}\" does not contain a \"Documentation\" folder"
-                SUITE_EXIT_CODE=1
-            else
-                executeRstRendering "${systemExtensionKey}"
-                SUITE_EXIT_CODE=$?
-            fi
-        else
-            echo "Error: No system extension key provided as first argument"
-            SUITE_EXIT_CODE=1
-        fi
-        ;;
-    watchRst)
-        systemExtensionKey="${1}"
-        if [ -n "${systemExtensionKey}" ]; then
-            if [[ ! -d "typo3/sysext/${systemExtensionKey}" ]]; then
-                echo "Error: Invalid system extension key provided: \"${systemExtensionKey}\""
-                SUITE_EXIT_CODE=1
-            elif [[ ! -d "typo3/sysext/${systemExtensionKey}/Documentation" ]]; then
-                echo "Error: Valid system extension \"${systemExtensionKey}\" does not contain a \"Documentation\" folder"
-                SUITE_EXIT_CODE=1
-            else
-                executeRstRenderingWithWatch "${systemExtensionKey}" "${2}"
-                SUITE_EXIT_CODE=$?
-            fi
-        else
-            echo "Error: No system extension key provided as first argument"
-            SUITE_EXIT_CODE=1
-        fi
         ;;
     clean)
         cleanBuildFiles
@@ -1269,7 +948,7 @@ case ${TEST_SUITE} in
             sqlite)
                 # create sqlite tmpfs mount typo3temp/var/tests/functional-sqlite-dbs/ to avoid permission issues
                 mkdir -p "${CORE_ROOT}/typo3temp/var/tests/functional-sqlite-dbs/"
-                CONTAINERPARAMS="-e typo3DatabaseDriver=pdo_sqlite --tmpfs ${CORE_ROOT}/typo3temp/var/tests/functional-sqlite-dbs/:${TMPFS_MOUNT_OPTIONS}"
+                CONTAINERPARAMS="-e typo3DatabaseDriver=pdo_sqlite --tmpfs ${CORE_ROOT}/typo3temp/var/tests/functional-sqlite-dbs/:rw,noexec,nosuid"
                 ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name functional-${SUFFIX} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${CONTAINERPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
                 SUITE_EXIT_CODE=$?
                 ;;
@@ -1366,11 +1045,11 @@ case ${TEST_SUITE} in
         SUITE_EXIT_CODE=$?
         ;;
     unit)
-        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name unit-${SUFFIX} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${IMAGE_PHP} bin/phpunit -c Build/phpunit/UnitTests.xml "$@"
+        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name unit-${SUFFIX} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${IMAGE_PHP} .Build/bin/phpunit -c Build/phpunit/UnitTests.xml "$@"
         SUITE_EXIT_CODE=$?
         ;;
     unitDeprecated)
-        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name unit-deprecated-${SUFFIX} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${IMAGE_PHP} bin/phpunit -c Build/phpunit/UnitTestsDeprecated.xml "$@"
+        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name unit-deprecated-${SUFFIX} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${IMAGE_PHP} .Build/bin/phpunit -c Build/phpunit/UnitTestsDeprecated.xml "$@"
         SUITE_EXIT_CODE=$?
         ;;
     unitJavascript)
@@ -1379,7 +1058,7 @@ case ${TEST_SUITE} in
         SUITE_EXIT_CODE=$?
         ;;
     unitRandom)
-        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name unit-random-${SUFFIX} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${IMAGE_PHP} bin/phpunit -c Build/phpunit/UnitTests.xml --order-by=random "$@"
+        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name unit-random-${SUFFIX} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${IMAGE_PHP} .Build/bin/phpunit -c Build/phpunit/UnitTests.xml --order-by=random "$@"
         SUITE_EXIT_CODE=$?
         ;;
     update)
@@ -1390,14 +1069,6 @@ case ${TEST_SUITE} in
         # remove "dangling" typo3/core-testing-* images (those tagged as <none>)
         echo "> remove \"dangling\" ghcr.io/typo3/core-testing-* images (those tagged as <none>)"
         ${CONTAINER_BIN} images --filter "reference=ghcr.io/typo3/core-testing-*" --filter "dangling=true" --format "{{.ID}}" | xargs -I {} ${CONTAINER_BIN} rmi -f {}
-        echo ""
-        # pull ghcr.io/typo3-documentation/render-guides versions of those ones that exist locally
-        echo "> pull ghcr.io/typo3-documentation/render-guides versions of those ones that exist locally"
-        ${CONTAINER_BIN} images "ghcr.io/typo3-documentation/render-guides" --format "{{.Repository}}:{{.Tag}}" | xargs -I {} ${CONTAINER_BIN} pull {}
-        echo ""
-        # remove "dangling" ghcr.io/typo3-documentation/render-guides* images (those tagged as <none>)
-        echo "> remove \"dangling\" ghcr.io/typo3-documentation/render-guides images (those tagged as <none>)"
-        ${CONTAINER_BIN} images --filter "reference=ghcr.io/typo3-documentation/render-guides" --filter "dangling=true" --format "{{.ID}}" | xargs -I {} ${CONTAINER_BIN} rmi -f {}
         echo ""
         ;;
     *)
@@ -1438,3 +1109,4 @@ echo "" >&2
 
 # Exit with code of test suite - This script return non-zero if the executed test failed.
 exit $SUITE_EXIT_CODE
+
