@@ -54,8 +54,8 @@ final class UriExtension extends AbstractExtension
         return [
             new TwigFunction('t3_uri_action', [$this, 'uriAction'], ['needs_context' => true]),
             new TwigFunction('t3_uri_page', [$this, 'uriPage'], ['needs_context' => true]),
-            new TwigFunction('t3_uri_record', [$this, 'recordUri']),
-            new TwigFunction('t3_uri_model', [$this, 'modelUri']),
+            new TwigFunction('t3_uri_record', [$this, 'recordUri'], ['needs_context' => true]),
+            new TwigFunction('t3_uri_model', [$this, 'modelUri'], ['needs_context' => true]),
             new TwigFunction('t3_uri_typolink', [$this, 'typoLinkUri'], ['needs_context' => true]),
         ];
     }
@@ -146,11 +146,11 @@ final class UriExtension extends AbstractExtension
      * @param string $table     the table of the record
      * @param int    $recordUid the UID of the record
      */
-    public function recordUri(string $table, int $recordUid): ?string
+    public function recordUri(array $context, string $table, int $recordUid): ?string
     {
         $paramter = 't3://record?'.http_build_query(['identifier' => $table, 'uid' => $recordUid]);
 
-        return static::typoLinkUri($paramter);
+        return static::typoLinkUri($context, $paramter);
     }
 
     /**
@@ -158,12 +158,12 @@ final class UriExtension extends AbstractExtension
      *
      * A `link handler <https://docs.typo3.org/typo3cms/extensions/core/latest/Changelog/8.6/Feature-79626-IntegrateRecordLinkHandler.html>`__ must be configured for the mapped table.
      */
-    public function modelUri(DomainObjectInterface $model): ?string
+    public function modelUri(array $context, DomainObjectInterface $model): ?string
     {
         $table = $this->dataMapper->convertClassNameToTableName(get_class($model));
         $recordUid = $model->getUid();
 
-        return static::recordUri($table, $recordUid);
+        return static::recordUri($context, $table, $recordUid);
     }
 
     public function typoLinkUri(
