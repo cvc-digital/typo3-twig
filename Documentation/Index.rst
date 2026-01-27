@@ -32,8 +32,6 @@ Twig for TYPO3 CMS
 :Rendered:
           |today|
 
-|
-
 
 This project aims to integrate the Twig template engine as a feature compete replacement for Fluid.
 

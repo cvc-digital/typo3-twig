@@ -27,10 +27,10 @@ Internally :code:`DebuggerUtility::var_dump()` is used.
 
    {# print a single variable #}
    {{ dump(foo) }}
-   
+
    {# print multiple variables #}
    {{ dump(foo, bar, baz) }}
-   
+
    {# print all variables #}
    {{ dump() }}
 
@@ -94,9 +94,37 @@ t3_form_render
        overrideConfiguration = []
    ) }}
 
-
-
 Renders a form using the `form framework <https://docs.typo3.org/typo3cms/extensions/form/Index.html>`__.
+
+.. note::
+    To use the t3_form_render function you first have to create a new content element with the following typoscript config:
+
+    .. code-block:: typoscript
+        tt_content {
+            twig_testform = COA_INT
+            twig_testform {
+                20 = TWIGTEMPLATE
+                20 {
+                    templateRootPaths {
+                        10 = EXT:ExtensionName/Resources/Private/TwigTemplates
+                    }
+                    templateName = TwigtestContentElement.html.twig
+                    settings {
+                        persistenceIdentifier = 1:/form_definitions/formIdentifier.form.yaml
+                    }
+                    extbase.pluginName = Formframework
+                    extbase.controllerExtensionName = Form
+                    extbase.controllerName = FormFrontend
+                    extbase.controllerActionName = perform
+                }
+            }
+        }
+.. code-block:: twig
+    :caption: TwigtestContentElement.html.twig
+    {{ t3_form_render(settings.persistenceIdentifier) }}
+.. warning::
+    Formframeworks redirect finisher cannot be used as it throws a PropagateResponseException and Twig has no handling for that.
+
 
 Arguments
 ---------
@@ -151,7 +179,26 @@ t3_uri_action
        addQueryStringMethod = ''
    ) }}
 
+.. note::
+    To use the t3_uri_action function you need to have the extbase parameters set. You can later overwrite those parameters during the function call.
 
+    .. code-block:: typoscript
+        tt_content {
+            twig_uriaction = TWIGTEMPLATE
+            twig_uriaction {
+                templateRootPaths {
+                    10 = EXT:ExtensionName/Resources/Private/TwigTemplates
+                }
+                templateName = TwigtestContentElement.html.twig
+                settings {
+                    persistenceIdentifier = 1:/form_definitions/formIdentifier.form.yaml
+                }
+                extbase.pluginName = Test
+                extbase.controllerExtensionName = Test
+                extbase.controllerName = Test
+                extbase.controllerActionName = test
+            }
+        }
 
 Arguments
 ---------
@@ -311,7 +358,7 @@ t3_uri_model
 
 
 
-Generates a link fro the given domain model.
+Generates a link for the given domain model.
 
 A `link handler <https://docs.typo3.org/typo3cms/extensions/core/latest/Changelog/8.6/Feature-79626-IntegrateRecordLinkHandler.html>`__ must be configured for the mapped table.
 
@@ -342,7 +389,8 @@ t3_uri_page
        addQueryStringMethod = ''
    ) }}
 
-
+.. note::
+    Extbase parameters are required. Refer to `t3_form_render <#t3-form-render>`_ or `t3_uri_action <#t3-uri-action>`_.
 
 Arguments
 ---------
@@ -425,7 +473,8 @@ t3_uri_typolink
 
    {{ t3_uri_typolink(parameter, additionalParams = []) }}
 
-
+.. note::
+    Extbase parameters are required. Refer to `t3_form_render <#t3-form-render>`_ or `t3_uri_action <#t3-uri-action>`_
 
 Arguments
 ---------
