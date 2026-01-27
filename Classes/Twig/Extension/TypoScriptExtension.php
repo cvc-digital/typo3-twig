@@ -54,15 +54,6 @@ final class TypoScriptExtension extends AbstractExtension
      */
     public function renderCObject(string $typoScriptObjectPath, mixed $data = null, ?string $currentValueKey = null, ?string $table = null)
     {
-        /*
-         * Sets the $TSFE->cObjectDepthCounter in Backend mode
-         * This somewhat hacky work around is currently needed because the cObjGetSingle() function of
-         * \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer relies on this setting.
-         */
-        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
-            $tsfeBackup = isset($GLOBALS['TSFE']) ? $GLOBALS['TSFE'] : null;
-            $GLOBALS['TSFE'] = new \stdClass();
-        }
         $currentValue = null;
         if (is_object($data)) {
             $data = \TYPO3\CMS\Extbase\Reflection\ObjectAccess::getGettableProperties($data);
@@ -85,11 +76,6 @@ final class TypoScriptExtension extends AbstractExtension
             }
             $setup = $setup[$segment.'.'];
         }
-        $content = $this->contentObjectRenderer->cObjGetSingle($setup[$lastSegment], $setup[$lastSegment.'.']);
-        if (isset($tsfeBackup)) {
-            $GLOBALS['TSFE'] = $tsfeBackup;
-        }
-
-        return $content;
+        return $this->contentObjectRenderer->cObjGetSingle($setup[$lastSegment], $setup[$lastSegment.'.']);
     }
 }

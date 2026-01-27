@@ -47,27 +47,8 @@ final class HtmlFormatExtension extends AbstractExtension
      */
     public static function format(string $html, string $parseFuncTSPath = 'lib.parseFunc_RTE'): string
     {
-        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
-            /*
-             * Copies the specified parseFunc configuration to $GLOBALS['TSFE']->tmpl->setup in Backend mode
-             * This somewhat hacky work around is currently needed because the parseFunc() function of
-             * \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer relies on those variables to be set.
-             */
-            $tsfeBackup = isset($GLOBALS['TSFE']) ? $GLOBALS['TSFE'] : null;
-            $GLOBALS['TSFE'] = new \stdClass();
-            $GLOBALS['TSFE']->tmpl = new \stdClass();
-            $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
-            $GLOBALS['TSFE']->tmpl->setup = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-        }
-
         $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $contentObject->start([]);
-        $formattedHtml = $contentObject->parseFunc($html, [], '< '.$parseFuncTSPath);
-
-        if (isset($tsfeBackup)) {
-            $GLOBALS['TSFE'] = $tsfeBackup;
-        }
-
-        return $formattedHtml;
+        return $contentObject->parseFunc($html, [], '< '.$parseFuncTSPath);
     }
 }
