@@ -28,10 +28,10 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 final class TranslationExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
-            new TwigFilter('t3_trans', [static::class, 'translate'], ['needs_environment' => true]),
+            new TwigFilter('t3_trans', [$this, 'translate'], ['needs_environment' => true]),
         ];
     }
 
@@ -45,8 +45,8 @@ final class TranslationExtension extends AbstractExtension
     public static function translate(
         Environment $environment,
         string $key,
+        ?string $extensionName = null,
         array $arguments = [],
-        string $extensionName = null
     ): ?string {
         $label = LocalizationUtility::translate($key, $extensionName, $arguments);
 

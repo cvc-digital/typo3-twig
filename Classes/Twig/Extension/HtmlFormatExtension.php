@@ -30,17 +30,17 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 final class HtmlFormatExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
-            new TwigFilter('t3_html', [static::class, 'format'], [
+            new TwigFilter('t3_html', [$this, 'format'], [
                 'is_safe' => ['html'],
             ]),
         ];
     }
 
     /**
-     * Parses HTML that was created with an rich text editor.
+     * Parses HTML that was created with a rich text editor.
      *
      * @param string $html            The HTML that should be processed. Normally this is the content that is stored in the database.
      * @param string $parseFuncTSPath here you can define which setup should be used to transform the HTML content

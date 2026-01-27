@@ -18,11 +18,18 @@
 
 namespace Cvc\Typo3\CvcTwig\ContentObject;
 
-use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneViewFactory;
+use Cvc\Typo3\CvcTwig\View\TwigViewAdapter;
+use Cvc\Typo3\CvcTwig\View\TwigViewFactory;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
+use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
+use TYPO3\CMS\Extbase\Mvc\Web\RequestBuilder;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 
@@ -48,14 +55,15 @@ use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 class TwigTemplateContentObject extends AbstractContentObject
 {
     private ContentDataProcessor $contentDataProcessor;
-    private StandaloneViewFactory $standaloneViewFactory;
     private TypoScriptService $typoScriptService;
 
-    public function __construct(ContentDataProcessor $contentDataProcessor, StandaloneViewFactory $standaloneViewFactory, TypoScriptService $typoScriptService)
+    private TwigViewFactory $twigViewFactory;
+
+    public function __construct(ContentDataProcessor $contentDataProcessor, TypoScriptService $typoScriptService, TwigViewFactory $twigViewFactory)
     {
         $this->contentDataProcessor = $contentDataProcessor;
-        $this->standaloneViewFactory = $standaloneViewFactory;
         $this->typoScriptService = $typoScriptService;
+        $this->twigViewFactory = $twigViewFactory;
     }
 
     /**
@@ -87,11 +95,11 @@ class TwigTemplateContentObject extends AbstractContentObject
      *
      * @param array $conf Array of TypoScript properties
      *
-     * @throws RuntimeError
+     * @return string The HTML output
      * @throws SyntaxError
      * @throws LoaderError
      *
-     * @return string The HTML output
+     * @throws RuntimeError
      */
     public function render($conf = [])
     {
@@ -109,21 +117,27 @@ class TwigTemplateContentObject extends AbstractContentObject
                 $namespaces[rtrim($namespace, '.')] = $paths;
             }
         }
-
         $variables = $this->getContentObjectVariables($conf);
         $variables = $this->contentDataProcessor->process($this->cObj, $conf, $variables);
 
-        $view = $this->standaloneViewFactory->create();
+        $viewFactoryData = new ViewFactoryData(
+            templateRootPaths: $templateRootPaths,
+        );
+        $view = $this->twigViewFactory->create($viewFactoryData);
+
+        $this->setExtbaseVariables($conf, $view);
+
         $settings = $this->getSettings($conf);
         if ($settings) {
             $view->assign('settings', $settings);
         }
-        $view->setTemplateName($templateName);
+        
         $view->setTemplateRootPaths($templateRootPaths);
         $view->setNamespaces($namespaces);
         $view->assignMultiple($variables);
+        $view->setRequest($this->request);
 
-        return $view->render();
+        return $view->render($templateName);
     }
 
     /**
@@ -140,8 +154,8 @@ class TwigTemplateContentObject extends AbstractContentObject
                     continue;
                 }
                 $path = $this->cObj->stdWrap('', $path);
-            } elseif (isset($paths[$key.'.'])) {
-                $path = $this->cObj->stdWrap($path, $paths[$key.'.']);
+            } elseif (isset($paths[$key . '.'])) {
+                $path = $this->cObj->stdWrap($path, $paths[$key . '.']);
             }
             $finalPaths[$key] = $path;
         }
@@ -154,25 +168,25 @@ class TwigTemplateContentObject extends AbstractContentObject
      *
      * @param array $conf Configuration array
      *
+     * @return array the variables to be assigned
      * @throws \InvalidArgumentException
      *
-     * @return array the variables to be assigned
      */
     private function getContentObjectVariables(array $conf)
     {
         $variables = [];
         $reservedVariables = ['data', 'current'];
         // Accumulate the variables to be process and loop them through cObjGetSingle
-        $variablesToProcess = array_key_exists('variables.', $conf) ? (array) $conf['variables.'] : null;
+        $variablesToProcess = array_key_exists('variables.', $conf) ? (array)$conf['variables.'] : null;
         if (is_iterable($variablesToProcess)) {
             foreach ($variablesToProcess as $variableName => $cObjType) {
                 if (\is_array($cObjType)) {
                     continue;
                 }
                 if (!\in_array($variableName, $reservedVariables)) {
-                    $variables[$variableName] = $this->cObj->cObjGetSingle($cObjType, $variablesToProcess[$variableName.'.']);
+                    $variables[$variableName] = $this->cObj->cObjGetSingle($cObjType, $variablesToProcess[$variableName . '.']);
                 } else {
-                    throw new \InvalidArgumentException('Cannot use reserved name "'.$variableName.'" as variable name in TWIGTEMPLATE.', 1288095720);
+                    throw new \InvalidArgumentException('Cannot use reserved name "' . $variableName . '" as variable name in TWIGTEMPLATE.', 1288095720);
                 }
             }
         }
@@ -194,5 +208,65 @@ class TwigTemplateContentObject extends AbstractContentObject
         }
 
         return null;
+    }
+
+    /**
+     * Set some extbase variables if given
+     *
+     * @param array $conf Configuration array
+     * @see \TYPO3\CMS\Frontend\ContentObject\ContentContentObject
+     */
+    private function setExtbaseVariables(array $conf, TwigViewAdapter $view):void
+    {
+        // @todo: It is currently unclear if the if's below can happen at all: An extbase request has been
+        //        prepared, but the setup of plugin name, controller extension name and friends
+        //        did not happen? Maybe these four if's are useless and the main if that
+        //        tests for all four properties is fine? Maybe the main if below is obsolete, too?
+        //        This comment was added when StandaloneView still had a default constructor that actively
+        //        creates a request by default. It might be more possible to resolve this when this is gone.
+        $request = $this->request;
+        $requestPluginName = (string)$this->cObj->stdWrapValue('pluginName', $conf['extbase.'] ?? []);
+        if ($requestPluginName && $request instanceof RequestInterface) {
+            $request = $request->withPluginName($requestPluginName);
+            $view->setRequest($request);
+        }
+        $requestControllerExtensionName = (string)$this->cObj->stdWrapValue('controllerExtensionName', $conf['extbase.'] ?? []);
+        if ($requestControllerExtensionName && $request instanceof RequestInterface) {
+            $request = $request->withControllerExtensionName($requestControllerExtensionName);
+            $view->setRequest($request);
+        }
+        $requestControllerName = (string)$this->cObj->stdWrapValue('controllerName', $conf['extbase.'] ?? []);
+        if ($requestControllerName && $request instanceof RequestInterface) {
+            $request = $request->withControllerName($requestControllerName);
+            $view->setRequest($request);
+        }
+        $requestControllerActionName = (string)$this->cObj->stdWrapValue('controllerActionName', $conf['extbase.'] ?? []);
+        if ($requestControllerActionName && $request instanceof RequestInterface) {
+            $request = $request->withControllerActionName($requestControllerActionName);
+            $view->setRequest($request);
+        }
+
+
+        if ($requestPluginName && $requestControllerExtensionName && $requestControllerName && $requestControllerActionName) {
+            // @todo: Yep, ugly. Having all four properties indicates an extbase plugin and then starts
+            //        extbase configuration manager. See https://forge.typo3.org/issues/78842 and investigate
+            //        if we still need this?
+            $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+            $configurationManager->setConfiguration([
+                'extensionName' => $requestControllerExtensionName,
+                'pluginName' => $requestPluginName,
+            ]);
+            if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['extbase']['extensions'][$requestControllerExtensionName]['plugins'][$requestPluginName]['controllers'])) {
+                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['extbase']['extensions'][$requestControllerExtensionName]['plugins'][$requestPluginName]['controllers'] = [
+                    $requestControllerName => [
+                        'actions' => [
+                            $requestControllerActionName,
+                        ],
+                    ],
+                ];
+            }
+            $requestBuilder = GeneralUtility::makeInstance(RequestBuilder::class);
+            $this->request = $requestBuilder->build($this->request);
+        }
     }
 }

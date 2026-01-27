@@ -33,13 +33,14 @@ final class TypoScriptExtension extends AbstractExtension
     protected array $typoScriptSetup;
     protected ContentObjectRenderer $contentObjectRenderer;
 
-    public function __construct(ConfigurationManagerInterface $configurationManager, ContentObjectRenderer $contentObjectRenderer)
+    public function __construct(ContentObjectRenderer $contentObjectRenderer)
     {
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
         $this->typoScriptSetup = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
         $this->contentObjectRenderer = $contentObjectRenderer;
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('t3_cobject', [$this, 'renderCObject'], ['is_safe' => ['html']]),
@@ -51,7 +52,7 @@ final class TypoScriptExtension extends AbstractExtension
      *
      * @param mixed|null $data
      */
-    public function renderCObject(string $typoScriptObjectPath, $data = null, string $currentValueKey = null, string $table = null)
+    public function renderCObject(string $typoScriptObjectPath, mixed $data = null, ?string $currentValueKey = null, ?string $table = null)
     {
         /*
          * Sets the $TSFE->cObjectDepthCounter in Backend mode

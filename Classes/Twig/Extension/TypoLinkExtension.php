@@ -29,7 +29,7 @@ class TypoLinkExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('t3_typolink', [static::class, 'filterTypoLink'], ['is_safe' => ['html']]),
+            new TwigFilter('t3_typolink', [$this, 'filterTypoLink'], ['is_safe' => ['html']]),
         ];
     }
 

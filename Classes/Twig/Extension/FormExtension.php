@@ -18,7 +18,6 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
-use Cvc\Typo3\CvcTwig\Extbase\Mvc\RenderingContextStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -34,23 +33,21 @@ use TYPO3\CMS\Form\Mvc\Persistence\FormPersistenceManagerInterface;
  */
 class FormExtension extends AbstractExtension
 {
-    private RenderingContextStack $controllerContextStack;
-
-    public function __construct(RenderingContextStack $controllerContextStack)
+    public function __construct(private readonly FormPersistenceManagerInterface $formPersistenceManager)
     {
-        $this->controllerContextStack = $controllerContextStack;
     }
 
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('t3_form_render', [$this, 'formRender'], ['is_safe' => ['html']]),
+            new TwigFunction('t3_form_render', [$this, 'formRender'], ['is_safe' => ['html'], 'needs_context' => true]),
         ];
     }
 
     /**
      * Renders a form using the `form framework <https://docs.typo3.org/typo3cms/extensions/form/Index.html>`__.
      *
+     * @param array $context Complete context of the twig template
      * @param string|null $persistenceIdentifier The identifier of the form, if a YAML file is used. If :code:`null`, then a Factory class needs to be set.
      * @param string      $factoryClass          the fully qualified class name of the factory
      * @param string|null $prototypeName         name of the prototype to use
@@ -59,13 +56,14 @@ class FormExtension extends AbstractExtension
      * @throws RenderingException
      */
     public function formRender(
-        string $persistenceIdentifier = null,
+        array $context,
+        ?string $persistenceIdentifier = null,
         string $factoryClass = ArrayFormFactory::class,
-        string $prototypeName = null,
+        ?string $prototypeName = null,
         array $overrideConfiguration = []
     ): string {
         if (!empty($persistenceIdentifier)) {
-            $formConfiguration = GeneralUtility::makeInstance(FormPersistenceManagerInterface::class)->load($persistenceIdentifier);
+            $formConfiguration = $this->formPersistenceManager->load($persistenceIdentifier);
             ArrayUtility::mergeRecursiveWithOverrule(
                 $formConfiguration,
                 $overrideConfiguration
@@ -81,7 +79,9 @@ class FormExtension extends AbstractExtension
         /** @var FormFactoryInterface $factory */
         $factory = GeneralUtility::makeInstance($factoryClass);
         $formDefinition = $factory->build($overrideConfiguration, $prototypeName);
-        $request = $this->controllerContextStack->getRenderingContext()->getRequest();
+
+        /** @var Request $request */
+        $request = $context['request'] ?? null;
         assert($request instanceof Request);
         $form = $formDefinition->bind($request);
 

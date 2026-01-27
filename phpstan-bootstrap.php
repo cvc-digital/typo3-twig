@@ -18,4 +18,4 @@
 
 $_EXTKEY = '';
 $EM_CONF = [];
-define('TYPO3_MODE', 'BE');
+define('TYPO3', 'BE');

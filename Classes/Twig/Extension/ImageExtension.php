@@ -32,10 +32,10 @@ use TYPO3\CMS\Extbase\Service\ImageService;
  */
 final class ImageExtension extends AbstractExtension
 {
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
-            new TwigFunction('t3_uri_image', [static::class, 'imageUri']),
+            new TwigFunction('t3_uri_image', [$this, 'imageUri']),
         ];
     }
 
@@ -46,10 +46,10 @@ final class ImageExtension extends AbstractExtension
      * @param string|null                      $crop  the JSON-formatted crop settings
      */
     public static function imageUri(
-        string $src = null,
+        ?string $src = null,
         bool $treatIdAsReference = false,
-        $image = null,
-        string $crop = null,
+        null|FileInterface|FileReference $image = null,
+        ?string $crop = null,
         string $cropVariant = 'default',
         string $width = '',
         string $height = '',

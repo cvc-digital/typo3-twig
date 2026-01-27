@@ -29,12 +29,12 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 final class ExtbaseDebugExtension extends AbstractExtension
 {
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction(
                 'dump',
-                [ExtbaseDebugExtension::class, 'dump'],
+                [$this, 'dump'],
                 [
                     'is_safe' => ['html'],
                     'needs_context' => true,

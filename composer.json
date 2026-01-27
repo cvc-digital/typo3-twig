@@ -5,8 +5,8 @@
     "type": "typo3-cms-extension",
     "authors": [
         {
-            "name": "Markus Poerschke",
-            "email": "poerschke@cvc.digital",
+            "name": "Lukas netz",
+            "email": "netz@cvc.digital",
             "homepage": "https://cvc.digital",
             "role": "Developer"
         },
@@ -21,20 +21,20 @@
     "require": {
         "php": "^8.1",
         "twig/twig": "^3",
-        "symfony/console": "^5.4 || ^6.4 || ^7.0",
-        "typo3/cms-backend": "^11.5.24 || ^12.4.2",
-        "typo3/cms-core": "^11.5.24 || ^12.4.2",
-        "typo3/cms-extbase": "^11.5.24 || ^12.4.2",
-        "typo3/cms-frontend": "^11.5.24 || ^12.4.2"
+        "symfony/console": "^7.3",
+        "typo3/cms-backend": "^14.0",
+        "typo3/cms-core": "^13.4.* || ^14.0",
+        "typo3/cms-extbase": "^13.4.* || ^14.0",
+        "typo3/cms-frontend": "^13.4.* || ^14.0"
     },
     "require-dev": {
         "cvc/twig-documentor": "^0.3",
-        "ergebnis/composer-normalize": "^2.28",
-        "friendsofphp/php-cs-fixer": "^3.13",
-        "typo3/testing-framework": "^8.2",
-        "phpstan/phpstan": "^1.5",
-        "phpunit/phpunit": "^10.1",
-        "symfony/var-dumper": "^5.4"
+        "ergebnis/composer-normalize": "^2.48",
+        "friendsofphp/php-cs-fixer": "^3.92",
+        "typo3/testing-framework": "^9.3",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^12.5",
+        "symfony/var-dumper": "^7.3"
     },
     "replace": {
         "typo3-ter/cvc_twig": "self.version"
