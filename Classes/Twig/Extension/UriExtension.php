@@ -18,7 +18,6 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
-use Cvc\Typo3\CvcTwig\Extbase\Mvc\RenderingContextStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use TYPO3\CMS\Core\LinkHandling\TypoLinkCodecService;
@@ -26,6 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -38,15 +38,12 @@ final class UriExtension extends AbstractExtension
     private TypoLinkCodecService $typoLinkCodecService;
     private DataMapper $dataMapper;
     private UriBuilder $uriBuilder;
-    private RenderingContextStack $controllerContextStack;
 
     public function __construct(
-        RenderingContextStack $controllerContextStack,
         TypoLinkCodecService $typoLinkCodecService,
         DataMapper $dataMapper,
         UriBuilder $uriBuilder
     ) {
-        $this->controllerContextStack = $controllerContextStack;
         $this->typoLinkCodecService = $typoLinkCodecService;
         $this->dataMapper = $dataMapper;
         $this->uriBuilder = $uriBuilder;
@@ -112,7 +109,8 @@ final class UriExtension extends AbstractExtension
     {
         $this->uriBuilder->reset();
 
-        $this->uriBuilder->setRequest($this->controllerContextStack->getRenderingContext()->getRequest());
+        $controller ??= 'Default';
+        $extensionName ??= 'Default';
 
         if ($pageUid !== null) {
             $this->uriBuilder->setTargetPageUid($pageUid);
@@ -148,7 +146,7 @@ final class UriExtension extends AbstractExtension
     }
 
     /**
-     * Generates a link fro the given domain model.
+     * Generates a link for the given domain model.
      *
      * A `link handler <https://docs.typo3.org/typo3cms/extensions/core/latest/Changelog/8.6/Feature-79626-IntegrateRecordLinkHandler.html>`__ must be configured for the mapped table.
      */

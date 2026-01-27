@@ -18,11 +18,11 @@
 
 namespace Cvc\Typo3\CvcTwig\Mvc\View;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
-use Twig\Loader\ChainLoader;
 use Twig\Loader\FilesystemLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -39,10 +39,17 @@ final class StandaloneView
     private array $namespaces = [];
     private array $variables = [];
     private Environment $environment;
+    private ?ServerRequestInterface $request = null;
 
     public function __construct(Environment $environment)
     {
         $this->environment = $environment;
+    }
+
+    public function setRequest(ServerRequestInterface $request): StandaloneView
+    {
+        $this->request = $request;
+        return $this;
     }
 
     /**
@@ -54,7 +61,7 @@ final class StandaloneView
      *
      * @return string The rendered view
      */
-    public function render()
+    public function render(): string
     {
         $templatePaths = array_map([GeneralUtility::class, 'getFileAbsFileName'], $this->templateRootPaths);
 
@@ -68,15 +75,11 @@ final class StandaloneView
             $namespacedPaths = array_map([GeneralUtility::class, 'getFileAbsFileName'], $namespacedPaths);
             $fileSystemLoader->setPaths($namespacedPaths, $namespace);
         }
-
-        $originalLoader = $this->environment->getLoader();
-        $this->environment->setLoader(new ChainLoader([$fileSystemLoader, $originalLoader]));
-
-        $content = $this->environment->render($this->templateName, $this->variables);
-
-        $this->environment->setLoader($originalLoader);
-
-        return $content;
+        $this->environment->setLoader($fileSystemLoader);
+        return $this->environment->render($this->templateName,[
+            'request' => $this->request,
+            ...$this->variables
+        ]);
     }
 
     /**

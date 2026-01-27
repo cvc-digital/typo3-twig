@@ -28,16 +28,11 @@ waitFor() {
 }
 
 cleanUp() {
-    echo "Remove container for network \"${NETWORK}\""
     ATTACHED_CONTAINERS=$(${CONTAINER_BIN} ps --filter network=${NETWORK} --format='{{.Names}}')
     for ATTACHED_CONTAINER in ${ATTACHED_CONTAINERS}; do
         ${CONTAINER_BIN} kill ${ATTACHED_CONTAINER} >/dev/null
     done
-    if [ ${CONTAINER_BIN} = "docker" ]; then
-        ${CONTAINER_BIN} network rm ${NETWORK} >/dev/null
-    else
-        ${CONTAINER_BIN} network rm -f ${NETWORK} >/dev/null
-    fi
+    ${CONTAINER_BIN} network rm ${NETWORK} >/dev/null
 }
 
 handleDbmsOptions() {
@@ -51,8 +46,8 @@ handleDbmsOptions() {
                 echo "Use \".Build/Scripts/runTests.sh -h\" to display help and valid options" >&2
                 exit 1
             fi
-            [ -z "${DBMS_VERSION}" ] && DBMS_VERSION="10.4"
-            if ! [[ ${DBMS_VERSION} =~ ^(10.4|10.5|10.6|10.7|10.8|10.9|10.10|10.11|11.0|11.1|11.2|11.3|11.4)$ ]]; then
+            [ -z "${DBMS_VERSION}" ] && DBMS_VERSION="10.3"
+            if ! [[ ${DBMS_VERSION} =~ ^(10.3|10.4|10.5|10.6|10.7|10.8|10.9|10.10|10.11|11.0|11.1)$ ]]; then
                 echo "Invalid combination -d ${DBMS} -i ${DBMS_VERSION}" >&2
                 echo >&2
                 echo "Use \".Build/Scripts/runTests.sh -h\" to display help and valid options" >&2
@@ -68,7 +63,7 @@ handleDbmsOptions() {
                 exit 1
             fi
             [ -z "${DBMS_VERSION}" ] && DBMS_VERSION="8.0"
-            if ! [[ ${DBMS_VERSION} =~ ^(8.0|8.1|8.2|8.3|8.4)$ ]]; then
+            if ! [[ ${DBMS_VERSION} =~ ^(8.0)$ ]]; then
                 echo "Invalid combination -d ${DBMS} -i ${DBMS_VERSION}" >&2
                 echo >&2
                 echo "Use \".Build/Scripts/runTests.sh -h\" to display help and valid options" >&2
@@ -151,22 +146,6 @@ cleanComposer() {
     composer.lock
 }
 
-getPhpImageVersion() {
-    case ${1} in
-        8.1)
-            echo -n 'latest'
-            ;;
-        8.2)
-            echo -n "1.12"
-            ;;
-        8.3)
-            echo -n "1.13"
-            ;;
-        8.4)
-            echo -n "1.1"
-            ;;
-    esac
-}
 
 loadHelp() {
     # Load help text into $HELP
@@ -509,18 +488,19 @@ if [[ -z "${CONTAINER_BIN}" ]]; then
     fi
 fi
 
-if [ $(uname) != "Darwin" ] && [ ${CONTAINER_BIN} = "docker" ]; then
+if [ $(uname) != "Darwin" ] && [ "${CONTAINER_BIN}" == "docker" ]; then
     # Run docker jobs as current user to prevent permission issues. Not needed with podman.
     USERSET="--user $HOST_UID"
 fi
 
 if ! type ${CONTAINER_BIN} >/dev/null 2>&1; then
-    echo "Selected container environment \"${CONTAINER_BIN}\" not found. Please install or use -b option to select one." >&2
+    echo "Selected container environment \"${CONTAINER_BIN}\" not found. Please install \"${CONTAINER_BIN}\" or use -b option to select one." >&2
     exit 1
 fi
 
 IMAGE_APACHE="ghcr.io/typo3/core-testing-apache24:1.5"
-IMAGE_PHP="ghcr.io/typo3/core-testing-$(echo "php${PHP_VERSION}" | sed -e 's/\.//'):$(getPhpImageVersion $PHP_VERSION)"
+
+IMAGE_PHP="ghcr.io/typo3/core-testing-$(echo "php${PHP_VERSION}" | sed -e 's/\.//'):latest"
 
 IMAGE_NODEJS="ghcr.io/typo3/core-testing-nodejs22:1.1"
 IMAGE_NODEJS_CHROME="ghcr.io/typo3/core-testing-nodejs22-chrome:1.1"
@@ -547,8 +527,7 @@ mkdir -p typo3temp/var/tests
 
 ${CONTAINER_BIN} network create ${NETWORK} >/dev/null
 
-if [ ${CONTAINER_BIN} = "docker" ]; then
-    # docker needs the add-host for xdebug remote debugging. podman has host.container.internal built in
+if [ "${CONTAINER_BIN}" == "docker" ]; then
     CONTAINER_COMMON_PARAMS="${CONTAINER_INTERACTIVE} --rm --network ${NETWORK} --add-host "${CONTAINER_HOST}:host-gateway" ${USERSET} -v ${CORE_ROOT}:${CORE_ROOT} -w ${CORE_ROOT}"
 else
     # podman
@@ -559,11 +538,9 @@ fi
 if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
     XDEBUG_MODE="-e XDEBUG_MODE=off"
     XDEBUG_CONFIG=" "
-    PHP_FPM_OPTIONS="-d xdebug.mode=off"
 else
     XDEBUG_MODE="-e XDEBUG_MODE=debug -e XDEBUG_TRIGGER=foo"
-    XDEBUG_CONFIG="client_port=${PHP_XDEBUG_PORT} client_host=${CONTAINER_HOST}"
-    PHP_FPM_OPTIONS="-d xdebug.mode=debug -d xdebug.start_with_request=yes -d xdebug.client_host=${CONTAINER_HOST} -d xdebug.client_port=${PHP_XDEBUG_PORT} -d memory_limit=256M"
+    XDEBUG_CONFIG="client_port=${PHP_XDEBUG_PORT} client_host=host.docker.internal"
 fi
 
 # Suite execution
@@ -1109,3 +1086,4 @@ echo "" >&2
 
 # Exit with code of test suite - This script return non-zero if the executed test failed.
 exit $SUITE_EXIT_CODE
+

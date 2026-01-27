@@ -23,6 +23,10 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
+use TYPO3\CMS\Extbase\Mvc\Web\RequestBuilder;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 
@@ -110,6 +114,7 @@ class TwigTemplateContentObject extends AbstractContentObject
             }
         }
 
+        $this->setExtbaseVariables($conf);
         $variables = $this->getContentObjectVariables($conf);
         $variables = $this->contentDataProcessor->process($this->cObj, $conf, $variables);
 
@@ -122,6 +127,7 @@ class TwigTemplateContentObject extends AbstractContentObject
         $view->setTemplateRootPaths($templateRootPaths);
         $view->setNamespaces($namespaces);
         $view->assignMultiple($variables);
+        $view->setRequest($this->request);
 
         return $view->render();
     }
@@ -194,5 +200,64 @@ class TwigTemplateContentObject extends AbstractContentObject
         }
 
         return null;
+    }
+
+    /**
+     * Set some extbase variables if given
+     *
+     * @param array $conf Configuration array
+     * @see \TYPO3\CMS\Frontend\ContentObject\ContentContentObject
+     */
+    private function setExtbaseVariables(array $conf):void
+    {
+        // @todo: It is currently unclear if the if's below can happen at all: An extbase request has been
+        //        prepared, but the setup of plugin name, controller extension name and friends
+        //        did not happen? Maybe these four if's are useless and the main if that
+        //        tests for all four properties is fine? Maybe the main if below is obsolete, too?
+        //        This comment was added when StandaloneView still had a default constructor that actively
+        //        creates a request by default. It might be more possible to resolve this when this is gone.
+        $request = $this->request;
+        $requestPluginName = (string)$this->cObj->stdWrapValue('pluginName', $conf['extbase.'] ?? []);
+        if ($requestPluginName && $request instanceof RequestInterface) {
+            $request = $request->withPluginName($requestPluginName);
+            $this->view->setRequest($request);
+        }
+        $requestControllerExtensionName = (string)$this->cObj->stdWrapValue('controllerExtensionName', $conf['extbase.'] ?? []);
+        if ($requestControllerExtensionName && $request instanceof RequestInterface) {
+            $request = $request->withControllerExtensionName($requestControllerExtensionName);
+            $this->view->setRequest($request);
+        }
+        $requestControllerName = (string)$this->cObj->stdWrapValue('controllerName', $conf['extbase.'] ?? []);
+        if ($requestControllerName && $request instanceof RequestInterface) {
+            $request = $request->withControllerName($requestControllerName);
+            $this->view->setRequest($request);
+        }
+        $requestControllerActionName = (string)$this->cObj->stdWrapValue('controllerActionName', $conf['extbase.'] ?? []);
+        if ($requestControllerActionName && $request instanceof RequestInterface) {
+            $request = $request->withControllerActionName($requestControllerActionName);
+            $this->view->setRequest($request);
+        }
+
+        if ($requestPluginName && $requestControllerExtensionName && $requestControllerName && $requestControllerActionName) {
+            // @todo: Yep, ugly. Having all four properties indicates an extbase plugin and then starts
+            //        extbase configuration manager. See https://forge.typo3.org/issues/78842 and investigate
+            //        if we still need this?
+            $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+            $configurationManager->setConfiguration([
+                'extensionName' => $requestControllerExtensionName,
+                'pluginName' => $requestPluginName,
+            ]);
+            if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['extbase']['extensions'][$requestControllerExtensionName]['plugins'][$requestPluginName]['controllers'])) {
+                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['extbase']['extensions'][$requestControllerExtensionName]['plugins'][$requestPluginName]['controllers'] = [
+                    $requestControllerName => [
+                        'actions' => [
+                            $requestControllerActionName,
+                        ],
+                    ],
+                ];
+            }
+            $requestBuilder = GeneralUtility::makeInstance(RequestBuilder::class);
+            $this->request = $requestBuilder->build($this->request);
+        }
     }
 }
