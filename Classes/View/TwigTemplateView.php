@@ -49,8 +49,6 @@ class TwigTemplateView extends AbstractTemplateView
         foreach ($this->namespaces as $namespace => $namespacedPaths) {
             $namespacedPaths = array_reverse($namespacedPaths);
             $namespacedPaths = array_map([GeneralUtility::class, 'getFileAbsFileName'], $namespacedPaths);
-            // todo possibly use addPath instead of setPaths so the path already set by templatePaths doesnt get reset
-            // maybe doesnt work since Twigs fileSystemLoader is used here (?)
             $fileSystemLoader->setPaths($namespacedPaths, $namespace);
         }
         $this->environment->setLoader($fileSystemLoader);

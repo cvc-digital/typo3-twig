@@ -20,6 +20,7 @@ namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request;
@@ -33,8 +34,10 @@ use TYPO3\CMS\Form\Mvc\Persistence\FormPersistenceManagerInterface;
  */
 class FormExtension extends AbstractExtension
 {
-    public function __construct(private readonly FormPersistenceManagerInterface $formPersistenceManager)
-    {
+    public function __construct(
+        private readonly FormPersistenceManagerInterface $formPersistenceManager,
+        private readonly Typo3Version $typo3Version,
+    ) {
     }
 
     public function getFunctions(): array
@@ -63,7 +66,11 @@ class FormExtension extends AbstractExtension
         array $overrideConfiguration = []
     ): string {
         if (!empty($persistenceIdentifier)) {
-            $formConfiguration = $this->formPersistenceManager->load($persistenceIdentifier);
+            if ($this->typo3Version->getMajorVersion() < 14 && $this->typo3Version->getMajorVersion() >= 13) {
+                $formConfiguration = $this->formPersistenceManager->load($persistenceIdentifier, [], []);
+            } else {
+                $formConfiguration = $this->formPersistenceManager->load($persistenceIdentifier);
+            }
             ArrayUtility::mergeRecursiveWithOverrule(
                 $formConfiguration,
                 $overrideConfiguration

@@ -86,7 +86,6 @@ class TwigViewAdapter implements CoreViewInterface, FluidStandaloneViewInterface
         $this->view->templateName = $templateName;
     }
 
-    // todo should this be possible as the paths are already inferred from the renderingContext
     public function setTemplateRootPaths(array $templateRootPaths): void
     {
         $this->view->templateRootPaths = $templateRootPaths;
