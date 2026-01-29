@@ -18,7 +18,8 @@
 
 namespace Cvc\Typo3\CvcTwig\Tests\Functional\Mvc\View;
 
-use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneViewFactory;
+use Cvc\Typo3\CvcTwig\View\TwigViewFactory;
+use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -30,11 +31,15 @@ class StandaloneViewTest extends FunctionalTestCase
 
     public function testTwigViewRendersTemplate()
     {
-        $standaloneViewFactory = GeneralUtility::getContainer()->get(StandaloneViewFactory::class);
-        $twigView = $standaloneViewFactory->create();
+        /** @var TwigViewFactory $twigViewFactory */
+        $twigViewFactory = GeneralUtility::getContainer()->get(TwigViewFactory::class);
+
+        $viewFactoryData = new ViewFactoryData(
+            templateRootPaths: ['EXT:cvc_twig/Resources/Private/TwigTemplates/'],
+        );
+        $twigView = $twigViewFactory->create($viewFactoryData);
 
         $twigView->assign('foo', 'bar');
-        $twigView->setTemplateRootPaths(['EXT:cvc_twig/Resources/Private/TwigTemplates/']);
         $twigView->setTemplateName('example.html.twig');
 
         $renderedView = $twigView->render();
