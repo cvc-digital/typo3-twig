@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 4.0.0
+
+## Added
+* Support for TYPO3 v13 and TYPO3 v14
+
+## 3.0.1
+
+## What's Changed
+* fixes for issues [#69](https://github.com/cvc-digital/typo3-twig/issues/69) and [#70](https://github.com/cvc-digital/typo3-twig/issues/70)
+* updated inner workings for the t3_form_render function
+    * it is now required to use a [specific typoscript config](https://github.com/cvc-digital/typo3-twig/commit/4ba7f4688b240337dcadb8195fcb7f9979bae2f0) for the content element that wants to use the function
+
+
+## 3.0.0
+
+## Added
+* Support for TYPO3 v12
+
+## 2.2.2
+
+## Fixed
+* Add is_iterable check to $variablesToProcess
+
+## 2.2.1
+
+### Fixed
+
+* Fix wrong Request in UriExtension and add array key check
+
+## 2.2.0
+
+### Added
+
+* Support for TYPO3 v11.5
+* Support for PHP 8.0 and PHP 8.1
+
 ## 2.1.0
 
 ### Added
