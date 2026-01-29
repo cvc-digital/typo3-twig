@@ -29,7 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\RequestBuilder;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 
@@ -131,7 +130,7 @@ class TwigTemplateContentObject extends AbstractContentObject
         if ($settings) {
             $view->assign('settings', $settings);
         }
-        
+
         $view->setTemplateRootPaths($templateRootPaths);
         $view->setNamespaces($namespaces);
         $view->assignMultiple($variables);
