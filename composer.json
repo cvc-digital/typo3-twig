@@ -19,10 +19,10 @@
     ],
     "homepage": "https://cvc.digital",
     "require": {
-        "php": "^8.3",
+        "php": "^8.2",
         "twig/twig": "^3",
-        "symfony/console": "^7.3",
-        "typo3/cms-backend": "^14.0",
+        "symfony/console": "^7.4",
+        "typo3/cms-backend": "^13.4 || ^14.0",
         "typo3/cms-core": "^13.4 || ^14.0",
         "typo3/cms-extbase": "^13.4 || ^14.0",
         "typo3/cms-frontend": "^13.4 || ^14.0",
@@ -34,7 +34,7 @@
         "friendsofphp/php-cs-fixer": "^3.92",
         "typo3/testing-framework": "^9.3",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^12.5",
+        "phpunit/phpunit": "^11",
         "symfony/var-dumper": "^7.3"
     },
     "replace": {
