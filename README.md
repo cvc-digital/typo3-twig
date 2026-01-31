@@ -19,7 +19,7 @@ The following table shows which versions of this package are compatible with whi
 * Version 4 is compatible to TYPO3 `13.4` and `14`
 
 Since Version 2, PHP `7.4` is required.
-Since Version 4, PHP `8.4` is required.
+Since Version 4, PHP `8.2` is required.
 
 |           | [1.x](https://github.com/cvc-digital/typo3-twig/tree/1.x)  |   2.x   |   3.x    | 4.x |
 |-----------|:----------------------------------------------------------:|:-------:|:--------:|:---:
@@ -31,8 +31,9 @@ Since Version 4, PHP `8.4` is required.
 | TYPO3 v9  |                             ✅                              |    ❌    |    ❌     |  ❌  |
 | TYPO3 v8  |                             ✅                              |    ❌    |    ❌     |  ❌  |
 | PHP 8.4   |                             ❌                              |    ❌    |    ❌     |  ✅  |
-| PHP 8.3   |                             ❌                              |    ❌    |    ✅     |  ❌  |
-| PHP 8.2   |                             ❌                              |    ❌    |    ✅     |  ❌  |
+| PHP 8.4   |                             ❌                              |    ❌    |    ❌     |  ✅  |
+| PHP 8.3   |                             ❌                              |    ❌    |    ✅     |  ✅  |
+| PHP 8.2   |                             ❌                              |    ❌    |    ✅     |  ✅  |
 | PHP 8.1   |                             ❌                              |    ✅    |    ✅     |  ❌  |
 | PHP 8.0   |                             ❌                              |    ✅    |    ❌     |  ❌  |
 | PHP 7.4   |                             ✅                              |    ✅    |    ❌     |  ❌  |
