@@ -83,16 +83,16 @@ class TwigViewAdapter implements CoreViewInterface, FluidStandaloneViewInterface
 
     public function setTemplateName(string $templateName): void
     {
-        $this->view->templateName = $templateName;
+        $this->view->setTemplateName($templateName);
     }
 
     public function setTemplateRootPaths(array $templateRootPaths): void
     {
-        $this->view->templateRootPaths = $templateRootPaths;
+        $this->view->setTemplateRootPaths($templateRootPaths);
     }
 
     public function setNamespaces(array $namespaces): void
     {
-        $this->view->namespaces = $namespaces;
+        $this->view->setNamespaces($namespaces);
     }
 }

@@ -14,21 +14,9 @@ use TYPO3Fluid\Fluid\View\AbstractTemplateView;
 class TwigTemplateView extends AbstractTemplateView
 {
     private ?ServerRequestInterface $request = null;
-    public ?string $templateName = null {
-        set {
-            $this->templateName = $value;
-        }
-    }
-    public array $templateRootPaths = [] {
-        set {
-            $this->templateRootPaths = $value;
-        }
-    }
-    public array $namespaces = [] {
-        set {
-            $this->namespaces = $value;
-        }
-    }
+    private ?string $templateName = null;
+    private array $templateRootPaths = [];
+    private array $namespaces = [];
 
     public function setRequest(ServerRequestInterface $request): TwigTemplateView
     {
@@ -57,5 +45,40 @@ class TwigTemplateView extends AbstractTemplateView
             'request' => $this->request,
             ...$this->getRenderingContext()->getVariableProvider()->getAll(),
         ]);
+    }
+
+    public function setTemplateName(string $templateName): void
+    {
+        $this->templateName = $templateName;
+    }
+
+    public function getTemplateName(): string
+    {
+        return $this->templateName;
+    }
+
+    public function setTemplateRootPaths(array $templateRootPaths): void
+    {
+        $this->templateRootPaths = $templateRootPaths;
+    }
+
+    public function addTemplateRootPath(string $templateRootPath): void
+    {
+        $this->templateRootPaths[] = $templateRootPath;
+    }
+
+    public function getTemplateRootPaths(): array
+    {
+        return $this->templateRootPaths;
+    }
+
+    public function getNamespaces(): array
+    {
+        return $this->namespaces;
+    }
+
+    public function setNamespaces(array $namespaces): void
+    {
+        $this->namespaces = $namespaces;
     }
 }
