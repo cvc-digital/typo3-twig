@@ -26,6 +26,10 @@ class RenderTwigTemplateTest extends FunctionalTestCase
 {
     use SiteBasedTestTrait;
 
+    protected array $coreExtensionsToLoad = [
+        'form',
+    ];
+
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/cvc_twig',
         'typo3conf/ext/cvc_twig/Tests/Functional/Fixtures/Extensions/twig_test',
