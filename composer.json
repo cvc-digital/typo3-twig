@@ -5,12 +5,6 @@
     "type": "typo3-cms-extension",
     "authors": [
         {
-            "name": "Lukas netz",
-            "email": "netz@cvc.digital",
-            "homepage": "https://cvc.digital",
-            "role": "Developer"
-        },
-        {
             "name": "CARL von CHIARI GmbH",
             "email": "opensource@cvc.digital",
             "homepage": "https://cvc.digital",
