@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Twig extension for TYPO3 CMS
  * Copyright (C) 2024 CARL von CHIARI GmbH
