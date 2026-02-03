@@ -150,7 +150,7 @@ class TwigTemplateContentObject extends AbstractContentObject
     {
         $finalPaths = [];
         foreach ($paths as $key => $path) {
-            if (str_ends_with($key, '.')) {
+            if (str_ends_with((string)$key, '.')) {
                 if (isset($paths[\mb_substr($key, 0, -1)])) {
                     continue;
                 }
