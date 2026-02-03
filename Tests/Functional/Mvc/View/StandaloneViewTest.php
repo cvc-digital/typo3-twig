@@ -19,9 +19,7 @@
 namespace Cvc\Typo3\CvcTwig\Tests\Functional\Mvc\View;
 
 use Cvc\Typo3\CvcTwig\View\TwigViewAdapter;
-use Cvc\Typo3\CvcTwig\View\TwigViewFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
-use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use TYPO3Fluid\Fluid\View\TemplateAwareViewInterface as FluidStandaloneTemplateAwareViewInterface;
 use TYPO3Fluid\Fluid\View\ViewInterface as FluidStandaloneViewInterface;
