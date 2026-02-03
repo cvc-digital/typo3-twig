@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -79,7 +79,7 @@ class TypoLinkExtension extends AbstractExtension
         bool $addQueryString = false,
         string $addQueryStringMethod = 'GET',
         string $addQueryStringExclude = '',
-        bool $absolute = false
+        bool $absolute = false,
     ): string {
         // Merge the $parameter with other arguments
         $typoLinkParameter = self::createTypoLinkParameterArrayFromArguments(

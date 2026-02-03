@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2023 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,8 +20,8 @@
 if (!array_key_exists('twig_templates', $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'])
     || !is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['twig_templates'])) {
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['twig_templates'] = [
-        'backend' => \TYPO3\CMS\Core\Cache\Backend\FileBackend::class,
-        'frontend' => \TYPO3\CMS\Core\Cache\Frontend\PhpFrontend::class,
+        'backend' => TYPO3\CMS\Core\Cache\Backend\FileBackend::class,
+        'frontend' => TYPO3\CMS\Core\Cache\Frontend\PhpFrontend::class,
         'groups' => ['pages'],
     ];
 }

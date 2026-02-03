@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -37,8 +37,6 @@ class Typo3Loader implements LoaderInterface
     private array $errorCache = [];
 
     /**
-     * {@inheritdoc}
-     *
      * @throws LoaderError
      */
     public function getSourceContext(string $name): Source
@@ -54,8 +52,6 @@ class Typo3Loader implements LoaderInterface
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @throws LoaderError
      */
     public function isFresh(string $name, int $time): bool
@@ -64,8 +60,6 @@ class Typo3Loader implements LoaderInterface
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @throws LoaderError
      */
     public function exists(string $name): bool

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -50,7 +50,7 @@ final class ImageExtension extends AbstractExtension
     public static function imageUri(
         ?string $src = null,
         bool $treatIdAsReference = false,
-        null|FileInterface|FileReference $image = null,
+        FileInterface|FileReference|null $image = null,
         ?string $crop = null,
         string $cropVariant = 'default',
         string $width = '',

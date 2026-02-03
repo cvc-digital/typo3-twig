@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -52,7 +52,7 @@ class FormExtension extends AbstractExtension
     /**
      * Renders a form using the `form framework <https://docs.typo3.org/typo3cms/extensions/form/Index.html>`__.
      *
-     * @param array $context Complete context of the twig template
+     * @param array       $context               Complete context of the twig template
      * @param string|null $persistenceIdentifier The identifier of the form, if a YAML file is used. If :code:`null`, then a Factory class needs to be set.
      * @param string      $factoryClass          the fully qualified class name of the factory
      * @param string|null $prototypeName         name of the prototype to use
@@ -65,7 +65,7 @@ class FormExtension extends AbstractExtension
         ?string $persistenceIdentifier = null,
         string $factoryClass = ArrayFormFactory::class,
         ?string $prototypeName = null,
-        array $overrideConfiguration = []
+        array $overrideConfiguration = [],
     ): string {
         if (!empty($persistenceIdentifier)) {
             if ($this->typo3Version->getMajorVersion() < 14 && $this->typo3Version->getMajorVersion() >= 13) {

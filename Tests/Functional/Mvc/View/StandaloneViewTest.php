@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2023 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,9 +19,7 @@
 namespace Cvc\Typo3\CvcTwig\Tests\Functional\Mvc\View;
 
 use Cvc\Typo3\CvcTwig\View\TwigViewAdapter;
-use Cvc\Typo3\CvcTwig\View\TwigViewFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
-use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use TYPO3Fluid\Fluid\View\TemplateAwareViewInterface as FluidStandaloneTemplateAwareViewInterface;
 use TYPO3Fluid\Fluid\View\ViewInterface as FluidStandaloneViewInterface;
@@ -50,7 +48,7 @@ class StandaloneViewTest extends FunctionalTestCase
             [123, '123'],
             [123.456, '123.456'],
             [
-                new class () {
+                new class {
                     public function __toString(): string
                     {
                         return 'Stringable';
@@ -64,24 +62,31 @@ class StandaloneViewTest extends FunctionalTestCase
     #[DataProvider('renderCastsToStringDataProvider')]
     public function testTwigViewRendersTemplate(mixed $viewReturnValue, string $expectedResult)
     {
-        $view = new class ($viewReturnValue) implements FluidStandaloneViewInterface, FluidStandaloneTemplateAwareViewInterface {
-            public function __construct(private mixed $viewReturnValue) {}
+        $view = new class($viewReturnValue) implements FluidStandaloneViewInterface, FluidStandaloneTemplateAwareViewInterface {
+            public function __construct(private mixed $viewReturnValue)
+            {
+            }
+
             public function render(string $templateFileName = '')
             {
                 return $this->viewReturnValue;
             }
+
             public function assign($name, $value)
             {
                 return $this;
             }
+
             public function assignMultiple($variables)
             {
                 return $this;
             }
+
             public function renderPartial($partialName, $sectionName, array $variables, $ignoreUnknown = false)
             {
                 return '';
             }
+
             public function renderSection($sectionName, array $variables = [], $ignoreUnknown = false)
             {
                 return '';

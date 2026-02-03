@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -55,7 +55,6 @@ final class ExtbaseDebugExtension extends AbstractExtension
      * Internally :code:`DebuggerUtility::var_dump()` is used.
      *
      * @param mixed ...$vars Any number of variables.
-     * @param mixed $context
      *
      * @return false|string|void
      *

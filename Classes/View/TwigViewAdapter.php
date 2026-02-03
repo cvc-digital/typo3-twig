@@ -2,6 +2,22 @@
 
 declare(strict_types=1);
 
+/*
+ * Twig extension for TYPO3 CMS
+ * Copyright (C) 2026 CARL von CHIARI GmbH
+ *
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 3
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace Cvc\Typo3\CvcTwig\View;
 
 use Psr\Http\Message\ServerRequestInterface;
@@ -10,7 +26,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\View\AbstractTemplateView as FluidStandaloneAbstractTemplateView;
 use TYPO3Fluid\Fluid\View\TemplateAwareViewInterface as FluidStandaloneTemplateAwareViewInterface;
 use TYPO3Fluid\Fluid\View\ViewInterface as FluidStandaloneViewInterface;
-
 
 class TwigViewAdapter implements CoreViewInterface, FluidStandaloneViewInterface, FluidStandaloneTemplateAwareViewInterface
 {
@@ -25,12 +40,14 @@ class TwigViewAdapter implements CoreViewInterface, FluidStandaloneViewInterface
     public function assign(string $key, mixed $value): self
     {
         $this->view->assign($key, $value);
+
         return $this;
     }
 
     public function assignMultiple(array $values): self
     {
         $this->view->assignMultiple($values);
+
         return $this;
     }
 
@@ -40,7 +57,8 @@ class TwigViewAdapter implements CoreViewInterface, FluidStandaloneViewInterface
         if ($renderedView !== null && !is_scalar($renderedView) && !$renderedView instanceof \Stringable) {
             throw new \RuntimeException('The rendered Fluid view can not be turned into string', 1731959329);
         }
-        return (string)$renderedView;
+
+        return (string) $renderedView;
     }
 
     public function setRequest(ServerRequestInterface $request): void
@@ -60,6 +78,7 @@ class TwigViewAdapter implements CoreViewInterface, FluidStandaloneViewInterface
     {
         if ($this->view instanceof FluidStandaloneAbstractTemplateView) {
             $this->view->setRenderingContext($renderingContext);
+
             return;
         }
         throw new \RuntimeException('view must be an instance of ext:fluid \TYPO3Fluid\Fluid\View\AbstractTemplateView', 1721578954);

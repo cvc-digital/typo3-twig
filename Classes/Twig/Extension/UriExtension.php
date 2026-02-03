@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -44,7 +44,7 @@ final class UriExtension extends AbstractExtension
     public function __construct(
         TypoLinkCodecService $typoLinkCodecService,
         DataMapper $dataMapper,
-        UriBuilder $uriBuilder
+        UriBuilder $uriBuilder,
     ) {
         $this->typoLinkCodecService = $typoLinkCodecService;
         $this->dataMapper = $dataMapper;
@@ -139,7 +139,6 @@ final class UriExtension extends AbstractExtension
         return $this->uriBuilder->build();
     }
 
-
     /**
      * Generates a link for the given record.
      *
@@ -171,7 +170,7 @@ final class UriExtension extends AbstractExtension
     public function typoLinkUri(
         array $context,
         string $parameter,
-        array $additionalParams = []
+        array $additionalParams = [],
     ): ?string {
         $content = '';
 

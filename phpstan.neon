@@ -1,8 +1,6 @@
 parameters:
-    level: 5
+    level: 8
     fileExtensions:
         - php
     paths:
         - Classes
-    excludes_analyse:
-        - Classes/Twig/Test/FunctionalTestCase.php

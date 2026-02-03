@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,7 +22,6 @@ namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
-use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -51,8 +50,6 @@ final class TypoScriptExtension extends AbstractExtension
 
     /**
      * Renders a TypoScript object. The content object renderer can be populated using the data argument.
-     *
-     * @param mixed|null $data
      */
     public function renderCObject(string $typoScriptObjectPath, mixed $data = null, ?string $currentValueKey = null, ?string $table = null)
     {
@@ -78,6 +75,7 @@ final class TypoScriptExtension extends AbstractExtension
             }
             $setup = $setup[$segment.'.'];
         }
+
         return $this->contentObjectRenderer->cObjGetSingle($setup[$lastSegment], $setup[$lastSegment.'.']);
     }
 }
