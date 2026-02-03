@@ -30,7 +30,7 @@ Since Version 4, PHP `8.2` is required.
 | TYPO3 v10 |                             ❌                              |    ✅    |    ❌     |  ❌  |
 | TYPO3 v9  |                             ✅                              |    ❌    |    ❌     |  ❌  |
 | TYPO3 v8  |                             ✅                              |    ❌    |    ❌     |  ❌  |
-| PHP 8.4   |                             ❌                              |    ❌    |    ❌     |  ✅  |
+| PHP 8.5   |                             ❌                              |    ❌    |    ❌     |  ✅  |
 | PHP 8.4   |                             ❌                              |    ❌    |    ❌     |  ✅  |
 | PHP 8.3   |                             ❌                              |    ❌    |    ✅     |  ✅  |
 | PHP 8.2   |                             ❌                              |    ❌    |    ✅     |  ✅  |
