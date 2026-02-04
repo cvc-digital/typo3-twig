@@ -59,7 +59,7 @@ final class ImageExtension extends AbstractExtension
         int $minHeight = 0,
         int $maxWidth = 0,
         int $maxHeight = 0,
-        bool $absolute = false): ?string
+        bool $absolute = false): string
     {
         if ((is_null($src) && is_null($image)) || (!is_null($src) && !is_null($image))) {
             throw new \InvalidArgumentException('You must either specify a string src or a File object.', 1460976233);

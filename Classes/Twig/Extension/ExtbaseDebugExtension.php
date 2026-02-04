@@ -54,7 +54,8 @@ final class ExtbaseDebugExtension extends AbstractExtension
      * Please ensure that the frontend debug mode is on, because otherwise the function does not print anything.
      * Internally :code:`DebuggerUtility::var_dump()` is used.
      *
-     * @param mixed ...$vars Any number of variables.
+     * @param array<mixed> $context
+     * @param array<mixed> ...$vars
      *
      * @return false|string|void
      *
@@ -67,7 +68,7 @@ final class ExtbaseDebugExtension extends AbstractExtension
      *          {# print all variables #}
      *          {{ dump() }}
      */
-    public static function dump(Environment $env, $context, ...$vars)
+    public static function dump(Environment $env, array $context, array ...$vars)
     {
         if (!$env->isDebug()) {
             return;

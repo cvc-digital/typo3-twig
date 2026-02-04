@@ -52,11 +52,11 @@ class FormExtension extends AbstractExtension
     /**
      * Renders a form using the `form framework <https://docs.typo3.org/typo3cms/extensions/form/Index.html>`__.
      *
-     * @param array       $context               Complete context of the twig template
-     * @param string|null $persistenceIdentifier The identifier of the form, if a YAML file is used. If :code:`null`, then a Factory class needs to be set.
-     * @param string      $factoryClass          the fully qualified class name of the factory
-     * @param string|null $prototypeName         name of the prototype to use
-     * @param array       $overrideConfiguration Factory specific configuration. This will allow to add additional configuration related to the current view.
+     * @param array<mixed> $context               Complete context of the twig template
+     * @param string|null  $persistenceIdentifier The identifier of the form, if a YAML file is used. If :code:`null`, then a Factory class needs to be set.
+     * @param class-string $factoryClass          the fully qualified class name of the factory
+     * @param string|null  $prototypeName         name of the prototype to use
+     * @param array<mixed> $overrideConfiguration Factory specific configuration. This will allow to add additional configuration related to the current view.
      *
      * @throws RenderingException
      */
@@ -66,9 +66,10 @@ class FormExtension extends AbstractExtension
         string $factoryClass = ArrayFormFactory::class,
         ?string $prototypeName = null,
         array $overrideConfiguration = [],
-    ): string {
+    ): ?string {
         if (!empty($persistenceIdentifier)) {
             if ($this->typo3Version->getMajorVersion() < 14 && $this->typo3Version->getMajorVersion() >= 13) {
+                // @phpstan-ignore-next-line
                 $formConfiguration = $this->formPersistenceManager->load($persistenceIdentifier, [], []);
             } else {
                 $formConfiguration = $this->formPersistenceManager->load($persistenceIdentifier);
@@ -91,6 +92,7 @@ class FormExtension extends AbstractExtension
 
         /** @var Request $request */
         $request = $context['request'] ?? null;
+        // @phpstan-ignore-next-line
         assert($request instanceof Request);
         $form = $formDefinition->bind($request);
 

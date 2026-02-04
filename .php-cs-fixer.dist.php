@@ -44,5 +44,5 @@ return $config->setRules([
     'yoda_style' => false,
 ])
     ->setRiskyAllowed(true)
-    ->setFinder(PhpCsFixer\Finder::create()->in('.'))
+    ->setFinder(PhpCsFixer\Finder::create()->in('.')->exclude(['config/system']))
     ->setUsingCache(true);

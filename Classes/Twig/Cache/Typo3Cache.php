@@ -34,10 +34,6 @@ final class Typo3Cache implements CacheInterface
 
     public function __construct(PhpFrontend $phpFrontend)
     {
-        if (!$phpFrontend instanceof PhpFrontend) {
-            throw new \RuntimeException('Cache frontend '.PhpFrontend::class.' must be used but '.get_class($phpFrontend).' was given.');
-        }
-
         $fileBackend = $phpFrontend->getBackend();
         if (!$fileBackend instanceof FileBackend) {
             throw new \RuntimeException('Cache frontend '.PhpFrontend::class.' must be used but '.get_class($phpFrontend).' was given.');

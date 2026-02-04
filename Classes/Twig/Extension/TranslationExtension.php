@@ -40,16 +40,16 @@ final class TranslationExtension extends AbstractExtension
     /**
      * Translates the given translation key into the active language.
      *
-     * @param string      $key           the key for the translation
-     * @param array       $arguments     the arguments that are replaced while translating
-     * @param string|null $extensionName the name of the TYPO3 extension where the translation file is located
+     * @param string       $key           the key for the translation
+     * @param string|null  $extensionName the name of the TYPO3 extension where the translation file is located
+     * @param array<mixed> $arguments     the arguments that are replaced while translating
      */
     public static function translate(
         Environment $environment,
         string $key,
         ?string $extensionName = null,
         array $arguments = [],
-    ): ?string {
+    ): string {
         $label = LocalizationUtility::translate($key, $extensionName, $arguments);
 
         if ($label === null && $environment->isDebug()) {

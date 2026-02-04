@@ -29,11 +29,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Loads templates from TYPO3 extensions.
  *
  * This loader support the TYPO3 notation for paths.
- * For example you can load a template like this: EXT:twig/Resources/Private/TwigTemplates/example.html.twig
+ * For example, you can load a template like this: EXT:twig/Resources/Private/TwigTemplates/example.html.twig
  */
 class Typo3Loader implements LoaderInterface
 {
+    /** @var array<mixed> */
     private array $cache = [];
+    /** @var array<mixed> */
     private array $errorCache = [];
 
     /**
@@ -43,7 +45,17 @@ class Typo3Loader implements LoaderInterface
     {
         $path = $this->findTemplate($name);
 
-        return new Source(\file_get_contents($path), $name, $path);
+        if (!$path) {
+            throw new LoaderError('path cannot be false.');
+        }
+
+        $fileContent = file_get_contents($path);
+
+        if (!$fileContent) {
+            throw new LoaderError(sprintf('Could not read file contents of %s', $path));
+        }
+
+        return new Source($fileContent, $name, $path);
     }
 
     public function getCacheKey(string $name): string
@@ -56,6 +68,10 @@ class Typo3Loader implements LoaderInterface
      */
     public function isFresh(string $name, int $time): bool
     {
+        if (!$this->findTemplate($name)) {
+            throw new LoaderError(sprintf('Could not find template %s', $name));
+        }
+
         return \filemtime($this->findTemplate($name)) <= $time;
     }
 
@@ -81,7 +97,7 @@ class Typo3Loader implements LoaderInterface
      *
      * @return false|string The template name or false
      */
-    private function findTemplate(string $name, bool $throw = true)
+    private function findTemplate(string $name, bool $throw = true): false|string
     {
         if (isset($this->cache[$name])) {
             return $this->cache[$name];

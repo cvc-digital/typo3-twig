@@ -22,6 +22,7 @@ namespace Cvc\Typo3\CvcTwig\ContentObject;
 
 use Cvc\Typo3\CvcTwig\View\TwigViewAdapter;
 use Cvc\Typo3\CvcTwig\View\TwigViewFactory;
+use http\Exception\RuntimeException;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\View\ViewFactoryData;
@@ -91,12 +92,16 @@ class TwigTemplateContentObject extends AbstractContentObject
      *     }
      * }
      *
-     * @param array $conf Array of TypoScript properties
+     * @param array<mixed> $conf Array of TypoScript properties
      *
      * @return string The HTML output
      */
     public function render($conf = []): string
     {
+        if (is_null($this->cObj)) {
+            throw new RuntimeException('ContentObjectRenderer is required.');
+        }
+
         $templateName = isset($conf['templateName.'])
             ? $this->cObj->stdWrap($conf['templateName'] ?? '', $conf['templateName.'])
             : $conf['templateName'];
@@ -136,12 +141,21 @@ class TwigTemplateContentObject extends AbstractContentObject
 
     /**
      * Applies stdWrap on Twig path definitions.
+     *
+     * @param array<int|string, string> $paths
+     *
+     * @return array<string, string|null>
      */
     private function applyStandardWrapToTwigPaths(array $paths): array
     {
+        if (is_null($this->cObj)) {
+            throw new RuntimeException('ContentObjectRenderer is required.');
+        }
+
         $finalPaths = [];
         foreach ($paths as $key => $path) {
-            if (str_ends_with((string) $key, '.')) {
+            $key = (string) $key;
+            if (str_ends_with($key, '.')) {
                 if (isset($paths[\mb_substr($key, 0, -1)])) {
                     continue;
                 }
@@ -158,14 +172,18 @@ class TwigTemplateContentObject extends AbstractContentObject
     /**
      * Compile rendered content objects in variables array ready to assign to the view.
      *
-     * @param array $conf Configuration array
+     * @param array<mixed> $conf Configuration array
      *
      * @throws \InvalidArgumentException
      *
-     * @return array the variables to be assigned
+     * @return array<mixed> the variables to be assigned
      */
-    private function getContentObjectVariables(array $conf)
+    private function getContentObjectVariables(array $conf): array
     {
+        if (is_null($this->cObj)) {
+            throw new RuntimeException('ContentObjectRenderer is required.');
+        }
+
         $variables = [];
         $reservedVariables = ['data', 'current'];
         // Accumulate the variables to be process and loop them through cObjGetSingle
@@ -191,7 +209,9 @@ class TwigTemplateContentObject extends AbstractContentObject
     /**
      * Returns any TypoScript settings.
      *
-     * @param array $conf Configuration
+     * @param array<mixed> $conf
+     *
+     * @return array<mixed>|null
      */
     private function getSettings(array $conf): ?array
     {
@@ -205,12 +225,16 @@ class TwigTemplateContentObject extends AbstractContentObject
     /**
      * Set some extbase variables if given.
      *
-     * @param array $conf Configuration array
+     * @param array<mixed> $conf Configuration array
      *
      * @see \TYPO3\CMS\Frontend\ContentObject\ContentContentObject
      */
     private function setExtbaseVariables(array $conf, TwigViewAdapter $view): void
     {
+        if (is_null($this->cObj)) {
+            throw new RuntimeException('ContentObjectRenderer is required.');
+        }
+
         // @todo: It is currently unclear if the if's below can happen at all: An extbase request has been
         //        prepared, but the setup of plugin name, controller extension name and friends
         //        did not happen? Maybe these four if's are useless and the main if that

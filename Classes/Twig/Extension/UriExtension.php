@@ -62,6 +62,12 @@ final class UriExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * @param array<mixed> $context
+     * @param array<mixed> $arguments
+     * @param array<mixed> $additionalParams
+     * @param array<mixed> $argumentsToBeExcludedFromQueryString
+     */
     public function uriAction(
         array $context,
         string $action,
@@ -78,7 +84,7 @@ final class UriExtension extends AbstractExtension
         array $additionalParams = [],
         bool $absolute = false,
         bool $addQueryString = false,
-        array $argumentsToBeExcludedFromQueryString = []): ?string
+        array $argumentsToBeExcludedFromQueryString = []): string
     {
         $this->uriBuilder->reset();
 
@@ -104,6 +110,11 @@ final class UriExtension extends AbstractExtension
         return $this->uriBuilder->uriFor($action, $arguments, $controller, $extensionName, $pluginName);
     }
 
+    /**
+     * @param array<mixed> $context
+     * @param array<mixed> $additionalParams
+     * @param array<mixed> $argumentsToBeExcludedFromQueryString
+     */
     public function uriPage(
         array $context,
         ?int $pageUid = null,
@@ -114,7 +125,7 @@ final class UriExtension extends AbstractExtension
         bool $linkAccessRestrictedPages = false,
         bool $absolute = false,
         bool $addQueryString = false,
-        array $argumentsToBeExcludedFromQueryString = []): ?string
+        array $argumentsToBeExcludedFromQueryString = []): string
     {
         $this->uriBuilder->reset();
 
@@ -144,10 +155,11 @@ final class UriExtension extends AbstractExtension
      *
      * A `link handler <https://docs.typo3.org/typo3cms/extensions/core/latest/Changelog/8.6/Feature-79626-IntegrateRecordLinkHandler.html>`__ must be configured for the mapped table.
      *
-     * @param string $table     the table of the record
-     * @param int    $recordUid the UID of the record
+     * @param array<mixed> $context   twig context, gets included with DI
+     * @param string       $table     the table of the record
+     * @param int          $recordUid the UID of the record
      */
-    public function recordUri(array $context, string $table, int $recordUid): ?string
+    public function recordUri(array $context, string $table, int $recordUid): string
     {
         $paramter = 't3://record?'.http_build_query(['identifier' => $table, 'uid' => $recordUid]);
 
@@ -158,8 +170,10 @@ final class UriExtension extends AbstractExtension
      * Generates a link for the given domain model.
      *
      * A `link handler <https://docs.typo3.org/typo3cms/extensions/core/latest/Changelog/8.6/Feature-79626-IntegrateRecordLinkHandler.html>`__ must be configured for the mapped table.
+     *
+     * @param array<mixed> $context
      */
-    public function modelUri(array $context, DomainObjectInterface $model): ?string
+    public function modelUri(array $context, DomainObjectInterface $model): string
     {
         $table = $this->dataMapper->convertClassNameToTableName(get_class($model));
         $recordUid = $model->getUid();
@@ -167,11 +181,15 @@ final class UriExtension extends AbstractExtension
         return static::recordUri($context, $table, $recordUid);
     }
 
+    /**
+     * @param array<mixed> $context
+     * @param array<mixed> $additionalParams
+     */
     public function typoLinkUri(
         array $context,
         string $parameter,
         array $additionalParams = [],
-    ): ?string {
+    ): string {
         $content = '';
 
         if ($parameter) {

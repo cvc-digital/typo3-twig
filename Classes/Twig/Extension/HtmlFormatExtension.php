@@ -50,6 +50,7 @@ final class HtmlFormatExtension extends AbstractExtension
         $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $contentObject->start([]);
 
+        // @phpstan-ignore-next-line
         return $contentObject->parseFunc($html, [], '< '.$parseFuncTSPath);
     }
 }

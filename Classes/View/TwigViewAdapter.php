@@ -53,7 +53,10 @@ class TwigViewAdapter implements CoreViewInterface, FluidStandaloneViewInterface
 
     public function render(string $templateFileName = ''): string
     {
-        $renderedView = $this->view->render($this->templateName ?? $templateFileName ?? 'Default.html.twig');
+        $fileName = empty($templateFileName) ? 'Default.html.twig' : $templateFileName;
+
+        $renderedView = $this->view->render($fileName);
+        // @phpstan-ignore-next-line
         if ($renderedView !== null && !is_scalar($renderedView) && !$renderedView instanceof \Stringable) {
             throw new \RuntimeException('The rendered Fluid view can not be turned into string', 1731959329);
         }
@@ -71,6 +74,7 @@ class TwigViewAdapter implements CoreViewInterface, FluidStandaloneViewInterface
         if ($this->view instanceof FluidStandaloneAbstractTemplateView) {
             return $this->view->getRenderingContext();
         }
+        // @phpstan-ignore-next-line
         throw new \RuntimeException('view must be an instance of ext:fluid \TYPO3Fluid\Fluid\View\AbstractTemplateView', 1721889095);
     }
 
@@ -81,23 +85,29 @@ class TwigViewAdapter implements CoreViewInterface, FluidStandaloneViewInterface
 
             return;
         }
+        // @phpstan-ignore-next-line
         throw new \RuntimeException('view must be an instance of ext:fluid \TYPO3Fluid\Fluid\View\AbstractTemplateView', 1721578954);
     }
 
+    /**
+     * @param array<mixed> $variables
+     * @param bool         $ignoreUnknown
+     */
     public function renderSection($sectionName, array $variables = [], $ignoreUnknown = false): mixed
     {
-        if ($this->view instanceof FluidStandaloneAbstractTemplateView) {
-            return $this->view->renderSection($sectionName, $variables, $ignoreUnknown);
-        }
-        throw new \RuntimeException('view must be an instance of ext:fluid \TYPO3Fluid\Fluid\View\AbstractTemplateView', 1721746411);
+        trigger_error('renderSection is not supported by twig.');
+
+        return '';
     }
 
+    /**
+     * @param array<mixed> $variables
+     */
     public function renderPartial($partialName, $sectionName, array $variables, $ignoreUnknown = false): mixed
     {
-        if ($this->view instanceof FluidStandaloneAbstractTemplateView) {
-            return $this->view->renderPartial($partialName, $sectionName, $variables, $ignoreUnknown);
-        }
-        throw new \RuntimeException('view must be an instance of ext:fluid \TYPO3Fluid\Fluid\View\AbstractTemplateView', 1721746412);
+        trigger_error('renderPartial is not supported by twig.');
+
+        return '';
     }
 
     public function setTemplateName(string $templateName): void
@@ -105,11 +115,17 @@ class TwigViewAdapter implements CoreViewInterface, FluidStandaloneViewInterface
         $this->view->setTemplateName($templateName);
     }
 
+    /**
+     * @param array<mixed> $templateRootPaths
+     */
     public function setTemplateRootPaths(array $templateRootPaths): void
     {
         $this->view->setTemplateRootPaths($templateRootPaths);
     }
 
+    /**
+     * @param array<mixed> $namespaces
+     */
     public function setNamespaces(array $namespaces): void
     {
         $this->view->setNamespaces($namespaces);

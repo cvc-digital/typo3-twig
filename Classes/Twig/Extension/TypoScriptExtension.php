@@ -31,6 +31,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 final class TypoScriptExtension extends AbstractExtension
 {
+    /** @var array<mixed> */
     protected array $typoScriptSetup;
     protected ContentObjectRenderer $contentObjectRenderer;
 
@@ -51,7 +52,7 @@ final class TypoScriptExtension extends AbstractExtension
     /**
      * Renders a TypoScript object. The content object renderer can be populated using the data argument.
      */
-    public function renderCObject(string $typoScriptObjectPath, mixed $data = null, ?string $currentValueKey = null, ?string $table = null)
+    public function renderCObject(string $typoScriptObjectPath, mixed $data = null, ?string $currentValueKey = null, string $table = ''): string
     {
         $currentValue = null;
         if (is_object($data)) {
