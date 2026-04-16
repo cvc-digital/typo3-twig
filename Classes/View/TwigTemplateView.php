@@ -51,7 +51,9 @@ class TwigTemplateView extends AbstractTemplateView
 
     public function render($templateFileName = ''): string
     {
-        $templatePaths = $this->getRenderingContext()->getTemplatePaths()->getTemplateRootPaths();
+        $renderingContextTemplatePaths = $this->getRenderingContext()->getTemplatePaths()->getTemplateRootPaths();
+        $globalTemplatePaths = array_map([GeneralUtility::class, 'getFileAbsFileName'], $this->templateRootPaths);
+        $templatePaths = array_merge($renderingContextTemplatePaths, $globalTemplatePaths);
 
         $fileSystemLoader = new FilesystemLoader($templatePaths);
         foreach ($this->namespaces as $namespace => $namespacedPaths) {
