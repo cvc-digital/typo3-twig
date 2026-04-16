@@ -143,7 +143,7 @@ class TypoLinkExtension extends AbstractExtension
 
         // Combine classes if given in both "parameter" string and "class" argument
         if ($class) {
-            $classes = explode(' ', trim($typoLinkConfiguration['class']).' '.trim($class));
+            $classes = explode(' ', mb_trim($typoLinkConfiguration['class']).' '.mb_trim($class));
             $typoLinkConfiguration['class'] = implode(' ', array_unique(array_filter($classes)));
         }
 

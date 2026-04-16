@@ -113,7 +113,7 @@ class TwigTemplateContentObject extends AbstractContentObject
         $namespaces = [];
         if (isset($conf['namespaces.'])) {
             foreach ($conf['namespaces.'] as $namespace => $paths) {
-                $namespaces[rtrim($namespace, '.')] = $paths;
+                $namespaces[mb_rtrim($namespace, '.')] = $paths;
             }
         }
         $variables = $this->getContentObjectVariables($conf);
