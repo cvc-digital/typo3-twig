@@ -64,7 +64,7 @@ class TwigTemplateView extends AbstractTemplateView
         $this->environment->setLoader($fileSystemLoader);
 
         return $this->environment->render($templateFileName, [
-            'request' => $this->request,
+            'request' => $this->request ?? $this->getRenderingContext()->getAttribute(ServerRequestInterface::class) ?? null,
             // @phpstan-ignore-next-line
             ...$this->getRenderingContext()->getVariableProvider()->getAll(),
         ]);
