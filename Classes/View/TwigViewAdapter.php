@@ -53,20 +53,19 @@ class TwigViewAdapter implements CoreViewInterface, FluidStandaloneViewInterface
 
     public function render(string $templateFileName = ''): string
     {
-        $renderingContext = $this->view->getRenderingContext();
+        if (!empty($templateFileName)) {
+            $fileName = $templateFileName;
+        } else {
+            $renderingContext = $this->view->getRenderingContext();
+            $action = ucfirst($renderingContext->getControllerAction());
+            $controller = $renderingContext->getControllerName();
+            $format = $renderingContext->getTemplatePaths()->getFormat();
 
-        $action = ucfirst($renderingContext->getControllerAction());
-        $controller = $renderingContext->getControllerName();
-        $format = $renderingContext->getTemplatePaths()->getFormat();
-
-        if ($action && $controller && $format) {
             if ('Default' === $controller) {
                 $fileName = "$action.$format.twig";
             } else {
                 $fileName = "$controller/$action.$format.twig";
             }
-        } else {
-            $fileName = $templateFileName ?? 'Default.html.twig';
         }
 
         $renderedView = $this->view->render($fileName);
