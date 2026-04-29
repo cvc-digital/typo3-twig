@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Cvc\Typo3\CvcTwig\Extbase\Mvc\Controller;
 
+use Cvc\Typo3\CvcTwig\Extbase\Mvc\View\TwigView;
 use Cvc\Typo3\CvcTwig\View\TwigViewFactory;
 use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\CMS\Core\View\ViewInterface;
@@ -13,7 +14,7 @@ use TYPO3Fluid\Fluid\View\ViewInterface as FluidStandaloneViewInterface;
 
 class TwigActionController extends ActionController
 {
-    protected ?string $defaultViewObjectName = null;
+    protected ?string $defaultViewObjectName = TwigView::class;
 
     public function __construct(
         private readonly TwigViewFactory $twigViewFactory,
@@ -22,7 +23,7 @@ class TwigActionController extends ActionController
 
     protected function resolveView(): FluidStandaloneViewInterface|ViewInterface
     {
-        if ($this->defaultViewObjectName === null) {
+        if ($this->defaultViewObjectName === TwigView::class) {
             $configuration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
             $extensionKey = $this->request->getControllerExtensionKey();
             $templateRootPaths = $this->addDefaultPathToPaths($configuration['view']['templateRootPaths'] ?? [], 'EXT:'.$extensionKey.'/Resources/Private/TwigTemplates/');
