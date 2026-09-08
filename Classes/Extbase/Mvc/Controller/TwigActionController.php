@@ -21,7 +21,7 @@ class TwigActionController extends ActionController
     ) {
     }
 
-    protected function resolveView(): FluidStandaloneViewInterface|ViewInterface
+    protected function resolveView(): ViewInterface
     {
         if ($this->defaultViewObjectName === TwigView::class) {
             $configuration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
@@ -40,6 +40,7 @@ class TwigActionController extends ActionController
             $renderingContext = $view->getRenderingContext();
             $renderingContext->setControllerName($this->request->getControllerName());
             $renderingContext->setControllerAction(ucfirst($this->request->getControllerActionName()));
+            $view->setRenderingContext($renderingContext);
 
             $view->assign('settings', $this->settings);
 
