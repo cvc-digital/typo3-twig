@@ -94,6 +94,6 @@ class StandaloneViewTest extends FunctionalTestCase
         };
 
         $subject = new TwigViewAdapter($view);
-        self::assertSame($expectedResult, $subject->render());
+        self::assertSame($expectedResult, $subject->render('test.html.twig'));
     }
 }
