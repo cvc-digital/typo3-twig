@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -27,23 +29,33 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Loads templates from TYPO3 extensions.
  *
  * This loader support the TYPO3 notation for paths.
- * For example you can load a template like this: EXT:twig/Resources/Private/TwigTemplates/example.html.twig
+ * For example, you can load a template like this: EXT:twig/Resources/Private/TwigTemplates/example.html.twig
  */
 class Typo3Loader implements LoaderInterface
 {
+    /** @var array<mixed> */
     private array $cache = [];
+    /** @var array<mixed> */
     private array $errorCache = [];
 
     /**
-     * {@inheritdoc}
-     *
      * @throws LoaderError
      */
     public function getSourceContext(string $name): Source
     {
         $path = $this->findTemplate($name);
 
-        return new Source(\file_get_contents($path), $name, $path);
+        if (!$path) {
+            throw new LoaderError('path cannot be false.');
+        }
+
+        $fileContent = file_get_contents($path);
+
+        if (!$fileContent) {
+            throw new LoaderError(sprintf('Could not read file contents of %s', $path));
+        }
+
+        return new Source($fileContent, $name, $path);
     }
 
     public function getCacheKey(string $name): string
@@ -52,18 +64,18 @@ class Typo3Loader implements LoaderInterface
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @throws LoaderError
      */
     public function isFresh(string $name, int $time): bool
     {
+        if (!$this->findTemplate($name)) {
+            throw new LoaderError(sprintf('Could not find template %s', $name));
+        }
+
         return \filemtime($this->findTemplate($name)) <= $time;
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @throws LoaderError
      */
     public function exists(string $name): bool
@@ -85,7 +97,7 @@ class Typo3Loader implements LoaderInterface
      *
      * @return false|string The template name or false
      */
-    private function findTemplate(string $name, bool $throw = true)
+    private function findTemplate(string $name, bool $throw = true): false|string
     {
         if (isset($this->cache[$name])) {
             return $this->cache[$name];

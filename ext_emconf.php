@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2023 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -24,10 +24,10 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'opensource@cvc.digital',
     'author_company' => 'CARL von CHIARI GmbH',
     'state' => 'stable',
-    'version' => '3.0.0',
+    'version' => '4.0.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '12.4.0-12.99.99',
+            'typo3' => '13.4.0-14.99.99',
         ],
     ],
 ];

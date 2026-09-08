@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,7 +22,6 @@ namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
-use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -30,16 +31,18 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 final class TypoScriptExtension extends AbstractExtension
 {
+    /** @var array<mixed> */
     protected array $typoScriptSetup;
     protected ContentObjectRenderer $contentObjectRenderer;
 
-    public function __construct(ConfigurationManagerInterface $configurationManager, ContentObjectRenderer $contentObjectRenderer)
+    public function __construct(ContentObjectRenderer $contentObjectRenderer)
     {
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
         $this->typoScriptSetup = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
         $this->contentObjectRenderer = $contentObjectRenderer;
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('t3_cobject', [$this, 'renderCObject'], ['is_safe' => ['html']]),
@@ -48,20 +51,9 @@ final class TypoScriptExtension extends AbstractExtension
 
     /**
      * Renders a TypoScript object. The content object renderer can be populated using the data argument.
-     *
-     * @param mixed|null $data
      */
-    public function renderCObject(string $typoScriptObjectPath, $data = null, string $currentValueKey = null, string $table = null)
+    public function renderCObject(string $typoScriptObjectPath, mixed $data = null, ?string $currentValueKey = null, string $table = ''): string
     {
-        /*
-         * Sets the $TSFE->cObjectDepthCounter in Backend mode
-         * This somewhat hacky work around is currently needed because the cObjGetSingle() function of
-         * \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer relies on this setting.
-         */
-        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
-            $tsfeBackup = isset($GLOBALS['TSFE']) ? $GLOBALS['TSFE'] : null;
-            $GLOBALS['TSFE'] = new \stdClass();
-        }
         $currentValue = null;
         if (is_object($data)) {
             $data = \TYPO3\CMS\Extbase\Reflection\ObjectAccess::getGettableProperties($data);
@@ -84,11 +76,7 @@ final class TypoScriptExtension extends AbstractExtension
             }
             $setup = $setup[$segment.'.'];
         }
-        $content = $this->contentObjectRenderer->cObjGetSingle($setup[$lastSegment], $setup[$lastSegment.'.']);
-        if (isset($tsfeBackup)) {
-            $GLOBALS['TSFE'] = $tsfeBackup;
-        }
 
-        return $content;
+        return $this->contentObjectRenderer->cObjGetSingle($setup[$lastSegment], $setup[$lastSegment.'.']);
     }
 }

@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,9 +22,7 @@ namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
-use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -30,44 +30,27 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 final class HtmlFormatExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
-            new TwigFilter('t3_html', [static::class, 'format'], [
+            new TwigFilter('t3_html', [$this, 'format'], [
                 'is_safe' => ['html'],
             ]),
         ];
     }
 
     /**
-     * Parses HTML that was created with an rich text editor.
+     * Parses HTML that was created with a rich text editor.
      *
      * @param string $html            The HTML that should be processed. Normally this is the content that is stored in the database.
      * @param string $parseFuncTSPath here you can define which setup should be used to transform the HTML content
      */
     public static function format(string $html, string $parseFuncTSPath = 'lib.parseFunc_RTE'): string
     {
-        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
-            /*
-             * Copies the specified parseFunc configuration to $GLOBALS['TSFE']->tmpl->setup in Backend mode
-             * This somewhat hacky work around is currently needed because the parseFunc() function of
-             * \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer relies on those variables to be set.
-             */
-            $tsfeBackup = isset($GLOBALS['TSFE']) ? $GLOBALS['TSFE'] : null;
-            $GLOBALS['TSFE'] = new \stdClass();
-            $GLOBALS['TSFE']->tmpl = new \stdClass();
-            $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
-            $GLOBALS['TSFE']->tmpl->setup = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-        }
-
         $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $contentObject->start([]);
-        $formattedHtml = $contentObject->parseFunc($html, [], '< '.$parseFuncTSPath);
 
-        if (isset($tsfeBackup)) {
-            $GLOBALS['TSFE'] = $tsfeBackup;
-        }
-
-        return $formattedHtml;
+        // @phpstan-ignore-next-line
+        return $contentObject->parseFunc($html, [], '< '.$parseFuncTSPath);
     }
 }

@@ -1,8 +1,11 @@
 parameters:
-    level: 5
+    level: 8
     fileExtensions:
         - php
     paths:
         - Classes
-    excludes_analyse:
-        - Classes/Twig/Test/FunctionalTestCase.php
+    ignoreErrors:
+        - '#^Parameter \#2 \$conf of method TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer\:\:stdWrap\(\) expects array, string given\.$#'
+        - '#^Parameter \#1 \$src of method TYPO3\\CMS\\Extbase\\Service\\ImageService\:\:getImage\(\) expects string, string\|null given\.$#'
+        - '#^Parameter \#3 \$recordUid of method Cvc\\Typo3\\CvcTwig\\Twig\\Extension\\UriExtension\:\:recordUri\(\) expects int, int\|null given\.$#'
+        - '#^Parameter \#1 \$name of method Twig\\Environment\:\:render\(\) expects string\|Twig\\TemplateWrapper, string\|null given\.$#'

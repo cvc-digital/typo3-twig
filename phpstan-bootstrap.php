@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2023 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,4 +18,4 @@
 
 $_EXTKEY = '';
 $EM_CONF = [];
-define('TYPO3_MODE', 'BE');
+define('TYPO3', 'BE');

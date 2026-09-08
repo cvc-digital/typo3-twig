@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -29,7 +31,7 @@ class TypoLinkExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('t3_typolink', [static::class, 'filterTypoLink'], ['is_safe' => ['html']]),
+            new TwigFilter('t3_typolink', [$this, 'filterTypoLink'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -37,24 +39,24 @@ class TypoLinkExtension extends AbstractExtension
      * Creates a link from fields supported by the link wizard.
      * The :code:`linkText` will be wrapped within a link tag.
      *
-     * @param string $linkText              the text that should be wrapped in an <a>-tag
-     * @param string $parameter             :code:`stdWrap.typolink` style parameter string.
-     * @param string $target                Specifies where to open the linked document (e.g. :code:`_blank`).
-     * @param string $class                 class added to the :code:`<a>`-tag
-     * @param string $title                 Title attribute of the :code:`<a>`-tag. It can give more information to the user in form of a tooltip.
-     * @param string $additionalParams      This is parameters that are added to the end of the URL. This must be code ready to insert after the last parameter.
-     *                                      See: `TypoLink documentation <https://docs.typo3.org/typo3cms/TyposcriptReference/Functions/Typolink.html#additionalparams>`__
-     * @param array  $additionalAttributes  additional HTML attributes that are added to the :code:`<a>`-tag
-     * @param bool   $useCacheHash          If set, the additionalParams list is exploded and calculated into a hash string appended to the URL, like "&cHash=ae83fd7s87".
-     *                                      See: `TypoLink documentation <https://docs.typo3.org/typo3cms/TyposcriptReference/Functions/Typolink.html#usecachehash>`__
-     * @param bool   $addQueryString        Adds the query string to start of the link.
-     *                                      See: `TypoLink documentation <https://docs.typo3.org/typo3cms/TyposcriptReference/Functions/Typolink.html#addquerystring>`__
-     * @param string $addQueryStringMethod  If set to GET or POST, then the parsed query arguments (GET or POST data) will be used.
-     *                                      See: `TypoLink documentation <https://docs.typo3.org/typo3cms/TyposcriptReference/Functions/Typolink.html#addquerystring>`__
-     * @param string $addQueryStringExclude List of query arguments to exclude from the link. Typical examples are :code:`L` or :code:`cHash`.
-     *                                      See: `TypoLink documentation <https://docs.typo3.org/typo3cms/TyposcriptReference/Functions/Typolink.html#addquerystring>`__
-     * @param bool   $absolute              Forces links to internal pages to be absolute, thus having a proper URL scheme and domain prepended.
-     *                                      See: `TypoLink documentation <https://docs.typo3.org/typo3cms/TyposcriptReference/Functions/Typolink.html#forceabsoluteurl>`__
+     * @param string       $linkText              the text that should be wrapped in an <a>-tag
+     * @param string       $parameter             :code:`stdWrap.typolink` style parameter string.
+     * @param string       $target                Specifies where to open the linked document (e.g. :code:`_blank`).
+     * @param string       $class                 class added to the :code:`<a>`-tag
+     * @param string       $title                 Title attribute of the :code:`<a>`-tag. It can give more information to the user in form of a tooltip.
+     * @param string       $additionalParams      This is parameters that are added to the end of the URL. This must be code ready to insert after the last parameter.
+     *                                            See: `TypoLink documentation <https://docs.typo3.org/typo3cms/TyposcriptReference/Functions/Typolink.html#additionalparams>`__
+     * @param array<mixed> $additionalAttributes  additional HTML attributes that are added to the :code:`<a>`-tag
+     * @param bool         $useCacheHash          If set, the additionalParams list is exploded and calculated into a hash string appended to the URL, like "&cHash=ae83fd7s87".
+     *                                            See: `TypoLink documentation <https://docs.typo3.org/typo3cms/TyposcriptReference/Functions/Typolink.html#usecachehash>`__
+     * @param bool         $addQueryString        Adds the query string to start of the link.
+     *                                            See: `TypoLink documentation <https://docs.typo3.org/typo3cms/TyposcriptReference/Functions/Typolink.html#addquerystring>`__
+     * @param string       $addQueryStringMethod  If set to GET or POST, then the parsed query arguments (GET or POST data) will be used.
+     *                                            See: `TypoLink documentation <https://docs.typo3.org/typo3cms/TyposcriptReference/Functions/Typolink.html#addquerystring>`__
+     * @param string       $addQueryStringExclude List of query arguments to exclude from the link. Typical examples are :code:`L` or :code:`cHash`.
+     *                                            See: `TypoLink documentation <https://docs.typo3.org/typo3cms/TyposcriptReference/Functions/Typolink.html#addquerystring>`__
+     * @param bool         $absolute              Forces links to internal pages to be absolute, thus having a proper URL scheme and domain prepended.
+     *                                            See: `TypoLink documentation <https://docs.typo3.org/typo3cms/TyposcriptReference/Functions/Typolink.html#forceabsoluteurl>`__
      *
      * @example
      *  {# Create links from simple text. #}
@@ -77,7 +79,7 @@ class TypoLinkExtension extends AbstractExtension
         bool $addQueryString = false,
         string $addQueryStringMethod = 'GET',
         string $addQueryStringExclude = '',
-        bool $absolute = false
+        bool $absolute = false,
     ): string {
         // Merge the $parameter with other arguments
         $typoLinkParameter = self::createTypoLinkParameterArrayFromArguments(
@@ -114,7 +116,7 @@ class TypoLinkExtension extends AbstractExtension
                     'forceAbsoluteUrl' => $absolute,
                 ],
             ]
-        );
+        ) ?? '';
     }
 
     /**
@@ -133,9 +135,6 @@ class TypoLinkExtension extends AbstractExtension
     {
         $typoLinkCodec = GeneralUtility::makeInstance(TypoLinkCodecService::class);
         $typoLinkConfiguration = $typoLinkCodec->decode($parameter);
-        if (empty($typoLinkConfiguration)) {
-            return '';
-        }
 
         // Override target if given in target argument
         if ($target) {
@@ -144,7 +143,7 @@ class TypoLinkExtension extends AbstractExtension
 
         // Combine classes if given in both "parameter" string and "class" argument
         if ($class) {
-            $classes = explode(' ', trim($typoLinkConfiguration['class']).' '.trim($class));
+            $classes = explode(' ', mb_trim($typoLinkConfiguration['class']).' '.mb_trim($class));
             $typoLinkConfiguration['class'] = implode(' ', array_unique(array_filter($classes)));
         }
 

@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,12 +20,12 @@
 
 namespace Cvc\Typo3\CvcTwig\ContentObject;
 
-use Cvc\Typo3\CvcTwig\Mvc\View\StandaloneViewFactory;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
+use Cvc\Typo3\CvcTwig\View\TwigViewAdapter;
+use Cvc\Typo3\CvcTwig\View\TwigViewFactory;
+use http\Exception\RuntimeException;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\RequestBuilder;
@@ -52,14 +54,15 @@ use TYPO3\CMS\Frontend\ContentObject\ContentDataProcessor;
 class TwigTemplateContentObject extends AbstractContentObject
 {
     private ContentDataProcessor $contentDataProcessor;
-    private StandaloneViewFactory $standaloneViewFactory;
     private TypoScriptService $typoScriptService;
 
-    public function __construct(ContentDataProcessor $contentDataProcessor, StandaloneViewFactory $standaloneViewFactory, TypoScriptService $typoScriptService)
+    private TwigViewFactory $twigViewFactory;
+
+    public function __construct(ContentDataProcessor $contentDataProcessor, TypoScriptService $typoScriptService, TwigViewFactory $twigViewFactory)
     {
         $this->contentDataProcessor = $contentDataProcessor;
-        $this->standaloneViewFactory = $standaloneViewFactory;
         $this->typoScriptService = $typoScriptService;
+        $this->twigViewFactory = $twigViewFactory;
     }
 
     /**
@@ -89,16 +92,16 @@ class TwigTemplateContentObject extends AbstractContentObject
      *     }
      * }
      *
-     * @param array $conf Array of TypoScript properties
-     *
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws LoaderError
+     * @param array<mixed> $conf Array of TypoScript properties
      *
      * @return string The HTML output
      */
-    public function render($conf = [])
+    public function render($conf = []): string
     {
+        if (is_null($this->cObj)) {
+            throw new RuntimeException('ContentObjectRenderer is required.');
+        }
+
         $templateName = isset($conf['templateName.'])
             ? $this->cObj->stdWrap($conf['templateName'] ?? '', $conf['templateName.'])
             : $conf['templateName'];
@@ -110,37 +113,48 @@ class TwigTemplateContentObject extends AbstractContentObject
         $namespaces = [];
         if (isset($conf['namespaces.'])) {
             foreach ($conf['namespaces.'] as $namespace => $paths) {
-                $namespaces[rtrim($namespace, '.')] = $paths;
+                $namespaces[mb_rtrim($namespace, '.')] = $paths;
             }
         }
-
-        $this->setExtbaseVariables($conf);
         $variables = $this->getContentObjectVariables($conf);
         $variables = $this->contentDataProcessor->process($this->cObj, $conf, $variables);
 
-        $view = $this->standaloneViewFactory->create();
+        $viewFactoryData = new ViewFactoryData(
+            templateRootPaths: $templateRootPaths,
+        );
+        $view = $this->twigViewFactory->create($viewFactoryData);
+
+        $this->setExtbaseVariables($conf, $view);
+
         $settings = $this->getSettings($conf);
         if ($settings) {
             $view->assign('settings', $settings);
         }
-        $view->setTemplateName($templateName);
+
         $view->setTemplateRootPaths($templateRootPaths);
         $view->setNamespaces($namespaces);
         $view->assignMultiple($variables);
         $view->setRequest($this->request);
 
-        return $view->render();
+        return $view->render($templateName);
     }
 
     /**
      * Applies stdWrap on Twig path definitions.
      *
-     * @return array
+     * @param array<int|string, string> $paths
+     *
+     * @return array<string, string|null>
      */
-    private function applyStandardWrapToTwigPaths(array $paths)
+    private function applyStandardWrapToTwigPaths(array $paths): array
     {
+        if (is_null($this->cObj)) {
+            throw new RuntimeException('ContentObjectRenderer is required.');
+        }
+
         $finalPaths = [];
         foreach ($paths as $key => $path) {
+            $key = (string) $key;
             if (str_ends_with($key, '.')) {
                 if (isset($paths[\mb_substr($key, 0, -1)])) {
                     continue;
@@ -158,14 +172,18 @@ class TwigTemplateContentObject extends AbstractContentObject
     /**
      * Compile rendered content objects in variables array ready to assign to the view.
      *
-     * @param array $conf Configuration array
+     * @param array<mixed> $conf Configuration array
      *
      * @throws \InvalidArgumentException
      *
-     * @return array the variables to be assigned
+     * @return array<mixed> the variables to be assigned
      */
-    private function getContentObjectVariables(array $conf)
+    private function getContentObjectVariables(array $conf): array
     {
+        if (is_null($this->cObj)) {
+            throw new RuntimeException('ContentObjectRenderer is required.');
+        }
+
         $variables = [];
         $reservedVariables = ['data', 'current'];
         // Accumulate the variables to be process and loop them through cObjGetSingle
@@ -191,7 +209,9 @@ class TwigTemplateContentObject extends AbstractContentObject
     /**
      * Returns any TypoScript settings.
      *
-     * @param array $conf Configuration
+     * @param array<mixed> $conf
+     *
+     * @return array<mixed>|null
      */
     private function getSettings(array $conf): ?array
     {
@@ -203,13 +223,18 @@ class TwigTemplateContentObject extends AbstractContentObject
     }
 
     /**
-     * Set some extbase variables if given
+     * Set some extbase variables if given.
      *
-     * @param array $conf Configuration array
+     * @param array<mixed> $conf Configuration array
+     *
      * @see \TYPO3\CMS\Frontend\ContentObject\ContentContentObject
      */
-    private function setExtbaseVariables(array $conf):void
+    private function setExtbaseVariables(array $conf, TwigViewAdapter $view): void
     {
+        if (is_null($this->cObj)) {
+            throw new RuntimeException('ContentObjectRenderer is required.');
+        }
+
         // @todo: It is currently unclear if the if's below can happen at all: An extbase request has been
         //        prepared, but the setup of plugin name, controller extension name and friends
         //        did not happen? Maybe these four if's are useless and the main if that
@@ -217,25 +242,25 @@ class TwigTemplateContentObject extends AbstractContentObject
         //        This comment was added when StandaloneView still had a default constructor that actively
         //        creates a request by default. It might be more possible to resolve this when this is gone.
         $request = $this->request;
-        $requestPluginName = (string)$this->cObj->stdWrapValue('pluginName', $conf['extbase.'] ?? []);
+        $requestPluginName = (string) $this->cObj->stdWrapValue('pluginName', $conf['extbase.'] ?? []);
         if ($requestPluginName && $request instanceof RequestInterface) {
             $request = $request->withPluginName($requestPluginName);
-            $this->view->setRequest($request);
+            $view->setRequest($request);
         }
-        $requestControllerExtensionName = (string)$this->cObj->stdWrapValue('controllerExtensionName', $conf['extbase.'] ?? []);
+        $requestControllerExtensionName = (string) $this->cObj->stdWrapValue('controllerExtensionName', $conf['extbase.'] ?? []);
         if ($requestControllerExtensionName && $request instanceof RequestInterface) {
             $request = $request->withControllerExtensionName($requestControllerExtensionName);
-            $this->view->setRequest($request);
+            $view->setRequest($request);
         }
-        $requestControllerName = (string)$this->cObj->stdWrapValue('controllerName', $conf['extbase.'] ?? []);
+        $requestControllerName = (string) $this->cObj->stdWrapValue('controllerName', $conf['extbase.'] ?? []);
         if ($requestControllerName && $request instanceof RequestInterface) {
             $request = $request->withControllerName($requestControllerName);
-            $this->view->setRequest($request);
+            $view->setRequest($request);
         }
-        $requestControllerActionName = (string)$this->cObj->stdWrapValue('controllerActionName', $conf['extbase.'] ?? []);
+        $requestControllerActionName = (string) $this->cObj->stdWrapValue('controllerActionName', $conf['extbase.'] ?? []);
         if ($requestControllerActionName && $request instanceof RequestInterface) {
             $request = $request->withControllerActionName($requestControllerActionName);
-            $this->view->setRequest($request);
+            $view->setRequest($request);
         }
 
         if ($requestPluginName && $requestControllerExtensionName && $requestControllerName && $requestControllerActionName) {

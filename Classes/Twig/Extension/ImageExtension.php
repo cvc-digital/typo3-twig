@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -32,10 +34,10 @@ use TYPO3\CMS\Extbase\Service\ImageService;
  */
 final class ImageExtension extends AbstractExtension
 {
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
-            new TwigFunction('t3_uri_image', [static::class, 'imageUri']),
+            new TwigFunction('t3_uri_image', [$this, 'imageUri']),
         ];
     }
 
@@ -46,10 +48,10 @@ final class ImageExtension extends AbstractExtension
      * @param string|null                      $crop  the JSON-formatted crop settings
      */
     public static function imageUri(
-        string $src = null,
+        ?string $src = null,
         bool $treatIdAsReference = false,
-        $image = null,
-        string $crop = null,
+        FileInterface|FileReference|null $image = null,
+        ?string $crop = null,
         string $cropVariant = 'default',
         string $width = '',
         string $height = '',
@@ -57,7 +59,7 @@ final class ImageExtension extends AbstractExtension
         int $minHeight = 0,
         int $maxWidth = 0,
         int $maxHeight = 0,
-        bool $absolute = false): ?string
+        bool $absolute = false): string
     {
         if ((is_null($src) && is_null($image)) || (!is_null($src) && !is_null($image))) {
             throw new \InvalidArgumentException('You must either specify a string src or a File object.', 1460976233);

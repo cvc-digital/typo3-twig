@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -28,26 +30,26 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 final class TranslationExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
-            new TwigFilter('t3_trans', [static::class, 'translate'], ['needs_environment' => true]),
+            new TwigFilter('t3_trans', [$this, 'translate'], ['needs_environment' => true]),
         ];
     }
 
     /**
      * Translates the given translation key into the active language.
      *
-     * @param string      $key           the key for the translation
-     * @param array       $arguments     the arguments that are replaced while translating
-     * @param string|null $extensionName the name of the TYPO3 extension where the translation file is located
+     * @param string       $key           the key for the translation
+     * @param string|null  $extensionName the name of the TYPO3 extension where the translation file is located
+     * @param array<mixed> $arguments     the arguments that are replaced while translating
      */
     public static function translate(
         Environment $environment,
         string $key,
+        ?string $extensionName = null,
         array $arguments = [],
-        string $extensionName = null
-    ): ?string {
+    ): string {
         $label = LocalizationUtility::translate($key, $extensionName, $arguments);
 
         if ($label === null && $environment->isDebug()) {

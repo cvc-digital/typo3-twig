@@ -2,7 +2,7 @@
 
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2023 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -26,12 +26,16 @@ class RenderTwigTemplateTest extends FunctionalTestCase
 {
     use SiteBasedTestTrait;
 
+    private const ROOT_PAGE_ID = 1;
+
+    protected array $coreExtensionsToLoad = [
+        'form',
+    ];
+
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/cvc_twig',
         'typo3conf/ext/cvc_twig/Tests/Functional/Fixtures/Extensions/twig_test',
     ];
-
-    private const ROOT_PAGE_ID = 1;
 
     protected function setUp(): void
     {
@@ -48,7 +52,7 @@ class RenderTwigTemplateTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(
             self::ROOT_PAGE_ID,
             [
-                'EXT:cvc_twig/Tests/Functional/Fixtures/Extensions/twig_test/Configuration/TypoScript/page.typoscript'
+                'EXT:cvc_twig/Tests/Functional/Fixtures/Extensions/twig_test/Configuration/TypoScript/page.typoscript',
             ]
         );
         $response = $this->executeFrontendSubRequest((new InternalRequest())->withPageId(1));

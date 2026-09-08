@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,13 +20,11 @@
 
 namespace Cvc\Typo3\CvcTwig\Twig\Extension;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
-use TYPO3\CMS\Core\Http\UploadedFile;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Form\Domain\Exception\RenderingException;
 use TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory;
@@ -36,6 +36,12 @@ use TYPO3\CMS\Form\Mvc\Persistence\FormPersistenceManagerInterface;
  */
 class FormExtension extends AbstractExtension
 {
+    public function __construct(
+        private readonly FormPersistenceManagerInterface $formPersistenceManager,
+        private readonly Typo3Version $typo3Version,
+    ) {
+    }
+
     public function getFunctions(): array
     {
         return [
@@ -46,23 +52,28 @@ class FormExtension extends AbstractExtension
     /**
      * Renders a form using the `form framework <https://docs.typo3.org/typo3cms/extensions/form/Index.html>`__.
      *
-     * @param array       $context               Complete context of the twig template
-     * @param string|null $persistenceIdentifier The identifier of the form, if a YAML file is used. If :code:`null`, then a Factory class needs to be set.
-     * @param string      $factoryClass          the fully qualified class name of the factory
-     * @param string|null $prototypeName         name of the prototype to use
-     * @param array       $overrideConfiguration Factory specific configuration. This will allow to add additional configuration related to the current view.
+     * @param array<mixed> $context               Complete context of the twig template
+     * @param string|null  $persistenceIdentifier The identifier of the form, if a YAML file is used. If :code:`null`, then a Factory class needs to be set.
+     * @param class-string $factoryClass          the fully qualified class name of the factory
+     * @param string|null  $prototypeName         name of the prototype to use
+     * @param array<mixed> $overrideConfiguration Factory specific configuration. This will allow to add additional configuration related to the current view.
      *
      * @throws RenderingException
      */
     public function formRender(
         array $context,
-        string $persistenceIdentifier = null,
+        ?string $persistenceIdentifier = null,
         string $factoryClass = ArrayFormFactory::class,
-        string $prototypeName = null,
-        array $overrideConfiguration = []
-    ): string {
+        ?string $prototypeName = null,
+        array $overrideConfiguration = [],
+    ): ?string {
         if (!empty($persistenceIdentifier)) {
-            $formConfiguration = GeneralUtility::makeInstance(FormPersistenceManagerInterface::class)->load($persistenceIdentifier);
+            if ($this->typo3Version->getMajorVersion() < 14 && $this->typo3Version->getMajorVersion() >= 13) {
+                // @phpstan-ignore-next-line
+                $formConfiguration = $this->formPersistenceManager->load($persistenceIdentifier, [], []);
+            } else {
+                $formConfiguration = $this->formPersistenceManager->load($persistenceIdentifier);
+            }
             ArrayUtility::mergeRecursiveWithOverrule(
                 $formConfiguration,
                 $overrideConfiguration
@@ -79,7 +90,9 @@ class FormExtension extends AbstractExtension
         $factory = GeneralUtility::makeInstance($factoryClass);
         $formDefinition = $factory->build($overrideConfiguration, $prototypeName);
 
+        /** @var Request $request */
         $request = $context['request'] ?? null;
+        // @phpstan-ignore-next-line
         assert($request instanceof Request);
         $form = $formDefinition->bind($request);
 

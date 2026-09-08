@@ -1,9 +1,8 @@
 # Twig Extension for TYPO3
 
-[![Build Status](https://travis-ci.org/cvc-digital/typo3-twig.svg?branch=master)](https://travis-ci.org/cvc-digital/typo3-twig)
 [![GitHub license](https://img.shields.io/github/license/cvc-digital/typo3-twig.svg)](https://github.com/cvc-digital/typo3-twig/blob/master/LICENSE)
 [![Packagist](https://img.shields.io/packagist/v/cvc/typo3-twig.svg)](https://packagist.org/packages/cvc/typo3-twig)
-[![TYPO3 Version](https://img.shields.io/badge/TYPO3-%5E10.3-orange.svg)](https://extensions.typo3.org/extension/cvc_twig/)
+[![TYPO3 Version](https://img.shields.io/badge/TYPO3-%5E12.4-orange.svg)](https://extensions.typo3.org/extension/cvc_twig/)
 [![codecov](https://codecov.io/gh/cvc-digital/typo3-twig/branch/master/graph/badge.svg)](https://codecov.io/gh/cvc-digital/typo3-twig)
 
 This TYPO3 extensions allows you to use the fabulous Twig template engine within your TYPO3 project.
@@ -16,24 +15,30 @@ The following table shows which versions of this package are compatible with whi
 
 * Version 1 is compatible to TYPO3 `8.7` and `9.5`.
 * Version 2 is compatible to TYPO3 `10.4` and `11.5`.
-* Version 3 that is developed on the `master` branch is only compatible to TYPO3 v12
+* Version 3 is compatible to TYPO3 `12.4`
+* Version 4 is compatible to TYPO3 `13.4` and `14`
 
 Since Version 2, PHP `7.4` is required.
+Since Version 4, PHP `8.2` is required.
 
-|           | [1.x](https://github.com/cvc-digital/typo3-twig/tree/1.x) |   2.x   |   3.x    |
-|-----------|:---------------------------------------------------------:|:-------:|:--------:|
-| TYPO3 v12 |                             ❌                             |    ❌    |    ✅    |
-| TYPO3 v11 |                             ❌                             |    ✅    |    ❌    |
-| TYPO3 v10 |                             ❌                             |    ✅    |    ❌    |
-| TYPO3 v9  |                             ✅                             |    ❌    |    ❌    |
-| TYPO3 v8  |                             ✅                             |    ❌    |    ❌    |
-| PHP 8.3   |                             ❌                             |    ❌    |    ✅    |
-| PHP 8.2   |                             ❌                             |    ❌    |    ✅    |
-| PHP 8.1   |                             ❌                             |    ✅    |    ✅    |
-| PHP 8.0   |                             ❌                             |    ✅    |    ❌    |
-| PHP 7.4   |                             ✅                             |    ✅    |    ❌    |
-| PHP 7.3   |                             ✅                             |    ❌    |    ❌    |
-| PHP 7.2   |                             ✅                             |    ❌    |    ❌    |
+|           | [1.x](https://github.com/cvc-digital/typo3-twig/tree/1.x)  |   2.x   |   3.x    | 4.x |
+|-----------|:----------------------------------------------------------:|:-------:|:--------:|:---:
+| TYPO3 v14 |                             ❌                              |    ❌    |    ❌     |  ✅  |
+| TYPO3 v13 |                             ❌                              |    ❌    |    ❌     |  ✅  |
+| TYPO3 v12 |                             ❌                              |    ❌    |    ✅     |  ❌  |
+| TYPO3 v11 |                             ❌                              |    ✅    |    ❌     |  ❌  |
+| TYPO3 v10 |                             ❌                              |    ✅    |    ❌     |  ❌  |
+| TYPO3 v9  |                             ✅                              |    ❌    |    ❌     |  ❌  |
+| TYPO3 v8  |                             ✅                              |    ❌    |    ❌     |  ❌  |
+| PHP 8.5   |                             ❌                              |    ❌    |    ❌     |  ✅  |
+| PHP 8.4   |                             ❌                              |    ❌    |    ❌     |  ✅  |
+| PHP 8.3   |                             ❌                              |    ❌    |    ✅     |  ✅  |
+| PHP 8.2   |                             ❌                              |    ❌    |    ✅     |  ✅  |
+| PHP 8.1   |                             ❌                              |    ✅    |    ✅     |  ❌  |
+| PHP 8.0   |                             ❌                              |    ✅    |    ❌     |  ❌  |
+| PHP 7.4   |                             ✅                              |    ✅    |    ❌     |  ❌  |
+| PHP 7.3   |                             ✅                              |    ❌    |    ❌     |  ❌  |
+| PHP 7.2   |                             ✅                              |    ❌    |    ❌     |  ❌  |
 
 ## Installation
 
@@ -87,12 +92,10 @@ The full documentation is available here: [cvc_twig Documentation](https://docs.
 ## Alternatives
 
 This extension is not the first extension that supports rendering Twig templates. We decided to create our own
-extension, because other extensions were either not maintained anymore, they carried to much overhead or they were not
+extension, because other extensions were either not maintained anymore, they carried too much overhead or they were not
 developed close to the Fluid reference implementation.
 
 In the table below you can find other extensions that provides an integration for the Twig template engine:
 
-* [Twig for TYPO3](https://extensions.typo3.org/extension/twig_for_typo3/)
 * [T3twig](https://extensions.typo3.org/extension/t3twig/)
-* [Twypo](https://extensions.typo3.org/extension/twypo/)
 

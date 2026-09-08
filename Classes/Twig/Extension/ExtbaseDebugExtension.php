@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -29,12 +31,12 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 final class ExtbaseDebugExtension extends AbstractExtension
 {
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction(
                 'dump',
-                [ExtbaseDebugExtension::class, 'dump'],
+                [$this, 'dump'],
                 [
                     'is_safe' => ['html'],
                     'needs_context' => true,
@@ -52,8 +54,8 @@ final class ExtbaseDebugExtension extends AbstractExtension
      * Please ensure that the frontend debug mode is on, because otherwise the function does not print anything.
      * Internally :code:`DebuggerUtility::var_dump()` is used.
      *
-     * @param mixed ...$vars Any number of variables.
-     * @param mixed $context
+     * @param array<mixed> $context
+     * @param array<mixed> ...$vars
      *
      * @return false|string|void
      *
@@ -66,7 +68,7 @@ final class ExtbaseDebugExtension extends AbstractExtension
      *          {# print all variables #}
      *          {{ dump() }}
      */
-    public static function dump(Environment $env, $context, ...$vars)
+    public static function dump(Environment $env, array $context, array ...$vars)
     {
         if (!$env->isDebug()) {
             return;

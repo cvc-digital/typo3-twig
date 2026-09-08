@@ -13,22 +13,23 @@
     ],
     "homepage": "https://cvc.digital",
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
+        "symfony/console": "^7.4",
         "twig/twig": "^3",
-        "symfony/console": "^5.4 || ^6.4 || ^7.0",
-        "typo3/cms-backend": "^11.5.24 || ^12.4.2",
-        "typo3/cms-core": "^11.5.24 || ^12.4.2",
-        "typo3/cms-extbase": "^11.5.24 || ^12.4.2",
-        "typo3/cms-frontend": "^11.5.24 || ^12.4.2"
+        "typo3/cms-backend": "^13.4 || ^14.0",
+        "typo3/cms-core": "^13.4 || ^14.0",
+        "typo3/cms-extbase": "^13.4 || ^14.0",
+        "typo3/cms-form": "^13.4 || ^14.0",
+        "typo3/cms-frontend": "^13.4 || ^14.0"
     },
     "require-dev": {
         "cvc/twig-documentor": "^0.3",
-        "ergebnis/composer-normalize": "^2.28",
-        "friendsofphp/php-cs-fixer": "^3.13",
-        "typo3/testing-framework": "^8.2",
-        "phpstan/phpstan": "^1.5",
-        "phpunit/phpunit": "^10.1",
-        "symfony/var-dumper": "^5.4"
+        "ergebnis/composer-normalize": "^2.48",
+        "friendsofphp/php-cs-fixer": "^3.92",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11",
+        "symfony/var-dumper": "^7.3",
+        "typo3/testing-framework": "^9.3"
     },
     "replace": {
         "typo3-ter/cvc_twig": "self.version"
@@ -46,24 +47,24 @@
     },
     "config": {
         "allow-plugins": {
-            "typo3/cms-composer-installers": true,
+            "ergebnis/composer-normalize": true,
             "typo3/class-alias-loader": true,
-            "ergebnis/composer-normalize": true
+            "typo3/cms-composer-installers": true
         },
         "bin-dir": ".Build/bin",
-        "vendor-dir": ".Build/vendor",
         "preferred-install": {
             "typo3/cms-core": "source"
-        }
+        },
+        "vendor-dir": ".Build/vendor"
     },
     "extra": {
         "branch-alias": {
             "dev-master": "3.0.x-dev"
         },
         "typo3/cms": {
+            "app-dir": ".Build",
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
             "extension-key": "cvc_twig",
-            "app-dir": ".Build",
             "web-dir": ".Build/public"
         }
     },

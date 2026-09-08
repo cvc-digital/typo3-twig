@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -32,10 +34,6 @@ final class Typo3Cache implements CacheInterface
 
     public function __construct(PhpFrontend $phpFrontend)
     {
-        if (!$phpFrontend instanceof PhpFrontend) {
-            throw new \RuntimeException('Cache frontend '.PhpFrontend::class.' must be used but '.get_class($phpFrontend).' was given.');
-        }
-
         $fileBackend = $phpFrontend->getBackend();
         if (!$fileBackend instanceof FileBackend) {
             throw new \RuntimeException('Cache frontend '.PhpFrontend::class.' must be used but '.get_class($phpFrontend).' was given.');

@@ -7,7 +7,7 @@ test: test-phpunit test-code-style test-composer-normalize test-phpstan
 
 .PHONY: test-phpunit
 test-phpunit: dependencies
-	composer exec -v phpunit -- ${PHPUNIT_OPTIONS}
+	.Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml
 
 .PHONY: test-code-style
 test-code-style: dependencies

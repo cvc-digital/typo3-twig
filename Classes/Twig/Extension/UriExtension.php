@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Twig extension for TYPO3 CMS
- * Copyright (C) 2024 CARL von CHIARI GmbH
+ * Copyright (C) 2026 CARL von CHIARI GmbH
  *
  * This file is part of the TYPO3 CMS project.
  *
@@ -23,9 +25,9 @@ use Twig\TwigFunction;
 use TYPO3\CMS\Core\LinkHandling\TypoLinkCodecService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
+use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -42,7 +44,7 @@ final class UriExtension extends AbstractExtension
     public function __construct(
         TypoLinkCodecService $typoLinkCodecService,
         DataMapper $dataMapper,
-        UriBuilder $uriBuilder
+        UriBuilder $uriBuilder,
     ) {
         $this->typoLinkCodecService = $typoLinkCodecService;
         $this->dataMapper = $dataMapper;
@@ -52,51 +54,28 @@ final class UriExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('t3_uri_action', [$this, 'uriAction']),
-            new TwigFunction('t3_uri_model', [$this, 'modelUri']),
-            new TwigFunction('t3_uri_page', [$this, 'uriPage']),
-            new TwigFunction('t3_uri_record', [$this, 'recordUri']),
-            new TwigFunction('t3_uri_typolink', [$this, 'typoLinkUri']),
+            new TwigFunction('t3_uri_action', [$this, 'uriAction'], ['needs_context' => true]),
+            new TwigFunction('t3_uri_page', [$this, 'uriPage'], ['needs_context' => true]),
+            new TwigFunction('t3_uri_record', [$this, 'recordUri'], ['needs_context' => true]),
+            new TwigFunction('t3_uri_model', [$this, 'modelUri'], ['needs_context' => true]),
+            new TwigFunction('t3_uri_typolink', [$this, 'typoLinkUri'], ['needs_context' => true]),
         ];
     }
 
-    public function uriPage(
-        int $pageUid = null,
-        array $additionalParams = [],
-        int $pageType = 0,
-        bool $noCache = false,
-        string $section = '',
-        bool $linkAccessRestrictedPages = false,
-        bool $absolute = false,
-        bool $addQueryString = false,
-        array $argumentsToBeExcludedFromQueryString = []): ?string
-    {
-        $this->uriBuilder->reset();
-
-        if ($pageUid !== null) {
-            $this->uriBuilder->setTargetPageUid($pageUid);
-        }
-
-        $this->uriBuilder
-            ->setTargetPageType($pageType)
-            ->setNoCache($noCache)
-            ->setSection($section)
-            ->setLinkAccessRestrictedPages($linkAccessRestrictedPages)
-            ->setArguments($additionalParams)
-            ->setCreateAbsoluteUri($absolute)
-            ->setAddQueryString($addQueryString)
-            ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString);
-
-        return $this->uriBuilder->build();
-    }
-
+    /**
+     * @param array<mixed> $context
+     * @param array<mixed> $arguments
+     * @param array<mixed> $additionalParams
+     * @param array<mixed> $argumentsToBeExcludedFromQueryString
+     */
     public function uriAction(
+        array $context,
         string $action,
         array $arguments = [],
-        string $controller = null,
-        string $extensionName = null,
-        string $pluginName = null,
-        int $pageUid = null,
+        ?string $controller = null,
+        ?string $extensionName = null,
+        ?string $pluginName = null,
+        ?int $pageUid = null,
         int $pageType = 0,
         bool $noCache = false,
         string $section = '',
@@ -105,12 +84,13 @@ final class UriExtension extends AbstractExtension
         array $additionalParams = [],
         bool $absolute = false,
         bool $addQueryString = false,
-        array $argumentsToBeExcludedFromQueryString = []): ?string
+        array $argumentsToBeExcludedFromQueryString = []): string
     {
         $this->uriBuilder->reset();
 
-        $controller ??= 'Default';
-        $extensionName ??= 'Default';
+        $request = $context['request'] ?? null;
+        assert($request instanceof Request);
+        $this->uriBuilder->setRequest($request);
 
         if ($pageUid !== null) {
             $this->uriBuilder->setTargetPageUid($pageUid);
@@ -131,41 +111,90 @@ final class UriExtension extends AbstractExtension
     }
 
     /**
+     * @param array<mixed> $context
+     * @param array<mixed> $additionalParams
+     * @param array<mixed> $argumentsToBeExcludedFromQueryString
+     */
+    public function uriPage(
+        array $context,
+        ?int $pageUid = null,
+        array $additionalParams = [],
+        int $pageType = 0,
+        bool $noCache = false,
+        string $section = '',
+        bool $linkAccessRestrictedPages = false,
+        bool $absolute = false,
+        bool $addQueryString = false,
+        array $argumentsToBeExcludedFromQueryString = []): string
+    {
+        $this->uriBuilder->reset();
+
+        $request = $context['request'] ?? null;
+        assert($request instanceof Request);
+        $this->uriBuilder->setRequest($request);
+
+        if ($pageUid !== null) {
+            $this->uriBuilder->setTargetPageUid($pageUid);
+        }
+
+        $this->uriBuilder
+            ->setTargetPageType($pageType)
+            ->setNoCache($noCache)
+            ->setSection($section)
+            ->setLinkAccessRestrictedPages($linkAccessRestrictedPages)
+            ->setArguments($additionalParams)
+            ->setCreateAbsoluteUri($absolute)
+            ->setAddQueryString($addQueryString)
+            ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString);
+
+        return $this->uriBuilder->build();
+    }
+
+    /**
      * Generates a link for the given record.
      *
      * A `link handler <https://docs.typo3.org/typo3cms/extensions/core/latest/Changelog/8.6/Feature-79626-IntegrateRecordLinkHandler.html>`__ must be configured for the mapped table.
      *
-     * @param string $table     the table of the record
-     * @param int    $recordUid the UID of the record
+     * @param array<mixed> $context   twig context, gets included with DI
+     * @param string       $table     the table of the record
+     * @param int          $recordUid the UID of the record
      */
-    public function recordUri(string $table, int $recordUid): ?string
+    public function recordUri(array $context, string $table, int $recordUid): string
     {
         $paramter = 't3://record?'.http_build_query(['identifier' => $table, 'uid' => $recordUid]);
 
-        return static::typoLinkUri($paramter);
+        return static::typoLinkUri($context, $paramter);
     }
 
     /**
      * Generates a link for the given domain model.
      *
      * A `link handler <https://docs.typo3.org/typo3cms/extensions/core/latest/Changelog/8.6/Feature-79626-IntegrateRecordLinkHandler.html>`__ must be configured for the mapped table.
+     *
+     * @param array<mixed> $context
      */
-    public function modelUri(DomainObjectInterface $model): ?string
+    public function modelUri(array $context, DomainObjectInterface $model): string
     {
         $table = $this->dataMapper->convertClassNameToTableName(get_class($model));
         $recordUid = $model->getUid();
 
-        return static::recordUri($table, $recordUid);
+        return static::recordUri($context, $table, $recordUid);
     }
 
+    /**
+     * @param array<mixed> $context
+     * @param array<mixed> $additionalParams
+     */
     public function typoLinkUri(
+        array $context,
         string $parameter,
-        array $additionalParams = []
-    ): ?string {
+        array $additionalParams = [],
+    ): string {
         $content = '';
 
         if ($parameter) {
             $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+            $contentObject->setRequest($context['request']);
             $content = $contentObject->typoLink_URL(
                 [
                     'parameter' => self::createTypoLinkParameterFromArguments($parameter, http_build_query($additionalParams)),
